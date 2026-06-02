@@ -1,0 +1,136 @@
+{
+  "nav": {
+    "services": "Services",
+    "work": "Work",
+    "about": "About",
+    "contact": "Contact",
+    "cta": "Let's Talk"
+  },
+  "hero": {
+    "badge": "SaaS · Mobile · Consulting",
+    "headline_1": "Product engineering",
+    "headline_highlight": "ready to scale.",
+    "headline_2": "",
+    "lead": "We design and build SaaS platforms, mobile apps, and custom architectures. Your idea, taken to production with a modern, future-proof stack.",
+    "cta_primary": "Start your project",
+    "cta_secondary": "View services",
+    "stat1": "Products launched",
+    "stat2": "Avg. uptime",
+    "stat3": "Years of experience"
+  },
+  "services": {
+    "title": "What We Build",
+    "subtitle": "Elite software solutions for ambitious businesses",
+    "items": [
+      {
+        "title": "SaaS Development",
+        "desc": "Scalable cloud platforms built for growth. From MVP to enterprise-grade systems.",
+        "stack": ["Next.js", "Node.js", "PostgreSQL", "Stripe"]
+      },
+      {
+        "title": "Mobile Apps",
+        "desc": "Native iOS & Android experiences. React Native, Swift and Kotlin.",
+        "stack": ["React Native", "Swift", "Kotlin", "Expo"]
+      },
+      {
+        "title": "AI Agents & Automation",
+        "desc": "Intelligent agents that automate workflows and unlock new capabilities at scale.",
+        "stack": ["OpenAI", "Claude", "LangChain", "Python"]
+      },
+      {
+        "title": "Tech Consulting",
+        "desc": "Strategic guidance to modernize your stack, architecture review, and team growth.",
+        "stack": ["Architecture", "Code Review", "DevOps", "Team Training"]
+      }
+    ]
+  },
+  "ai": {
+    "badge": "AI-Powered",
+    "title": "Intelligence Built In",
+    "subtitle": "We integrate AI agents into every product — not as an afterthought, but as a core capability that transforms how software works.",
+    "features": ["Autonomous AI Agents", "Real-time Data Processing", "Intelligent Automation", "LLM Integration"]
+  },
+  "work": {
+    "title": "Our Work",
+    "subtitle": "Real products, live in production.",
+    "projects": [
+      {
+        "title": "Yasmin Medrano",
+        "category": "Aesthetic Medical Clinic",
+        "desc": "Complete digital presence for a premium aesthetic medicine practice. Modern booking, services showcase, and brand identity.",
+        "url": "https://yasminmedrano.com",
+        "status": "live"
+      },
+      {
+        "title": "ReadyCV",
+        "category": "AI Resume Builder",
+        "desc": "AI-powered resume builder helping professionals craft compelling CVs and land their dream jobs.",
+        "url": "https://www.readycvv.com",
+        "status": "live"
+      },
+      {
+        "title": "NOVA Nutrition",
+        "category": "iOS & Android App",
+        "desc": "Smart nutrition tracking powered by AI. Personalized meal plans and real-time insights. Coming to App Store & Google Play.",
+        "url": null,
+        "status": "soon"
+      }
+    ],
+    "live": "Live",
+    "soon": "Coming Soon",
+    "view": "View Project"
+  },
+  "process": {
+    "title": "How We Work",
+    "subtitle": "A proven process for delivering elite software, on time and on budget.",
+    "steps": [
+      { "num": "01", "title": "Discovery", "desc": "Deep dive into your vision, goals, and technical requirements. We define scope and success criteria." },
+      { "num": "02", "title": "Design", "desc": "UI/UX design, system architecture, and technical specification. You see it before we build it." },
+      { "num": "03", "title": "Build", "desc": "Agile development with weekly deliverables. Full transparency, daily updates, zero surprises." },
+      { "num": "04", "title": "Launch", "desc": "Rigorous QA, performance optimization, and deployment. We go live when it's perfect." },
+      { "num": "05", "title": "Scale", "desc": "Ongoing support, monitoring, feature roadmap, and continuous improvement as you grow." }
+    ]
+  },
+  "about": {
+    "title": "Built for the Future",
+    "subtitle": "A USA-based LLC delivering elite software to startups and enterprises worldwide.",
+    "stats": [
+      { "value": 5, "label": "Projects Shipped", "suffix": "+" },
+      { "value": 3, "label": "Countries Served", "suffix": "+" },
+      { "value": 99, "label": "Uptime SLA", "suffix": "%" },
+      { "value": 24, "label": "Support Response", "suffix": "h" }
+    ],
+    "body": "MS SARAVIA TECH STACK LLC is a technology company based in the United States, specializing in SaaS development, mobile applications, AI-powered agents, and strategic tech consulting. We bring Silicon Valley-level engineering to every project — from early-stage startups to established enterprises."
+  },
+  "contact": {
+    "title": "Start a Project",
+    "subtitle": "Tell us what you're building. We'll make it real.",
+    "name": "Full Name",
+    "email": "Email Address",
+    "company": "Company (optional)",
+    "message": "Tell us about your project...",
+    "submit": "Send Message",
+    "sending": "Sending...",
+    "success": "Message sent! We'll be in touch within 24 hours.",
+    "error": "Something went wrong. Please email us directly.",
+    "direct": "or email us directly",
+    "location": "United States of America",
+    "value_response": "Response within 24h",
+    "value_consultation": "Free consultation",
+    "value_contracts": "No long-term contracts"
+  },
+  "footer": {
+    "tagline": "Building the future, one product at a time.",
+    "rights": "All rights reserved.",
+    "company": "MS SARAVIA TECH STACK LLC",
+    "description": "Elite software engineering for ambitious companies. SaaS, mobile, AI — all in one studio.",
+    "location": "United States",
+    "quick_links": "Quick Links",
+    "links": {
+      "services": "Services",
+      "work": "Work",
+      "about": "About",
+      "contact": "Contact"
+    }
+  }
+}

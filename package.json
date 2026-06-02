@@ -1,0 +1,42 @@
+{
+  "name": "ms-tech-stack-llc-web",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev --turbopack",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@gsap/react": "^2.1.2",
+    "@react-three/drei": "^10.3.0",
+    "@react-three/fiber": "^9.1.0",
+    "@studio-freight/lenis": "^1.0.42",
+    "clsx": "^2.1.1",
+    "framer-motion": "^12.0.0",
+    "gsap": "^3.12.7",
+    "lucide-react": "^0.511.0",
+    "next": "15.3.2",
+    "next-intl": "^3.26.5",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "resend": "^4.5.1",
+    "sonner": "^2.0.3",
+    "tailwind-merge": "^3.3.0",
+    "three": "^0.176.0",
+    "zod": "^3.25.36"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4.1.7",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "@types/three": "^0.176.0",
+    "eslint": "^9",
+    "eslint-config-next": "15.3.2",
+    "playwright": "^1.60.0",
+    "tailwindcss": "^4.1.7",
+    "typescript": "^5"
+  }
+}
