@@ -4,14 +4,14 @@ RUN corepack enable
 FROM base AS deps
 WORKDIR /app
 COPY package.json pnpm-lock.yaml* pnpm.json* ./
-RUN corepack prepare pnpm@latest --activate && pnpm install --frozen-lockfile
+RUN corepack prepare pnpm@9.15.9 --activate && pnpm install --frozen-lockfile
 
 FROM base AS builder
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 ENV NEXT_TELEMETRY_DISABLED=1
-RUN corepack prepare pnpm@latest --activate && pnpm build
+RUN corepack prepare pnpm@9.15.9 --activate && pnpm build
 
 FROM base AS runner
 WORKDIR /app
