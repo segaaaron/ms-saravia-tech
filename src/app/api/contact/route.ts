@@ -13,10 +13,18 @@ export async function POST(req: NextRequest) {
   try {
     const body = await req.json()
     const data = schema.parse(body)
+
+    const apiKey = process.env.RESEND_API_KEY
+    if (!apiKey) {
+      console.error('Contact form error: RESEND_API_KEY is not set')
+      return NextResponse.json({ error: 'Email service not configured' }, { status: 500 })
+    }
+
     const to = process.env.CONTACT_TO_EMAIL || 'techstackmssaravia@gmail.com'
-    const resend = new Resend(process.env.RESEND_API_KEY)
-    await resend.emails.send({
-      from: 'MS SARAVIA TECH STACK <onboarding@resend.dev>',
+    const from = process.env.CONTACT_FROM_EMAIL || 'MS SARAVIA TECH STACK <onboarding@resend.dev>'
+    const resend = new Resend(apiKey)
+    const { error } = await resend.emails.send({
+      from,
       to,
       subject: `New contact from ${data.name}${data.company ? ` — ${data.company}` : ''}`,
       html: `
@@ -33,6 +41,12 @@ export async function POST(req: NextRequest) {
         </div>
       `,
     })
+
+    if (error) {
+      console.error('Contact form error: Resend failed to send:', error)
+      return NextResponse.json({ error: 'Failed to send message' }, { status: 500 })
+    }
+
     return NextResponse.json({ success: true })
   } catch (err) {
     if (err instanceof z.ZodError) {
