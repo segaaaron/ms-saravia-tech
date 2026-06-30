@@ -23,7 +23,10 @@ const inter = Inter({
   display: 'swap',
 })
 
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.ms-tech-stack.cloud'
+
 export const metadata: Metadata = {
+  metadataBase: new URL(siteUrl),
   title: 'MS SARAVIA TECH STACK LLC | Premium Software Agency',
   description:
     'Elite SaaS development, mobile apps, AI agents & tech consulting. We build the future of software. Based in the USA.',
@@ -39,10 +42,15 @@ export const metadata: Metadata = {
   openGraph: {
     title: 'MS SARAVIA TECH STACK LLC',
     description: 'Elite software agency. SaaS · Mobile · AI · Consulting.',
-    url: process.env.NEXT_PUBLIC_SITE_URL || 'https://mssaraviatechstack.com',
+    url: siteUrl,
     siteName: 'MS SARAVIA TECH STACK LLC',
     locale: 'en_US',
     type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'MS SARAVIA TECH STACK LLC',
+    description: 'Elite software agency. SaaS · Mobile · AI · Consulting.',
   },
   robots: { index: true, follow: true },
 }
