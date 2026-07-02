@@ -98,9 +98,12 @@ export async function generateMetadata({
       description,
     },
     robots: { index: true, follow: true },
-    verification: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION
-      ? { google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION }
-      : undefined,
+    verification: {
+      // Google Search Console. Public token (rendered in HTML). Env overrides default.
+      google:
+        process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION ||
+        'ZHMlv0KexhXmR5QdCRqOuUup5_hLdeGAfvBv8i4RmcA',
+    },
   }
 }
 
