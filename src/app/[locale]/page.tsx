@@ -6,6 +6,7 @@ import HoloDashboard from '@/components/sections/HoloDashboard'
 import Work from '@/components/sections/Work'
 import Process from '@/components/sections/Process'
 import About from '@/components/sections/About'
+import Faq from '@/components/sections/Faq'
 import Contact from '@/components/sections/Contact'
 
 export default function HomePage() {
@@ -19,6 +20,7 @@ export default function HomePage() {
       <Work />
       <Process />
       <About />
+      <Faq />
       <Contact />
     </>
   )

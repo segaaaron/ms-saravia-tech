@@ -8,8 +8,8 @@
   },
   "hero": {
     "badge": "SaaS · Mobile · Consulting",
-    "headline_1": "Product engineering",
-    "headline_highlight": "ready to scale.",
+    "headline_1": "SaaS, mobile apps & AI agents",
+    "headline_highlight": "engineered to scale.",
     "headline_2": "",
     "lead": "We design and build SaaS platforms, mobile apps, and custom architectures. Your idea, taken to production with a modern, future-proof stack.",
     "cta_primary": "Start your project",
@@ -25,22 +25,42 @@
       {
         "title": "SaaS Development",
         "desc": "Scalable cloud platforms built for growth. From MVP to enterprise-grade systems.",
-        "stack": ["Next.js", "Node.js", "PostgreSQL", "Stripe"]
+        "stack": [
+          "Next.js",
+          "Node.js",
+          "PostgreSQL",
+          "Stripe"
+        ]
       },
       {
         "title": "Mobile Apps",
         "desc": "Native iOS & Android experiences. React Native, Swift and Kotlin.",
-        "stack": ["React Native", "Swift", "Kotlin", "Expo"]
+        "stack": [
+          "React Native",
+          "Swift",
+          "Kotlin",
+          "Expo"
+        ]
       },
       {
         "title": "AI Agents & Automation",
         "desc": "Intelligent agents that automate workflows and unlock new capabilities at scale.",
-        "stack": ["OpenAI", "Claude", "LangChain", "Python"]
+        "stack": [
+          "OpenAI",
+          "Claude",
+          "LangChain",
+          "Python"
+        ]
       },
       {
         "title": "Tech Consulting",
         "desc": "Strategic guidance to modernize your stack, architecture review, and team growth.",
-        "stack": ["Architecture", "Code Review", "DevOps", "Team Training"]
+        "stack": [
+          "Architecture",
+          "Code Review",
+          "DevOps",
+          "Team Training"
+        ]
       }
     ]
   },
@@ -48,7 +68,12 @@
     "badge": "AI-Powered",
     "title": "Intelligence Built In",
     "subtitle": "We integrate AI agents into every product — not as an afterthought, but as a core capability that transforms how software works.",
-    "features": ["Autonomous AI Agents", "Real-time Data Processing", "Intelligent Automation", "LLM Integration"]
+    "features": [
+      "Autonomous AI Agents",
+      "Real-time Data Processing",
+      "Intelligent Automation",
+      "LLM Integration"
+    ]
   },
   "work": {
     "title": "Our Work",
@@ -84,21 +109,57 @@
     "title": "How We Work",
     "subtitle": "A proven process for delivering elite software, on time and on budget.",
     "steps": [
-      { "num": "01", "title": "Discovery", "desc": "Deep dive into your vision, goals, and technical requirements. We define scope and success criteria." },
-      { "num": "02", "title": "Design", "desc": "UI/UX design, system architecture, and technical specification. You see it before we build it." },
-      { "num": "03", "title": "Build", "desc": "Agile development with weekly deliverables. Full transparency, daily updates, zero surprises." },
-      { "num": "04", "title": "Launch", "desc": "Rigorous QA, performance optimization, and deployment. We go live when it's perfect." },
-      { "num": "05", "title": "Scale", "desc": "Ongoing support, monitoring, feature roadmap, and continuous improvement as you grow." }
+      {
+        "num": "01",
+        "title": "Discovery",
+        "desc": "Deep dive into your vision, goals, and technical requirements. We define scope and success criteria."
+      },
+      {
+        "num": "02",
+        "title": "Design",
+        "desc": "UI/UX design, system architecture, and technical specification. You see it before we build it."
+      },
+      {
+        "num": "03",
+        "title": "Build",
+        "desc": "Agile development with weekly deliverables. Full transparency, daily updates, zero surprises."
+      },
+      {
+        "num": "04",
+        "title": "Launch",
+        "desc": "Rigorous QA, performance optimization, and deployment. We go live when it's perfect."
+      },
+      {
+        "num": "05",
+        "title": "Scale",
+        "desc": "Ongoing support, monitoring, feature roadmap, and continuous improvement as you grow."
+      }
     ]
   },
   "about": {
     "title": "Built for the Future",
     "subtitle": "A USA-based LLC delivering elite software to startups and enterprises worldwide.",
     "stats": [
-      { "value": 5, "label": "Projects Shipped", "suffix": "+" },
-      { "value": 3, "label": "Countries Served", "suffix": "+" },
-      { "value": 99, "label": "Uptime SLA", "suffix": "%" },
-      { "value": 24, "label": "Support Response", "suffix": "h" }
+      {
+        "value": 5,
+        "label": "Projects Shipped",
+        "suffix": "+"
+      },
+      {
+        "value": 3,
+        "label": "Countries Served",
+        "suffix": "+"
+      },
+      {
+        "value": 99,
+        "label": "Uptime SLA",
+        "suffix": "%"
+      },
+      {
+        "value": 24,
+        "label": "Support Response",
+        "suffix": "h"
+      }
     ],
     "body": "MS SARAVIA TECH STACK LLC is a technology company based in the United States, specializing in SaaS development, mobile applications, AI-powered agents, and strategic tech consulting. We bring Silicon Valley-level engineering to every project — from early-stage startups to established enterprises."
   },

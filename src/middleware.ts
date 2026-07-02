@@ -31,6 +31,6 @@ export const config = {
   matcher: [
     '/',
     '/(en|es)/:path*',
-    '/((?!api|_next|_vercel|opengraph-image|robots.txt|sitemap.xml|.*\\..*).*)',
+    '/((?!api|_next|_vercel|opengraph-image|apple-icon|icon|manifest.webmanifest|robots.txt|sitemap.xml|.*\\..*).*)',
   ],
 }

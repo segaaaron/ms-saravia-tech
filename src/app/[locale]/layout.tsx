@@ -3,12 +3,18 @@ import { Space_Grotesk, Inter } from 'next/font/google'
 import { NextIntlClientProvider } from 'next-intl'
 import { getMessages } from 'next-intl/server'
 import { Toaster } from 'sonner'
+import dynamic from 'next/dynamic'
 import './globals.css'
 // Navbar and Footer are imported from components (written by other agents)
 import Navbar from '@/components/nav/Navbar'
 import Footer from '@/components/sections/Footer'
-import InteractiveParticles from '@/components/fx/InteractiveParticles'
 import JsonLd from '@/components/seo/JsonLd'
+import Analytics from '@/components/seo/Analytics'
+
+// Decorative-only WebGL particles: defer to client, keep out of SSR/LCP path.
+const InteractiveParticles = dynamic(
+  () => import('@/components/fx/InteractiveParticles'),
+)
 
 const spaceGrotesk = Space_Grotesk({
   subsets: ['latin'],
@@ -92,6 +98,9 @@ export async function generateMetadata({
       description,
     },
     robots: { index: true, follow: true },
+    verification: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION
+      ? { google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION }
+      : undefined,
   }
 }
 
@@ -108,6 +117,7 @@ export default async function RootLayout({
     <html lang={locale} className={`${spaceGrotesk.variable} ${inter.variable}`}>
       <body suppressHydrationWarning>
         <JsonLd locale={locale} />
+        <Analytics />
         <NextIntlClientProvider locale={locale} messages={messages}>
           <InteractiveParticles />
           <Navbar />

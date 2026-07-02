@@ -8,9 +8,9 @@
   },
   "hero": {
     "badge": "SaaS · Mobile · Consultoría",
-    "headline_1": "Ingeniería de",
-    "headline_highlight": "producto digital",
-    "headline_2": "lista para escalar.",
+    "headline_1": "SaaS, apps móviles y agentes IA",
+    "headline_highlight": "listos para escalar.",
+    "headline_2": "",
     "lead": "Diseñamos y construimos plataformas SaaS, apps móviles y arquitecturas a la medida. Tu idea, llevada a producción con un stack moderno y a prueba de futuro.",
     "cta_primary": "Inicia tu proyecto",
     "cta_secondary": "Ver servicios",
@@ -25,22 +25,42 @@
       {
         "title": "Desarrollo SaaS",
         "desc": "Plataformas en la nube escalables construidas para crecer. Desde MVP hasta sistemas de nivel empresarial.",
-        "stack": ["Next.js", "Node.js", "PostgreSQL", "Stripe"]
+        "stack": [
+          "Next.js",
+          "Node.js",
+          "PostgreSQL",
+          "Stripe"
+        ]
       },
       {
         "title": "Apps Móviles",
         "desc": "Experiencias nativas para iOS y Android. React Native, Swift y Kotlin.",
-        "stack": ["React Native", "Swift", "Kotlin", "Expo"]
+        "stack": [
+          "React Native",
+          "Swift",
+          "Kotlin",
+          "Expo"
+        ]
       },
       {
         "title": "Agentes IA y Automatización",
         "desc": "Agentes inteligentes que automatizan flujos de trabajo y desbloquean nuevas capacidades a escala.",
-        "stack": ["OpenAI", "Claude", "LangChain", "Python"]
+        "stack": [
+          "OpenAI",
+          "Claude",
+          "LangChain",
+          "Python"
+        ]
       },
       {
         "title": "Consultoría Tecnológica",
         "desc": "Orientación estratégica para modernizar tu stack, revisión de arquitectura y crecimiento del equipo.",
-        "stack": ["Architecture", "Code Review", "DevOps", "Team Training"]
+        "stack": [
+          "Architecture",
+          "Code Review",
+          "DevOps",
+          "Team Training"
+        ]
       }
     ]
   },
@@ -48,7 +68,12 @@
     "badge": "Impulsado por IA",
     "title": "Inteligencia Integrada",
     "subtitle": "Integramos agentes de IA en cada producto — no como un añadido, sino como una capacidad central que transforma el funcionamiento del software.",
-    "features": ["Agentes IA Autónomos", "Procesamiento de Datos en Tiempo Real", "Automatización Inteligente", "Integración de LLM"]
+    "features": [
+      "Agentes IA Autónomos",
+      "Procesamiento de Datos en Tiempo Real",
+      "Automatización Inteligente",
+      "Integración de LLM"
+    ]
   },
   "work": {
     "title": "Nuestro Trabajo",
@@ -84,21 +109,57 @@
     "title": "Cómo Trabajamos",
     "subtitle": "Un proceso probado para entregar software élite, a tiempo y dentro del presupuesto.",
     "steps": [
-      { "num": "01", "title": "Descubrimiento", "desc": "Inmersión profunda en tu visión, objetivos y requisitos técnicos. Definimos el alcance y los criterios de éxito." },
-      { "num": "02", "title": "Diseño", "desc": "Diseño UI/UX, arquitectura del sistema y especificación técnica. Lo ves antes de que lo construyamos." },
-      { "num": "03", "title": "Construcción", "desc": "Desarrollo ágil con entregables semanales. Transparencia total, actualizaciones diarias, cero sorpresas." },
-      { "num": "04", "title": "Lanzamiento", "desc": "QA riguroso, optimización de rendimiento y despliegue. Salimos en vivo cuando está perfecto." },
-      { "num": "05", "title": "Escalar", "desc": "Soporte continuo, monitoreo, hoja de ruta de funcionalidades y mejora continua mientras creces." }
+      {
+        "num": "01",
+        "title": "Descubrimiento",
+        "desc": "Inmersión profunda en tu visión, objetivos y requisitos técnicos. Definimos el alcance y los criterios de éxito."
+      },
+      {
+        "num": "02",
+        "title": "Diseño",
+        "desc": "Diseño UI/UX, arquitectura del sistema y especificación técnica. Lo ves antes de que lo construyamos."
+      },
+      {
+        "num": "03",
+        "title": "Construcción",
+        "desc": "Desarrollo ágil con entregables semanales. Transparencia total, actualizaciones diarias, cero sorpresas."
+      },
+      {
+        "num": "04",
+        "title": "Lanzamiento",
+        "desc": "QA riguroso, optimización de rendimiento y despliegue. Salimos en vivo cuando está perfecto."
+      },
+      {
+        "num": "05",
+        "title": "Escalar",
+        "desc": "Soporte continuo, monitoreo, hoja de ruta de funcionalidades y mejora continua mientras creces."
+      }
     ]
   },
   "about": {
     "title": "Construidos para el Futuro",
     "subtitle": "Una LLC con sede en EE.UU. que entrega software élite a startups y empresas en todo el mundo.",
     "stats": [
-      { "value": 5, "label": "Proyectos Entregados", "suffix": "+" },
-      { "value": 3, "label": "Países Atendidos", "suffix": "+" },
-      { "value": 99, "label": "SLA de Disponibilidad", "suffix": "%" },
-      { "value": 24, "label": "Respuesta de Soporte", "suffix": "h" }
+      {
+        "value": 5,
+        "label": "Proyectos Entregados",
+        "suffix": "+"
+      },
+      {
+        "value": 3,
+        "label": "Países Atendidos",
+        "suffix": "+"
+      },
+      {
+        "value": 99,
+        "label": "SLA de Disponibilidad",
+        "suffix": "%"
+      },
+      {
+        "value": 24,
+        "label": "Respuesta de Soporte",
+        "suffix": "h"
+      }
     ],
     "body": "MS SARAVIA TECH STACK LLC es una empresa tecnológica con sede en los Estados Unidos, especializada en desarrollo SaaS, aplicaciones móviles, agentes impulsados por IA y consultoría tecnológica estratégica. Llevamos ingeniería de nivel Silicon Valley a cada proyecto — desde startups en etapa temprana hasta empresas establecidas."
   },

@@ -6,6 +6,7 @@ import { Github, Linkedin, Mail, MapPin } from 'lucide-react'
 import NavCircuit from '@/components/nav/NavCircuit'
 import { cn } from '@/lib/utils'
 import { fadeInUp, staggerContainer } from '@/lib/motion'
+import { SOCIALS, type SocialKey } from '@/content/socials'
 
 const NAV_LINKS = [
   { href: '#services', labelKey: 'services' },
@@ -14,23 +15,16 @@ const NAV_LINKS = [
   { href: '#contact',  labelKey: 'contact' },
 ]
 
-const SOCIALS = [
-  {
-    href: 'mailto:techstackmssaravia@gmail.com',
-    label: 'Email',
-    icon: Mail,
-  },
-  {
-    href: 'https://github.com',
-    label: 'GitHub',
-    icon: Github,
-  },
-  {
-    href: 'https://linkedin.com',
-    label: 'LinkedIn',
-    icon: Linkedin,
-  },
-]
+const SOCIAL_ICONS: Record<SocialKey, typeof Mail> = {
+  email: Mail,
+  github: Github,
+  linkedin: Linkedin,
+}
+
+// Hide entries without a real URL (github/linkedin until valid links provided).
+const VISIBLE_SOCIALS = SOCIALS.filter(
+  (s): s is typeof s & { href: string } => s.href !== null,
+)
 
 export default function Footer() {
   const t = useTranslations('footer')
@@ -138,7 +132,9 @@ export default function Footer() {
 
             {/* Social icons */}
             <div className="flex items-center gap-3 pt-1">
-              {SOCIALS.map(({ href, label, icon: Icon }) => (
+              {VISIBLE_SOCIALS.map(({ href, label, key }) => {
+                const Icon = SOCIAL_ICONS[key]
+                return (
                 <a
                   key={label}
                   href={href}
@@ -154,7 +150,8 @@ export default function Footer() {
                 >
                   <Icon size={15} strokeWidth={1.5} />
                 </a>
-              ))}
+                )
+              })}
             </div>
           </motion.div>
         </motion.div>
