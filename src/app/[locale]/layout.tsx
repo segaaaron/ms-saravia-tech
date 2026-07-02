@@ -8,6 +8,7 @@ import './globals.css'
 import Navbar from '@/components/nav/Navbar'
 import Footer from '@/components/sections/Footer'
 import InteractiveParticles from '@/components/fx/InteractiveParticles'
+import JsonLd from '@/components/seo/JsonLd'
 
 const spaceGrotesk = Space_Grotesk({
   subsets: ['latin'],
@@ -31,37 +32,64 @@ export async function generateMetadata({
   params: Promise<{ locale: string }>
 }): Promise<Metadata> {
   const { locale } = await params
-  const canonical = locale === 'es' ? `${siteUrl}/es` : siteUrl
+  const isEs = locale === 'es'
+  const canonical = isEs ? `${siteUrl}/es` : siteUrl
+  const title = isEs
+    ? 'Desarrollo de SaaS, Apps Móviles y Agentes IA | MS Saravia Tech Stack'
+    : 'SaaS, Mobile App & AI Agent Development Agency | MS Saravia Tech Stack'
+  const description = isEs
+    ? 'Agencia de software en USA. Construimos tu SaaS, app móvil (iOS/Android) y agentes de IA — de la idea a producción. Cotización gratis.'
+    : 'US-based software agency. We build your SaaS, mobile app (iOS/Android) and AI agents — from idea to production. Free project estimate.'
+  const keywords = isEs
+    ? [
+        'desarrollo de software',
+        'crear una app',
+        'desarrollo de SaaS',
+        'agencia de desarrollo de apps',
+        'desarrollo de apps móviles',
+        'agentes de IA',
+        'automatización con IA',
+        'desarrollar MVP',
+        'consultoría tecnológica',
+        'CTO fraccional',
+        'Next.js',
+        'React Native',
+      ]
+    : [
+        'SaaS development company',
+        'app development agency',
+        'hire app developers',
+        'build a SaaS platform',
+        'mobile app development USA',
+        'AI agent development',
+        'AI automation agency',
+        'MVP development',
+        'custom software development',
+        'fractional CTO',
+        'Next.js agency',
+        'React Native development',
+      ]
   return {
     metadataBase: new URL(siteUrl),
-    title: 'MS SARAVIA TECH STACK LLC | Premium Software Agency',
-    description:
-      'Elite SaaS development, mobile apps, AI agents & tech consulting. We build the future of software. Based in the USA.',
-    keywords: [
-      'SaaS development',
-      'mobile apps',
-      'AI agents',
-      'tech consulting',
-      'software agency',
-      'React',
-      'Next.js',
-    ],
+    title,
+    description,
+    keywords,
     alternates: {
       canonical,
       languages: { en: siteUrl, es: `${siteUrl}/es`, 'x-default': siteUrl },
     },
     openGraph: {
-      title: 'MS SARAVIA TECH STACK LLC',
-      description: 'Elite software agency. SaaS · Mobile · AI · Consulting.',
+      title,
+      description,
       url: canonical,
       siteName: 'MS SARAVIA TECH STACK LLC',
-      locale: locale === 'es' ? 'es_ES' : 'en_US',
+      locale: isEs ? 'es_ES' : 'en_US',
       type: 'website',
     },
     twitter: {
       card: 'summary_large_image',
-      title: 'MS SARAVIA TECH STACK LLC',
-      description: 'Elite software agency. SaaS · Mobile · AI · Consulting.',
+      title,
+      description,
     },
     robots: { index: true, follow: true },
   }
@@ -79,6 +107,7 @@ export default async function RootLayout({
   return (
     <html lang={locale} className={`${spaceGrotesk.variable} ${inter.variable}`}>
       <body suppressHydrationWarning>
+        <JsonLd locale={locale} />
         <NextIntlClientProvider locale={locale} messages={messages}>
           <InteractiveParticles />
           <Navbar />
