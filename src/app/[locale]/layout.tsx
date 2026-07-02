@@ -25,34 +25,46 @@ const inter = Inter({
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.ms-tech-stack.cloud'
 
-export const metadata: Metadata = {
-  metadataBase: new URL(siteUrl),
-  title: 'MS SARAVIA TECH STACK LLC | Premium Software Agency',
-  description:
-    'Elite SaaS development, mobile apps, AI agents & tech consulting. We build the future of software. Based in the USA.',
-  keywords: [
-    'SaaS development',
-    'mobile apps',
-    'AI agents',
-    'tech consulting',
-    'software agency',
-    'React',
-    'Next.js',
-  ],
-  openGraph: {
-    title: 'MS SARAVIA TECH STACK LLC',
-    description: 'Elite software agency. SaaS · Mobile · AI · Consulting.',
-    url: siteUrl,
-    siteName: 'MS SARAVIA TECH STACK LLC',
-    locale: 'en_US',
-    type: 'website',
-  },
-  twitter: {
-    card: 'summary_large_image',
-    title: 'MS SARAVIA TECH STACK LLC',
-    description: 'Elite software agency. SaaS · Mobile · AI · Consulting.',
-  },
-  robots: { index: true, follow: true },
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>
+}): Promise<Metadata> {
+  const { locale } = await params
+  const canonical = locale === 'es' ? `${siteUrl}/es` : siteUrl
+  return {
+    metadataBase: new URL(siteUrl),
+    title: 'MS SARAVIA TECH STACK LLC | Premium Software Agency',
+    description:
+      'Elite SaaS development, mobile apps, AI agents & tech consulting. We build the future of software. Based in the USA.',
+    keywords: [
+      'SaaS development',
+      'mobile apps',
+      'AI agents',
+      'tech consulting',
+      'software agency',
+      'React',
+      'Next.js',
+    ],
+    alternates: {
+      canonical,
+      languages: { en: siteUrl, es: `${siteUrl}/es`, 'x-default': siteUrl },
+    },
+    openGraph: {
+      title: 'MS SARAVIA TECH STACK LLC',
+      description: 'Elite software agency. SaaS · Mobile · AI · Consulting.',
+      url: canonical,
+      siteName: 'MS SARAVIA TECH STACK LLC',
+      locale: locale === 'es' ? 'es_ES' : 'en_US',
+      type: 'website',
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: 'MS SARAVIA TECH STACK LLC',
+      description: 'Elite software agency. SaaS · Mobile · AI · Consulting.',
+    },
+    robots: { index: true, follow: true },
+  }
 }
 
 export default async function RootLayout({

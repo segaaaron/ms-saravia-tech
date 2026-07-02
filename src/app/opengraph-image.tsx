@@ -1,5 +1,6 @@
 import { ImageResponse } from 'next/og'
 
+export const runtime = 'nodejs'
 export const alt = 'MS SARAVIA TECH STACK LLC — Premium Software Agency'
 export const size = { width: 1200, height: 630 }
 export const contentType = 'image/png'
@@ -15,8 +16,9 @@ export default async function OpengraphImage() {
           flexDirection: 'column',
           alignItems: 'center',
           justifyContent: 'center',
-          background:
-            'radial-gradient(circle at 30% 20%, rgba(0,229,255,0.18), transparent 55%), radial-gradient(circle at 80% 90%, rgba(124,77,255,0.18), transparent 55%), #05060A',
+          backgroundColor: '#05060A',
+          backgroundImage:
+            'radial-gradient(circle at 30% 20%, rgba(0,229,255,0.18), transparent 55%), radial-gradient(circle at 80% 90%, rgba(124,77,255,0.18), transparent 55%)',
           color: 'white',
           fontFamily: 'sans-serif',
           padding: 80,
