@@ -29,7 +29,14 @@ interface MyOrder { code: string; mode: string; total: number; items: TabItem[];
 interface ResTable { zone: string; id: string; seats: number }
 
 /* ---------------- helpers ---------------- */
-const moneyFmt = (n: number, locale: string) => 'Bs ' + Math.round(n).toLocaleString(locale)
+// Precios base están en bolivianos (Bs). Fuera de Bolivia se muestran en USD (conversión
+// solo al formatear; la matemática interna del carrito/cuenta sigue en Bs).
+const BS_PER_USD = 6.9
+const usdFromBs = (bs: number) => Math.round(bs / BS_PER_USD)
+const moneyFmt = (n: number, locale: string, currency: 'BOB' | 'USD') =>
+  currency === 'USD'
+    ? '$' + usdFromBs(n).toLocaleString('en-US')
+    : 'Bs ' + Math.round(n).toLocaleString(locale)
 const img = (id: string, w = 600) => `https://images.unsplash.com/${id}?w=${w}&q=80&auto=format&fit=crop`
 
 const nowTime = () => {
@@ -293,11 +300,11 @@ const carData = [
 ]
 /* imagen (Unsplash) de cada slide del carrusel — igual que la fuente */
 const carImgId: Record<string, string> = {
-  'Silpancho cochabambino': 'photo-1504674900247-0877df9cc836',
-  'Pique macho': 'photo-1600891964092-4316c288032e',
+  'Silpancho cochabambino': 'photo-1562967916-eb82221dfb92',
+  'Pique macho': 'photo-1596797038530-2c107229654b',
   'Pollo a la parrilla': 'photo-1532550907401-a500c9a57435',
-  'Chicharrón de cerdo': 'photo-1544025162-d76694265947',
-  'Costillar de cordero': 'photo-1414235077428-338989a2e8c0',
+  'Chicharrón de cerdo': 'photo-1569058242253-92a9c755a0ec',
+  'Costillar de cordero': 'photo-1529193591184-b1d58069ecdd',
 }
 
 /* almuerzo del día — fecha fija (2026-07-04 = sábado, getDay()=6) */
@@ -310,22 +317,29 @@ const sopaSlug: Record<string, string> = { domingo: 'sopa-mani', lunes: 'sopa-fi
 /* Menú de la semana: IDs Unsplash por slug (los .png locales no existían → imágenes rotas).
    Se reutilizan IDs ya validados en dishImg para que siempre resuelvan. */
 const mainImgId: Record<string, string> = {
-  chicharron: 'photo-1544025162-d76694265947', silpancho: 'photo-1504674900247-0877df9cc836', pique: 'photo-1600891964092-4316c288032e',
-  fricase: 'photo-1455619452474-d2be8b1e70cd', charque: 'photo-1414235077428-338989a2e8c0', pollo: 'photo-1532550907401-a500c9a57435',
+  chicharron: 'photo-1569058242253-92a9c755a0ec', silpancho: 'photo-1562967916-eb82221dfb92', pique: 'photo-1596797038530-2c107229654b',
+  fricase: 'photo-1455619452474-d2be8b1e70cd', charque: 'photo-1574484284002-952d92456975', pollo: 'photo-1532550907401-a500c9a57435',
 }
+// Una foto DISTINTA por sopa (antes fideo=maní y quinua=chairo → se repetían en el menú semanal).
 const sopaImgId: Record<string, string> = {
-  'sopa-mani': 'photo-1476718406336-bb5a9690ee2a', 'sopa-fideo': 'photo-1476718406336-bb5a9690ee2a', chairo: 'photo-1607330289024-1535c6b4e1c1', 'sopa-quinua': 'photo-1607330289024-1535c6b4e1c1',
+  'sopa-mani': 'photo-1476718406336-bb5a9690ee2a', 'sopa-fideo': 'photo-1607330289024-1535c6b4e1c1', chairo: 'photo-1547592166-23ac45744acd', 'sopa-quinua': 'photo-1547592180-85f173990554',
 }
 
 const menuCatDefs: [string, string][] = [['entrantes', 'Entrantes & sopas'], ['parrilla', 'Platos de fondo'], ['principales', 'Platos bolivianos'], ['postres', 'Postres']]
 const barCatDefs: [string, string][] = [['cocteles', 'Cócteles'], ['cervezas', 'Cervezas'], ['naturales', 'Bebidas naturales'], ['vinos', 'Vinos & singani'], ['sinalcohol', 'Sin alcohol']]
 
 const dishDefault = 'photo-1414235077428-338989a2e8c0'
+// Una foto DISTINTA y acorde al plato dentro de cada categoría del menú (antes una
+// misma imagen genérica se repetía hasta 7 veces y no correspondía al plato).
 const dishImg: Record<string, string> = {
-  'Salteñas cochabambinas': 'photo-1565299624946-b28f40a0ae38', 'Anticucho de corazón': 'photo-1544025162-d76694265947', 'Sopa de maní': 'photo-1476718406336-bb5a9690ee2a', 'Chairo paceño': 'photo-1607330289024-1535c6b4e1c1', 'Humintas al horno': 'photo-1547592180-85f173990554',
-  'Chuleta de cerdo a la BBQ': 'photo-1544025162-d76694265947', 'Nudos de cordero': 'photo-1504674900247-0877df9cc836', 'Costillar de cordero': 'photo-1414235077428-338989a2e8c0', 'Colita de cordero': 'photo-1600891964092-4316c288032e', 'Brazuelo de cerdo': 'photo-1544025162-d76694265947', 'Milanesa napolitana': 'photo-1565299624946-b28f40a0ae38', 'Parrillada mixta': 'photo-1544025162-d76694265947', 'Churrasco de lomo': 'photo-1600891964092-4316c288032e', 'Trucha a la plancha': 'photo-1546069901-ba9599a7e63c', 'Chorizo criollo': 'photo-1600891964092-4316c288032e',
-  'Silpancho cochabambino': 'photo-1504674900247-0877df9cc836', 'Trancapecho': 'photo-1551782450-a2132b4ba21d', 'Pique macho medio': 'photo-1600891964092-4316c288032e', 'Pique macho grande': 'photo-1600891964092-4316c288032e', 'Chicharrón de cerdo': 'photo-1544025162-d76694265947', 'Chicharrón de pollo': 'photo-1532550907401-a500c9a57435', 'Fricasé cochabambino': 'photo-1455619452474-d2be8b1e70cd', 'Charquekan': 'photo-1414235077428-338989a2e8c0', 'Sajta de pollo': 'photo-1532550907401-a500c9a57435', 'Fritanga': 'photo-1574484284002-952d92456975', 'Mondongo': 'photo-1476718406336-bb5a9690ee2a', 'Falso conejo': 'photo-1504674900247-0877df9cc836', 'Picante de lengua': 'photo-1455619452474-d2be8b1e70cd', 'Picante surtido': 'photo-1414235077428-338989a2e8c0',
-  'Cuñapé caliente': 'photo-1519915028121-7d3463d20b13', 'Leche asada': 'photo-1488477181946-6428a0291777', 'Helado de canela': 'photo-1497034825429-c343d7c6a68f', 'Flan de la casa': 'photo-1551024506-0bccd828d307',
+  // Entrantes & sopas
+  'Salteñas cochabambinas': 'photo-1565299624946-b28f40a0ae38', 'Anticucho de corazón': 'photo-1529193591184-b1d58069ecdd', 'Sopa de maní': 'photo-1476718406336-bb5a9690ee2a', 'Chairo paceño': 'photo-1547592166-23ac45744acd', 'Humintas al horno': 'photo-1547592180-85f173990554',
+  // Parrilla / platos de fondo
+  'Chuleta de cerdo a la BBQ': 'photo-1432139555190-58524dae6a55', 'Nudos de cordero': 'photo-1558030006-450675393462', 'Costillar de cordero': 'photo-1544025162-d76694265947', 'Colita de cordero': 'photo-1596797038530-2c107229654b', 'Brazuelo de cerdo': 'photo-1504674900247-0877df9cc836', 'Milanesa napolitana': 'photo-1599921841143-819065a55cc6', 'Parrillada mixta': 'photo-1600891964092-4316c288032e', 'Churrasco de lomo': 'photo-1414235077428-338989a2e8c0', 'Trucha a la plancha': 'photo-1519708227418-c8fd9a32b7a2', 'Chorizo criollo': 'photo-1604908176997-125f25cc6f3d',
+  // Platos bolivianos
+  'Silpancho cochabambino': 'photo-1562967916-eb82221dfb92', 'Trancapecho': 'photo-1551782450-a2132b4ba21d', 'Pique macho medio': 'photo-1512058564366-18510be2db19', 'Pique macho grande': 'photo-1546069901-ba9599a7e63c', 'Chicharrón de cerdo': 'photo-1569058242253-92a9c755a0ec', 'Chicharrón de pollo': 'photo-1562967914-608f82629710', 'Fricasé cochabambino': 'photo-1455619452474-d2be8b1e70cd', 'Charquekan': 'photo-1574484284002-952d92456975', 'Sajta de pollo': 'photo-1532550907401-a500c9a57435', 'Fritanga': 'photo-1596797038530-2c107229654b', 'Mondongo': 'photo-1604908176997-125f25cc6f3d', 'Falso conejo': 'photo-1504674900247-0877df9cc836', 'Picante de lengua': 'photo-1414235077428-338989a2e8c0', 'Picante surtido': 'photo-1544025162-d76694265947',
+  // Postres
+  'Cuñapé caliente': 'photo-1509440159596-0249088772ff', 'Leche asada': 'photo-1519915028121-7d3463d20b13', 'Helado de canela': 'photo-1497034825429-c343d7c6a68f', 'Flan de la casa': 'photo-1551024506-0bccd828d307',
 }
 
 const hoursRows = [{ day: 'Lun – Vie', time: '12:00 – 23:00' }, { day: 'Sábado', time: '12:00 – 23:30' }, { day: 'Domingo', time: '12:00 – 16:00' }]
@@ -666,10 +680,17 @@ const CONTENT: Record<DemoLang, Content> = {
 /* ============================================================
    COMPONENTE
    ============================================================ */
-export default function BrasaClient({ lang }: { lang: DemoLang }) {
+export default function BrasaClient({ lang, currency = 'BOB' }: { lang: DemoLang; currency?: 'BOB' | 'USD' }) {
   const c = CONTENT[lang]
   const numLocale = c.numLocale
-  const money = (n: number) => moneyFmt(n, numLocale)
+  const money = (n: number) => moneyFmt(n, numLocale, currency)
+  const curSym = currency === 'USD' ? '$' : c.carta.bs
+  const pricesNote =
+    currency === 'USD'
+      ? lang === 'es'
+        ? 'Precios en USD, impuestos incluidos · consulta a tu mesero sobre alérgenos'
+        : 'Prices in USD, taxes included · ask your server about allergens'
+      : c.carta.pricesNote
   const dow = c.dow
   const mon = c.mon
   const dateStr = (i: number) => {
@@ -932,7 +953,7 @@ export default function BrasaClient({ lang }: { lang: DemoLang }) {
     const ai = almuerzoData.findIndex((x) => x.d === k); const a = almuerzoData[ai]; const ca = c.alm[ai]
     const on = (k === almToday.d); const fin = !!a.fin; const wknd = (k === 'sábado' || k === 'domingo')
     return {
-      day: c.dayCap[k], precioNum: String(a.precio), heroImg: img(sopaImgId[sopaSlug[k]] || dishDefault, 900), heroName: ca.ent, heroDetail: ca.sDet, heroEyebrow: c.carta.soupOfDay,
+      day: c.dayCap[k], precioNum: currency === 'USD' ? String(usdFromBs(a.precio)) : String(a.precio), heroImg: img(sopaImgId[sopaSlug[k]] || dishDefault, 900), heroName: ca.ent, heroDetail: ca.sDet, heroEyebrow: c.carta.soupOfDay,
       onAddAlmuerzo: () => addToCart({ id: 'alm-' + k, name: c.carta.lunchItemPre + c.dayCap[k], price: a.precio, cat: 'cocina', img: img(mainImgId[heroSlug[k]] || dishDefault, 300) }),
       sides: [
         { label: c.carta.sideSegundo, name: ca.pri, detail: ca.priDet, img: img(mainImgId[heroSlug[k]] || dishDefault, 420), noImg: false },
@@ -1493,7 +1514,7 @@ export default function BrasaClient({ lang }: { lang: DemoLang }) {
                         <div className="serif" style={{ fontSize: 22, fontWeight: 600, color: '#fff', lineHeight: 1 }}>{c.carta.lunchIncludes}</div>
                       </div>
                       <div style={{ textAlign: 'right', flexShrink: 0 }}>
-                        <div style={{ display: 'flex', alignItems: 'baseline', gap: 5, justifyContent: 'flex-end' }}><span className="serif" style={{ fontSize: 16, color: '#d89c6d', fontWeight: 600 }}>{c.carta.bs}</span><span className="serif" style={{ fontSize: 44, fontWeight: 600, color: '#fff', lineHeight: .82 }}>{w.precioNum}</span></div>
+                        <div style={{ display: 'flex', alignItems: 'baseline', gap: 5, justifyContent: 'flex-end' }}><span className="serif" style={{ fontSize: 16, color: '#d89c6d', fontWeight: 600 }}>{curSym}</span><span className="serif" style={{ fontSize: 44, fontWeight: 600, color: '#fff', lineHeight: .82 }}>{w.precioNum}</span></div>
                         <div style={{ fontSize: 9.5, color: '#c3a488', marginTop: 3 }}>{c.carta.perPerson}</div>
                       </div>
                     </div>
@@ -1563,7 +1584,7 @@ export default function BrasaClient({ lang }: { lang: DemoLang }) {
                 </div>
               ))}
             </div>
-            <div style={{ textAlign: 'center', marginTop: 30, fontSize: 12, color: 'var(--muted2)', letterSpacing: '.03em' }}>{c.carta.pricesNote}</div>
+            <div style={{ textAlign: 'center', marginTop: 30, fontSize: 12, color: 'var(--muted2)', letterSpacing: '.03em' }}>{pricesNote}</div>
           </div>
         </div>
       )}
