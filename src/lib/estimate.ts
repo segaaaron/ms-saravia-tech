@@ -15,6 +15,7 @@ export const REGION_RATE: Record<Region, number> = {
 // arquetipo). Calibrado con benchmarks 2026 (Topflight, Bolder Apps, Business of Apps,
 // Appinventiv) + LATAM (ab4cus, tooldata). Las features siguen sumándose aparte.
 export const CATEGORIES = [
+  { key: 'saas', mult: 0.4 }, // SaaS/productividad — precio de entrada muy accesible (lead magnet)
   { key: 'other', mult: 1.0 },
   { key: 'booking', mult: 1.05 },
   { key: 'fitness', mult: 1.1 },
@@ -30,11 +31,13 @@ export type CategoryKey = (typeof CATEGORIES)[number]['key']
 
 // Plataforma → multiplicador de esfuerzo relativo a híbrida (React Native/Flutter = base).
 export const PLATFORMS = [
-  { key: 'hybrid', mult: 1.0 },
-  { key: 'webapp', mult: 0.9 },
+  { key: 'landing', mult: 0.15 }, // landing/website — LATAM ~$700-1200, US ~$1500-2500
+  { key: 'webapp', mult: 0.7 }, // web/PWA ~30% más barato que móvil (sin stores/módulos nativos)
+  { key: 'hybrid', mult: 1.0 }, // React Native/Flutter — base
   { key: 'ios', mult: 1.1 },
   { key: 'android', mult: 1.1 },
   { key: 'native', mult: 1.75 },
+  { key: 'aiagent', mult: 0.28 }, // agente IA / asistente — LATAM ~$1.2-2.5k, US ~$3.5-10k (básico→intermedio)
 ] as const
 export type PlatformKey = (typeof PLATFORMS)[number]['key']
 
@@ -117,12 +120,18 @@ export function estimate({ region, category, platform, tier, design, compliance,
   // es overhead sumado. Las features se suman antes de plataforma/diseño.
   const hours = Math.round((base * catMult + featHours) * pMult * dMult + compHours)
   const mid = hours * rate
+  // Redondeo adaptativo: montos chicos (landing) en pasos de $100, medios $500, grandes $1000.
+  // Así una landing muestra $700-$1,200 en vez de colapsar al redondear a $1000.
+  const step = mid < 3000 ? 100 : mid < 15000 ? 500 : 1000
+  const low = round(mid * 0.78, step)
+  let high = round(mid * 1.12, step)
+  if (high <= low) high = low + step // garantiza spread visible
   return {
-    low: round(mid * 0.78, 1000),
-    high: round(mid * 1.12, 1000),
+    low,
+    high,
     hours,
     weeks: Math.max(3, Math.ceil(hours / 110)),
-    maintenance: round(mid * 0.18, 500),
+    maintenance: round(mid * 0.18, Math.min(step, 500)),
   }
 }
 

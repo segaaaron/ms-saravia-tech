@@ -2,57 +2,32 @@
 import { useLocale } from 'next-intl'
 import { useRouter, usePathname } from 'next/navigation'
 import { motion } from 'framer-motion'
-import { cn } from '@/lib/utils'
+import { Globe } from 'lucide-react'
 
-const locales = ['EN', 'ES'] as const
-
+// Toggle de idioma de un solo botón: muestra el idioma AL QUE se cambia (destino) y alterna.
 export default function LocaleToggle() {
   const currentLocale = useLocale()
   const router = useRouter()
   const pathname = usePathname()
+  const other = currentLocale === 'en' ? 'es' : 'en'
 
-  const switchLocale = (locale: string) => {
-    const lower = locale.toLowerCase()
-    if (lower === currentLocale) return
-
-    // Replace /en/... or /es/... prefix, or handle root
-    const segments = pathname.split('/')
-    // segments[0] = '', segments[1] = locale, segments[2..] = rest
-    if (segments[1] === 'en' || segments[1] === 'es') {
-      segments[1] = lower
-    } else {
-      segments.splice(1, 0, lower)
-    }
-    router.push(segments.join('/') || '/')
+  const switchLocale = () => {
+    // Normaliza a la ruta sin prefijo (localePrefix as-needed: en sin prefijo, es → /es).
+    let path = pathname
+    if (path === '/es' || path.startsWith('/es/')) path = path.slice(3) || '/'
+    if (other === 'es') path = '/es' + (path === '/' ? '' : path)
+    router.push(path || '/')
   }
 
   return (
-    <div className="flex items-center gap-1 p-0.5 rounded-full border border-white/10 bg-white/[0.03]">
-      {locales.map((locale) => {
-        const isActive = locale.toLowerCase() === currentLocale
-        return (
-          <motion.button
-            key={locale}
-            onClick={() => switchLocale(locale)}
-            className={cn(
-              'relative px-3 py-1 rounded-full text-xs font-semibold tracking-wider transition-colors duration-200 cursor-pointer select-none',
-              isActive
-                ? 'text-cyan-400'
-                : 'text-white/40 hover:text-white/70'
-            )}
-            whileTap={{ scale: 0.93 }}
-          >
-            {isActive && (
-              <motion.span
-                layoutId="locale-pill"
-                className="absolute inset-0 rounded-full bg-cyan-400/10 border border-cyan-400/30"
-                transition={{ type: 'spring', stiffness: 400, damping: 30 }}
-              />
-            )}
-            <span className="relative z-10">{locale}</span>
-          </motion.button>
-        )
-      })}
-    </div>
+    <motion.button
+      onClick={switchLocale}
+      aria-label={other === 'es' ? 'Cambiar a español' : 'Switch to English'}
+      whileTap={{ scale: 0.93 }}
+      className="inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/[0.03] px-3 py-1.5 text-xs font-semibold tracking-wider text-white/70 transition-colors duration-200 hover:border-cyan-400/30 hover:text-cyan-400 cursor-pointer select-none focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#6366F1]"
+    >
+      <Globe size={13} className="opacity-70" />
+      {other.toUpperCase()}
+    </motion.button>
   )
 }

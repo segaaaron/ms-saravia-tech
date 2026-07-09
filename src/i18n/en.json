@@ -402,14 +402,18 @@
       "ios": "iOS only",
       "android": "Android only",
       "native": "Native iOS + Android",
-      "webapp": "Web app / PWA"
+      "webapp": "Web app / PWA",
+      "landing": "Landing / website",
+      "aiagent": "AI agent / assistant"
     },
     "platformHint": {
       "hybrid": "React Native / Flutter — iOS + Android from a single codebase. Best value.",
       "ios": "Native Swift / SwiftUI for iPhone & iPad.",
       "android": "Native Kotlin for Android devices.",
       "native": "Two separate native codebases — maximum performance, higher cost.",
-      "webapp": "A progressive web app — runs in the browser, installable, no app stores. Fast to ship."
+      "webapp": "A progressive web app — runs in the browser, installable, no app stores. Fast to ship.",
+      "landing": "A marketing site or landing page — few screens, fast, no app store.",
+      "aiagent": "A custom AI assistant or agent (chatbot, RAG, automations) wired to your data & tools."
     },
     "tierLabel": "Scope",
     "tier": {
@@ -475,6 +479,7 @@
     "categoryLabel": "App category",
     "categoryHint": "The type of app shapes the baseline scope and price.",
     "category": {
+      "saas": "SaaS / productivity",
       "other": "General / custom",
       "booking": "Booking / reservations",
       "fitness": "Fitness / gym",

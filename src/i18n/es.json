@@ -402,14 +402,18 @@
       "ios": "Solo iOS",
       "android": "Solo Android",
       "native": "Nativa iOS + Android",
-      "webapp": "Web app / PWA"
+      "webapp": "Web app / PWA",
+      "landing": "Landing / sitio web",
+      "aiagent": "Agente IA / asistente"
     },
     "platformHint": {
       "hybrid": "React Native / Flutter — iOS + Android desde un solo código. Mejor relación costo-valor.",
       "ios": "Swift / SwiftUI nativo para iPhone y iPad.",
       "android": "Kotlin nativo para dispositivos Android.",
       "native": "Dos códigos nativos separados — máximo rendimiento, mayor costo.",
-      "webapp": "Una web app progresiva — corre en el navegador, instalable, sin tiendas. Rápida de lanzar."
+      "webapp": "Una web app progresiva — corre en el navegador, instalable, sin tiendas. Rápida de lanzar.",
+      "landing": "Un sitio o landing de marketing — pocas pantallas, rápido, sin tiendas.",
+      "aiagent": "Un asistente o agente IA a medida (chatbot, RAG, automatizaciones) conectado a tus datos."
     },
     "tierLabel": "Alcance",
     "tier": {
@@ -475,6 +479,7 @@
     "categoryLabel": "Categoría de la app",
     "categoryHint": "El tipo de app define el alcance base y el precio.",
     "category": {
+      "saas": "SaaS / productividad",
       "other": "General / a medida",
       "booking": "Reservas / citas",
       "fitness": "Fitness / gimnasio",

@@ -51,8 +51,9 @@ export default function MagneticButton({ children, href, onClick, variant = 'pri
       ? { borderColor: 'rgba(120,200,255,0.18)' }
       : undefined
 
-  // Botón plano de un solo color (sin degradado ni shimmer).
-  const inner = <span className="relative z-10">{children}</span>
+  // Botón plano de un solo color (sin degradado ni shimmer). inline-flex + items-center para
+  // que icono y texto queden alineados en la misma línea (no apilados).
+  const inner = <span className="relative z-10 inline-flex items-center gap-2.5">{children}</span>
 
   const motionProps = {
     animate: { x: position.x, y: position.y },
