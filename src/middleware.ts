@@ -1,12 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import createMiddleware from 'next-intl/middleware'
+import { routing } from '@/i18n/routing'
 
-const intlMiddleware = createMiddleware({
-  locales: ['en', 'es'],
-  defaultLocale: 'en',
-  localeDetection: true,
-  localePrefix: 'as-needed',
-})
+const intlMiddleware = createMiddleware(routing)
 
 // Canonical host: apex (no-www) -> www, 308 permanent. Keeps path + query.
 const CANONICAL_HOST = 'www.ms-tech-stack.cloud'

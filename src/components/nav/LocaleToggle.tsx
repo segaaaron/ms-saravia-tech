@@ -1,22 +1,23 @@
 'use client'
 import { useLocale } from 'next-intl'
-import { useRouter, usePathname } from 'next/navigation'
+import { useRouter, usePathname } from '@/i18n/navigation'
 import { motion } from 'framer-motion'
 import { Globe } from 'lucide-react'
 
 // Toggle de idioma de un solo botón: muestra el idioma AL QUE se cambia (destino) y alterna.
+// Usa la navegación de next-intl para setear la cookie NEXT_LOCALE y armar la URL correcta
+// (con next/navigation crudo + localeDetection quedaba atascado al volver al idioma por defecto).
 export default function LocaleToggle() {
   const currentLocale = useLocale()
   const router = useRouter()
-  const pathname = usePathname()
+  const pathname = usePathname() // pathname SIN prefijo de locale (locale-agnóstico)
   const other = currentLocale === 'en' ? 'es' : 'en'
 
   const switchLocale = () => {
-    // Normaliza a la ruta sin prefijo (localePrefix as-needed: en sin prefijo, es → /es).
-    let path = pathname
-    if (path === '/es' || path.startsWith('/es/')) path = path.slice(3) || '/'
-    if (other === 'es') path = '/es' + (path === '/' ? '' : path)
-    router.push(path || '/')
+    // Setea la cookie explícito ANTES de navegar: así el middleware (localeDetection) respeta
+    // el cambio incluso al volver al locale por defecto (/), sin rebotar por Accept-Language.
+    document.cookie = `NEXT_LOCALE=${other};path=/;max-age=31536000;samesite=lax`
+    router.replace(pathname, { locale: other })
   }
 
   return (
