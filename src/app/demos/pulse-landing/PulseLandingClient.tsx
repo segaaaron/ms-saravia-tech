@@ -82,19 +82,19 @@ const FEATURE_META: { icon: string; bg: string; color: string }[] = [
 
 /* slot + foto + span por instalación; los labels viven en CONTENT */
 const GALLERY_META: { slotId: string; span: number; photo: string }[] = [
-  { slotId: 'inst-musculacion', span: 4, photo: 'uploads/gym_3_web.png' },
-  { slotId: 'inst-pesolibre', span: 2, photo: 'uploads/gym_4_web.png' },
-  { slotId: 'inst-cardio', span: 2, photo: 'uploads/gym_5_web.png' },
-  { slotId: 'inst-funcional', span: 4, photo: 'uploads/training_1_web.png' },
-  { slotId: 'inst-clases', span: 3, photo: 'uploads/training_1_web.png' },
-  { slotId: 'inst-recepcion', span: 3, photo: 'uploads/gym_5_web.png' },
+  { slotId: 'inst-musculacion', span: 4, photo: 'uploads/gym_3_web.webp' },
+  { slotId: 'inst-pesolibre', span: 2, photo: 'uploads/gym_4_web.webp' },
+  { slotId: 'inst-cardio', span: 2, photo: 'uploads/gym_5_web.webp' },
+  { slotId: 'inst-funcional', span: 4, photo: 'uploads/training_1_web.webp' },
+  { slotId: 'inst-clases', span: 3, photo: 'uploads/training_1_web.webp' },
+  { slotId: 'inst-recepcion', span: 3, photo: 'uploads/gym_5_web.webp' },
 ]
 
 /* slot + foto + autor por testimonio; las citas viven en CONTENT */
 const TESTIMONIAL_META: { name: string; gym: string; slotId: string; photo: string }[] = [
-  { name: 'Marcos C.', gym: 'FITLIFE GYM', slotId: 'testi-1', photo: 'uploads/gym_7_web.png' },
-  { name: 'Aisha K.', gym: 'FITLIFE GYM', slotId: 'testi-2', photo: 'uploads/gym_8_web.png' },
-  { name: 'Sofía L.', gym: 'FITLIFE GYM', slotId: 'testi-3', photo: 'uploads/gym_testtimonio_web.png' },
+  { name: 'Marcos C.', gym: 'FITLIFE GYM', slotId: 'testi-1', photo: 'img/portrait.webp' },
+  { name: 'Aisha K.', gym: 'FITLIFE GYM', slotId: 'testi-2', photo: 'uploads/gym_4_web.webp' },
+  { name: 'Sofía L.', gym: 'FITLIFE GYM', slotId: 'testi-3', photo: 'uploads/gym_5_web.webp' },
 ]
 
 const STARS = [1, 1, 1, 1, 1]
@@ -402,7 +402,7 @@ export default function PulseLandingClient({ lang }: { lang: DemoLang }) {
 
         {/* hero composition: real gym photo + floating product cards */}
         <div style={{ position: 'relative', maxWidth: 1000, margin: '60px auto 0' }}>
-          <div style={{ display: 'block', width: '100%', height: 470, borderRadius: 24, boxShadow: '0 40px 80px -40px rgba(23,26,31,.5)', backgroundImage: `url("${IMG('uploads/gym_3_web.png')}")`, backgroundSize: 'cover', backgroundPosition: 'center' }} />
+          <div style={{ display: 'block', width: '100%', height: 470, borderRadius: 24, boxShadow: '0 40px 80px -40px rgba(23,26,31,.5)', backgroundImage: `url("${IMG('uploads/gym_3_web.webp')}")`, backgroundSize: 'cover', backgroundPosition: 'center' }} />
           <div style={{ position: 'absolute', inset: 0, borderRadius: 24, background: 'linear-gradient(115deg,rgba(23,26,31,.34),transparent 46%)', pointerEvents: 'none' }} />
 
           <div style={{ position: 'absolute', top: 34, left: -16, background: '#fff', border: '1px solid #e6e8ec', borderRadius: 16, padding: '15px 18px', boxShadow: '0 22px 44px -20px rgba(23,26,31,.45)', display: 'flex', alignItems: 'center', gap: 14 }}>
@@ -469,12 +469,12 @@ export default function PulseLandingClient({ lang }: { lang: DemoLang }) {
             </div>
             <div style={{ borderRadius: 16, border: '1px solid #e6e8ec', overflow: 'hidden', boxShadow: '0 20px 40px -24px rgba(23,26,31,.25)' }}>
               {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={IMG('img/shot-pagos.png')} alt={c.cobrosImgAlt} style={{ display: 'block', width: '100%', height: 'auto' }} />
+              <img src={IMG('img/shot-panel.webp')} alt={c.cobrosImgAlt} style={{ display: 'block', width: '100%', height: 'auto' }} />
             </div>
           </div>
 
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 56, alignItems: 'center' }}>
-            <div style={{ width: '100%', height: 360, display: 'block', border: '1px solid #e6e8ec', borderRadius: 16, backgroundImage: `url("${IMG('uploads/training_1_web.png')}")`, backgroundSize: 'cover', backgroundPosition: 'center' }} />
+            <div style={{ width: '100%', height: 360, display: 'block', border: '1px solid #e6e8ec', borderRadius: 16, backgroundImage: `url("${IMG('uploads/training_1_web.webp')}")`, backgroundSize: 'cover', backgroundPosition: 'center' }} />
             <div>
               <div style={{ fontSize: 14, fontWeight: 700, color: '#d97706' }}>{c.clasesEyebrow}</div>
               <h2 style={{ fontSize: 34, fontWeight: 800, letterSpacing: '-.02em', marginTop: 10, lineHeight: 1.15 }}>{c.clasesTitle}</h2>

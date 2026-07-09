@@ -411,8 +411,12 @@ export default function RomanClient({ lang }: { lang: DemoLang }) {
     window.open('https://wa.me/525599887766?text=' + encodeURIComponent(msg), '_blank')
   }
 
+  // overflow-x: CLIP (no 'hidden') — 'hidden' convierte a #top en contenedor de scroll
+  // y ROMPE el position:sticky del intro cinemático (las puertas se abrían fuera de
+  // pantalla → solo se veía negro). 'clip' recorta el overflow horizontal sin crear
+  // scroll container, así el sticky se ancla al viewport.
   return (
-    <div ref={rootEl} id="top" style={{ position: 'relative', background: '#0c0f14', color: '#ece7dd', fontFamily: "'Manrope',system-ui,sans-serif", WebkitFontSmoothing: 'antialiased', overflowX: 'hidden' }}>
+    <div ref={rootEl} id="top" style={{ position: 'relative', background: '#0c0f14', color: '#ece7dd', fontFamily: "'Manrope',system-ui,sans-serif", WebkitFontSmoothing: 'antialiased', overflowX: 'clip' }}>
       {/* eslint-disable-next-line @next/next/no-page-custom-font */}
       <link rel="preconnect" href="https://fonts.googleapis.com" />
       {/* eslint-disable-next-line @next/next/no-page-custom-font */}
@@ -434,8 +438,10 @@ export default function RomanClient({ lang }: { lang: DemoLang }) {
       {/* CINEMATIC INTRO (scroll-driven): the court doors open and you step outside */}
       <section id="introTrack" style={{ position: 'relative', height: '280vh', background: '#0c0f14', zIndex: 5 }}>
         <div style={{ position: 'sticky', top: 0, height: '100vh', overflow: 'hidden' }}>
-          <div style={{ position: 'absolute', inset: 0, overflow: 'hidden' }}><div style={{ position: 'absolute', inset: '-8%', background: 'url(https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?w=1900&q=80) center/cover', animation: 'kenBurns 26s ease-in-out infinite alternate' }} /></div>
-          <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(180deg, rgba(8,11,16,.66) 0%, rgba(8,11,16,.4) 42%, rgba(8,11,16,.9) 100%)' }} />
+          {/* EXTERIOR: al abrirse las puertas se "sale a la calle" y se ven los edificios. */}
+          <div style={{ position: 'absolute', inset: 0, overflow: 'hidden' }}><div style={{ position: 'absolute', inset: '-8%', background: 'url(https://images.unsplash.com/photo-1449824913935-59a10b8d2000?w=1900&q=80) center/cover', animation: 'kenBurns 26s ease-in-out infinite alternate' }} /></div>
+          {/* Gradiente ligero: revela los edificios (antes .66→.9 los tapaba en negro) y aún da legibilidad al texto abajo. */}
+          <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(180deg, rgba(8,11,16,.34) 0%, rgba(8,11,16,.24) 45%, rgba(8,11,16,.86) 100%)' }} />
 
           <div style={{ position: 'absolute', inset: 0, transform: 'scale(calc(1 + var(--intro,0) * 0.55))' }}>
             <div style={{ position: 'absolute', left: 0, top: 0, width: '51%', height: '100%', overflow: 'hidden', transform: 'translateX(calc(clamp(0, calc((var(--intro,0) - 0.48) / 0.5), 1) * -103%))' }}>

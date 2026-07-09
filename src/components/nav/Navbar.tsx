@@ -12,10 +12,10 @@ import { Menu, X } from 'lucide-react'
 const NAV_LINKS = [
   { key: 'services', href: '#services' },
   { key: 'work', href: '#work' },
-  { key: 'blog', href: '/blog' },
-  { key: 'estimate', href: '/estimate' },
   { key: 'about', href: '#about' },
   { key: 'contact', href: '#contact' },
+  { key: 'blog', href: '/blog' },
+  { key: 'estimate', href: '/estimate' },
   { key: 'demos', href: '/demos', route: true },
 ] as const
 

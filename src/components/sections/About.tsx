@@ -111,8 +111,8 @@ export default function About() {
               </div>
             </motion.div>
 
-            {/* Tech stack pills */}
-            <motion.div variants={fadeInUp} className="space-y-3">
+            {/* Tech stack pills — más aire respecto a la card superior */}
+            <motion.div variants={fadeInUp} className="space-y-3 pt-6">
               <p className="text-white/30 text-xs font-semibold tracking-widest uppercase">
                 Tech Stack
               </p>

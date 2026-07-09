@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 import Link from 'next/link'
 import { getDemoLang, type DemoLang } from './lang'
+import GalleryCard from './_GalleryCard'
 
 export const metadata: Metadata = {
   title: 'MSS · Showcase — Demo gallery',
@@ -107,6 +108,18 @@ const DEMOS: Demo[] = [
     },
   },
 ]
+
+// Orden de la galería agrupado POR PROYECTO/marca (antes se mezclaban: VESPER
+// store y dashboard quedaban separados por el bloque PULSE). Flagship legal
+// primero; luego cada marca con sus piezas contiguas (web → panel → app).
+const ORDER = [
+  'roman-ashford',
+  'aura',
+  'brasa', 'brasa-panel',
+  'vesper-store', 'vesper-dashboard',
+  'pulse-landing', 'pulse-dashboard', 'pulse-socio', 'pulse-login',
+] as const
+const ORDERED_DEMOS = ORDER.map((slug) => DEMOS.find((d) => d.slug === slug)!).filter(Boolean)
 
 // Imagen de fondo representativa por demo (assets locales /showcase + 1 unsplash del propio demo).
 const THUMBS: Record<string, string> = {
@@ -254,101 +267,23 @@ export default async function DemosGallery({ searchParams }: { searchParams: Pro
             gap: 20,
           }}
         >
-          {DEMOS.map((d) => {
+          {ORDERED_DEMOS.map((d) => {
             const c = d.i18n[lang]
             return (
-              <Link
+              <GalleryCard
                 key={d.slug}
-                href={`/demos/${d.slug}?lang=${lang}`}
-                className="gallery-card"
-                style={{ display: 'block' }}
-              >
-                <article
-                  style={{
-                    position: 'relative',
-                    height: '100%',
-                    borderRadius: 20,
-                    overflow: 'hidden',
-                    border: '1px solid rgba(140,170,210,0.14)',
-                    background: 'linear-gradient(180deg, #0E1626, #0A111C)',
-                  }}
-                >
-                  <div
-                    aria-hidden
-                    style={{
-                      height: 150,
-                      backgroundImage: `linear-gradient(180deg, rgba(6,8,16,0.25) 0%, rgba(10,17,28,0.9) 100%), radial-gradient(70% 120% at 30% 0%, ${d.accent}40, transparent 65%), radial-gradient(60% 100% at 90% 100%, ${d.accent2}33, transparent 60%), url('${THUMBS[d.slug]}')`,
-                      backgroundSize: 'cover, cover, cover, cover',
-                      backgroundPosition: 'center',
-                      borderBottom: `1px solid ${d.accent}22`,
-                      display: 'flex',
-                      alignItems: 'flex-end',
-                      padding: 20,
-                    }}
-                  >
-                    <span
-                      style={{
-                        fontFamily: 'var(--font-manrope), monospace',
-                        fontSize: 11,
-                        letterSpacing: '0.16em',
-                        textTransform: 'uppercase',
-                        color: '#EAF0F7',
-                        background: 'rgba(8,12,20,0.55)',
-                        border: `1px solid ${d.accent}77`,
-                        borderRadius: 999,
-                        padding: '5px 12px',
-                        backdropFilter: 'blur(4px)',
-                      }}
-                    >
-                      {c.vertical}
-                    </span>
-                  </div>
-                  <div style={{ padding: 24 }}>
-                    <h2
-                      style={{
-                        fontFamily: 'var(--font-manrope), sans-serif',
-                        fontWeight: 700,
-                        fontSize: '1.4rem',
-                        letterSpacing: '-0.02em',
-                        margin: 0,
-                      }}
-                    >
-                      {c.name}
-                    </h2>
-                    <p style={{ color: '#8FA0B4', fontSize: 15, margin: '10px 0 18px' }}>{c.desc}</p>
-                    <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8, marginBottom: 20 }}>
-                      {c.tags.map((t) => (
-                        <span
-                          key={t}
-                          style={{
-                            fontFamily: 'var(--font-manrope), monospace',
-                            fontSize: 11.5,
-                            color: '#9fb0c4',
-                            border: '1px solid rgba(140,170,210,0.16)',
-                            borderRadius: 8,
-                            padding: '5px 9px',
-                          }}
-                        >
-                          {t}
-                        </span>
-                      ))}
-                    </div>
-                    <span
-                      style={{
-                        display: 'inline-flex',
-                        alignItems: 'center',
-                        gap: 8,
-                        color: d.accent,
-                        fontWeight: 600,
-                        fontSize: 15,
-                      }}
-                    >
-                      {copy.view}
-                      <span className="arrow" style={{ transition: 'transform .25s' }}>→</span>
-                    </span>
-                  </div>
-                </article>
-              </Link>
+                data={{
+                  href: `/demos/${d.slug}?lang=${lang}`,
+                  accent: d.accent,
+                  accent2: d.accent2,
+                  thumb: THUMBS[d.slug],
+                  vertical: c.vertical,
+                  name: c.name,
+                  desc: c.desc,
+                  tags: c.tags,
+                  view: copy.view,
+                }}
+              />
             )
           })}
         </div>

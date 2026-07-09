@@ -10,6 +10,11 @@ type Props = {
   max?: number
 }
 
+// El wrapper externo (motion.div) es el ÚNICO dueño del transform de entrada
+// (framer variants: rotateX/y). El tilt de puntero vive en un div interno para
+// que ambos transforms no compitan por el mismo `style.transform` — si compartían
+// el nodo, el re-render del tilt congelaba la animación de entrada a medio camino
+// (rotateX ~7°), inflando las cards de los bordes bajo la perspectiva del grid.
 export default function TiltCard({
   children,
   variants,
@@ -30,32 +35,33 @@ export default function TiltCard({
   const onLeave = () => setT({ rx: 0, ry: 0, hover: false })
 
   return (
-    <motion.div
-      variants={variants}
-      onPointerMove={onMove}
-      onPointerLeave={onLeave}
-      className={className}
-      style={{
-        ...style,
-        transformStyle: 'preserve-3d',
-        transform: t.hover
-          ? `perspective(900px) rotateX(${t.rx}deg) rotateY(${t.ry}deg) translateY(-4px)`
-          : 'perspective(900px) rotateX(0deg) rotateY(0deg)',
-        transition: 'transform .2s cubic-bezier(.2,.7,.2,1)',
-      }}
-    >
-      <span
-        className="pointer-events-none absolute inset-0"
+    <motion.div variants={variants} style={{ display: 'grid' }}>
+      <div
+        onPointerMove={onMove}
+        onPointerLeave={onLeave}
+        className={className}
         style={{
-          background: `radial-gradient(circle 280px at ${s.mx} ${s.my}, rgba(47,245,224,0.18), rgba(155,108,255,0.12) 40%, transparent 70%)`,
-          opacity: t.hover ? 1 : 0,
-          transition: 'opacity .25s',
-          mixBlendMode: 'screen',
-          zIndex: 1,
-          borderRadius: 'inherit',
+          ...style,
+          transformStyle: 'preserve-3d',
+          transform: t.hover
+            ? `perspective(900px) rotateX(${t.rx}deg) rotateY(${t.ry}deg) translateY(-4px)`
+            : 'perspective(900px) rotateX(0deg) rotateY(0deg)',
+          transition: 'transform .2s cubic-bezier(.2,.7,.2,1)',
         }}
-      />
-      {children}
+      >
+        <span
+          className="pointer-events-none absolute inset-0"
+          style={{
+            background: `radial-gradient(circle 280px at ${s.mx} ${s.my}, rgba(47,245,224,0.18), rgba(155,108,255,0.12) 40%, transparent 70%)`,
+            opacity: t.hover ? 1 : 0,
+            transition: 'opacity .25s',
+            mixBlendMode: 'screen',
+            zIndex: 1,
+            borderRadius: 'inherit',
+          }}
+        />
+        {children}
+      </div>
     </motion.div>
   )
 }

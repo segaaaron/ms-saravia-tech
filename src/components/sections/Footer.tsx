@@ -126,36 +126,53 @@ export default function Footer() {
               Get in Touch
             </h3>
 
+            {/* Correo: icono + dirección en la MISMA línea */}
             <a
               href="mailto:techstackmssaravia@gmail.com"
-              className="block text-white/40 text-sm hover:text-cyan-400 transition-colors duration-200 break-all"
+              aria-label="Email techstackmssaravia@gmail.com"
+              className="group inline-flex items-center gap-3 text-white/45 text-sm hover:text-cyan-400 transition-colors duration-200"
             >
-              techstackmssaravia@gmail.com
+              <span
+                className={cn(
+                  'w-9 h-9 rounded-full glass border border-white/10 flex items-center justify-center shrink-0',
+                  'text-white/45 group-hover:text-cyan-400 group-hover:border-cyan-400/40',
+                  'group-hover:shadow-[0_0_16px_rgba(0,229,255,0.25)] transition-all duration-200'
+                )}
+              >
+                <Mail size={15} strokeWidth={1.5} />
+              </span>
+              <span className="break-all">techstackmssaravia@gmail.com</span>
             </a>
 
-            {/* Social icons */}
-            <div className="flex items-center gap-3 pt-1">
-              {VISIBLE_SOCIALS.map(({ href, label, key }) => {
-                const Icon = SOCIAL_ICONS[key]
-                return (
-                <a
-                  key={label}
-                  href={href}
-                  target={href.startsWith('mailto') ? undefined : '_blank'}
-                  rel={href.startsWith('mailto') ? undefined : 'noopener noreferrer'}
-                  aria-label={label}
-                  className={cn(
-                    'w-9 h-9 rounded-full glass border border-white/10 flex items-center justify-center',
-                    'text-white/40 hover:text-cyan-400 hover:border-cyan-400/40',
-                    'hover:shadow-[0_0_16px_rgba(0,229,255,0.25)]',
-                    'transition-all duration-200 cursor-pointer'
-                  )}
-                >
-                  <Icon size={15} strokeWidth={1.5} />
-                </a>
-                )
-              })}
-            </div>
+            {/* Otras redes (github/linkedin) cuando existan URL real — el email ya va arriba */}
+            {(() => {
+              const others = VISIBLE_SOCIALS.filter((s) => s.key !== 'email')
+              if (others.length === 0) return null
+              return (
+                <div className="flex items-center gap-3 pt-1">
+                  {others.map(({ href, label, key }) => {
+                    const Icon = SOCIAL_ICONS[key]
+                    return (
+                      <a
+                        key={label}
+                        href={href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        aria-label={label}
+                        className={cn(
+                          'w-9 h-9 rounded-full glass border border-white/10 flex items-center justify-center',
+                          'text-white/40 hover:text-cyan-400 hover:border-cyan-400/40',
+                          'hover:shadow-[0_0_16px_rgba(0,229,255,0.25)]',
+                          'transition-all duration-200 cursor-pointer'
+                        )}
+                      >
+                        <Icon size={15} strokeWidth={1.5} />
+                      </a>
+                    )
+                  })}
+                </div>
+              )
+            })()}
           </motion.div>
         </motion.div>
 

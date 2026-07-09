@@ -31,7 +31,6 @@ interface ResTable { zone: string; id: string; seats: number }
 /* ---------------- helpers ---------------- */
 const moneyFmt = (n: number, locale: string) => 'Bs ' + Math.round(n).toLocaleString(locale)
 const img = (id: string, w = 600) => `https://images.unsplash.com/${id}?w=${w}&q=80&auto=format&fit=crop`
-const menuImg = (slug: string) => `/showcase/img/menu/${slug}.png`
 
 const nowTime = () => {
   const d = new Date()
@@ -308,6 +307,15 @@ const dayCap: Record<string, string> = { domingo: 'Domingo', lunes: 'Lunes', mar
 const weekOrder = ['lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado', 'domingo']
 const heroSlug: Record<string, string> = { domingo: 'chicharron', lunes: 'silpancho', martes: 'pique', 'miércoles': 'fricase', jueves: 'charque', viernes: 'silpancho', 'sábado': 'pollo' }
 const sopaSlug: Record<string, string> = { domingo: 'sopa-mani', lunes: 'sopa-fideo', martes: 'sopa-mani', 'miércoles': 'chairo', jueves: 'sopa-quinua', viernes: 'sopa-mani', 'sábado': 'sopa-fideo' }
+/* Menú de la semana: IDs Unsplash por slug (los .png locales no existían → imágenes rotas).
+   Se reutilizan IDs ya validados en dishImg para que siempre resuelvan. */
+const mainImgId: Record<string, string> = {
+  chicharron: 'photo-1544025162-d76694265947', silpancho: 'photo-1504674900247-0877df9cc836', pique: 'photo-1600891964092-4316c288032e',
+  fricase: 'photo-1455619452474-d2be8b1e70cd', charque: 'photo-1414235077428-338989a2e8c0', pollo: 'photo-1532550907401-a500c9a57435',
+}
+const sopaImgId: Record<string, string> = {
+  'sopa-mani': 'photo-1476718406336-bb5a9690ee2a', 'sopa-fideo': 'photo-1476718406336-bb5a9690ee2a', chairo: 'photo-1607330289024-1535c6b4e1c1', 'sopa-quinua': 'photo-1607330289024-1535c6b4e1c1',
+}
 
 const menuCatDefs: [string, string][] = [['entrantes', 'Entrantes & sopas'], ['parrilla', 'Platos de fondo'], ['principales', 'Platos bolivianos'], ['postres', 'Postres']]
 const barCatDefs: [string, string][] = [['cocteles', 'Cócteles'], ['cervezas', 'Cervezas'], ['naturales', 'Bebidas naturales'], ['vinos', 'Vinos & singani'], ['sinalcohol', 'Sin alcohol']]
@@ -924,10 +932,10 @@ export default function BrasaClient({ lang }: { lang: DemoLang }) {
     const ai = almuerzoData.findIndex((x) => x.d === k); const a = almuerzoData[ai]; const ca = c.alm[ai]
     const on = (k === almToday.d); const fin = !!a.fin; const wknd = (k === 'sábado' || k === 'domingo')
     return {
-      day: c.dayCap[k], precioNum: String(a.precio), heroImg: menuImg(sopaSlug[k]), heroName: ca.ent, heroDetail: ca.sDet, heroEyebrow: c.carta.soupOfDay,
-      onAddAlmuerzo: () => addToCart({ id: 'alm-' + k, name: c.carta.lunchItemPre + c.dayCap[k], price: a.precio, cat: 'cocina', img: menuImg(heroSlug[k]) }),
+      day: c.dayCap[k], precioNum: String(a.precio), heroImg: img(sopaImgId[sopaSlug[k]] || dishDefault, 900), heroName: ca.ent, heroDetail: ca.sDet, heroEyebrow: c.carta.soupOfDay,
+      onAddAlmuerzo: () => addToCart({ id: 'alm-' + k, name: c.carta.lunchItemPre + c.dayCap[k], price: a.precio, cat: 'cocina', img: img(mainImgId[heroSlug[k]] || dishDefault, 300) }),
       sides: [
-        { label: c.carta.sideSegundo, name: ca.pri, detail: ca.priDet, img: menuImg(heroSlug[k]), noImg: false },
+        { label: c.carta.sideSegundo, name: ca.pri, detail: ca.priDet, img: img(mainImgId[heroSlug[k]] || dishDefault, 420), noImg: false },
         { label: c.carta.sidePostre, name: ca.pos, detail: ca.posDet, img: '', noImg: true },
         { label: c.carta.sideRefresco, name: ca.beb, detail: c.carta.refrescoDetail, img: img(a.bid, 420), noImg: false },
       ],
