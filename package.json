@@ -6,7 +6,7 @@
     "dev": "next dev --turbopack",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "ESLINT_USE_FLAT_CONFIG=false eslint \"src/**/*.{ts,tsx}\""
   },
   "dependencies": {
     "@gsap/react": "^2.1.2",
@@ -33,7 +33,7 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "@types/three": "^0.176.0",
-    "eslint": "^9",
+    "eslint": "^8.57.1",
     "eslint-config-next": "15.3.2",
     "playwright": "^1.60.0",
     "tailwindcss": "^4.1.7",

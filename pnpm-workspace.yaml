@@ -1,3 +1,8 @@
 allowBuilds:
-  sharp: set this to true or false
-  unrs-resolver: set this to true or false
+  sharp: true
+  unrs-resolver: true
+
+# next lint (Next 15.3) usa la API legacy de ESLint; ESLint 9 la eliminó y el patch
+# de eslint-config-next falla. Fijamos ESLint 8 en todo el árbol para un lint funcional.
+overrides:
+  eslint: ^8.57.1

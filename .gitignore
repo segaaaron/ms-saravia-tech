@@ -73,3 +73,13 @@ ehthumbs.db
 
 # Sentry
 .sentryclirc
+
+# Prisma local SQLite (dev only — do not commit)
+/prisma/dev.db
+/prisma/dev.db-journal
+
+# Showcase demos: solo webp/html/js optimizados entran al repo.
+# Los masters raster (6-9MB) NO se commitean — regenerar thumbs con sharp si hace falta.
+public/showcase/**/*.png
+public/showcase/**/*.jpg
+public/showcase/**/*.jpeg

@@ -1,6 +1,6 @@
 'use client'
 import { motion } from 'framer-motion'
-import { useTranslations } from 'next-intl'
+import { useTranslations, useLocale } from 'next-intl'
 import Link from 'next/link'
 import { Github, Linkedin, Mail, MapPin } from 'lucide-react'
 import NavCircuit from '@/components/nav/NavCircuit'
@@ -29,6 +29,9 @@ const VISIBLE_SOCIALS = SOCIALS.filter(
 export default function Footer() {
   const t = useTranslations('footer')
   const tNav = useTranslations('nav')
+  const locale = useLocale()
+  // Anclas → SIEMPRE a la home + hash, para que funcionen desde cualquier subpágina.
+  const prefix = locale === 'es' ? '/es' : ''
 
   return (
     <footer
@@ -107,7 +110,7 @@ export default function Footer() {
               {NAV_LINKS.map(({ href, labelKey }) => (
                 <li key={labelKey}>
                   <Link
-                    href={href}
+                    href={`${prefix}/${href}`}
                     className="text-white/40 text-sm hover:text-cyan-400 transition-colors duration-200 hover:translate-x-0.5 inline-block"
                   >
                     {tNav(labelKey as 'services' | 'work' | 'about' | 'contact')}

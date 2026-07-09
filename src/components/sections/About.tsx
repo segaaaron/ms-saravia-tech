@@ -1,7 +1,7 @@
 'use client'
 import { motion } from 'framer-motion'
 import { useTranslations } from 'next-intl'
-import { MapPin, Shield, Zap, Globe } from 'lucide-react'
+import { MapPin, Shield, Zap, Globe, UserRoundCheck } from 'lucide-react'
 import AnimatedCounter from '@/components/ui/AnimatedCounter'
 import TiltCard from '@/components/ui/TiltCard'
 import GradientText from '@/components/ui/GradientText'
@@ -66,13 +66,50 @@ export default function About() {
               <GradientText gradient="primary">{t('title')}</GradientText>
             </motion.h2>
 
-            <motion.p variants={slideInLeft} className="text-white/50 text-lg leading-relaxed">
+            <motion.p variants={slideInLeft} className="text-white/65 text-lg leading-relaxed">
               {t('subtitle')}
             </motion.p>
 
-            <motion.p variants={slideInLeft} className="text-white/40 text-base leading-relaxed">
+            <motion.p variants={slideInLeft} className="text-white/55 text-base leading-relaxed">
               {t('body')}
             </motion.p>
+
+            {/* Founder-led trust card — el mensaje de confianza más fuerte, elevado a glass card */}
+            <motion.div
+              variants={slideInLeft}
+              className="group relative overflow-hidden rounded-2xl p-6"
+              style={{
+                background:
+                  'linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.01))',
+                border: '1px solid rgba(120,200,255,0.14)',
+                backdropFilter: 'blur(8px)',
+              }}
+            >
+              {/* Resplandor de acento (decorativo) */}
+              <div
+                aria-hidden
+                className="pointer-events-none absolute -left-10 -top-10 h-32 w-32 rounded-full"
+                style={{ background: 'radial-gradient(circle, rgba(47,245,224,0.14), transparent 70%)' }}
+              />
+              <div className="relative flex gap-4">
+                <div
+                  className="flex h-11 w-11 shrink-0 items-center justify-center text-[#2FF5E0]"
+                  style={{
+                    borderRadius: 14,
+                    background: 'rgba(120,200,255,0.06)',
+                    border: '1px solid rgba(120,200,255,0.20)',
+                  }}
+                >
+                  <UserRoundCheck size={20} strokeWidth={1.6} />
+                </div>
+                <div className="space-y-2">
+                  <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.18em] text-[#2FF5E0]/85">
+                    {t('highlightLabel')}
+                  </p>
+                  <p className="text-[15px] leading-[1.65] text-white/75">{t('highlight')}</p>
+                </div>
+              </div>
+            </motion.div>
 
             {/* Tech stack pills */}
             <motion.div variants={fadeInUp} className="space-y-3">

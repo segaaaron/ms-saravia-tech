@@ -1,7 +1,7 @@
 'use client'
 import { useState, useEffect } from 'react'
 import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion'
-import { useTranslations } from 'next-intl'
+import { useTranslations, useLocale } from 'next-intl'
 import Link from 'next/link'
 import MagneticButton from '@/components/ui/MagneticButton'
 import LocaleToggle from './LocaleToggle'
@@ -12,12 +12,27 @@ import { Menu, X } from 'lucide-react'
 const NAV_LINKS = [
   { key: 'services', href: '#services' },
   { key: 'work', href: '#work' },
+  { key: 'blog', href: '/blog' },
+  { key: 'estimate', href: '/estimate' },
   { key: 'about', href: '#about' },
   { key: 'contact', href: '#contact' },
+  { key: 'demos', href: '/demos', route: true },
 ] as const
 
 export default function Navbar() {
   const t = useTranslations('nav')
+  const locale = useLocale()
+  const prefix = locale === 'es' ? '/es' : ''
+  // Demos viven fuera de [locale] → idioma por query (?lang). Rutas in-locale (ej. /blog) →
+  // prefijo de locale. Anclas (#services) → SIEMPRE a la home + hash (`/#services`), para que
+  // funcionen desde cualquier subpágina (/blog, /services…), no solo desde el inicio.
+  const hrefFor = (link: { href: string; route?: boolean }) => {
+    if (link.route) return `${link.href}?lang=${locale}`
+    if (link.href.startsWith('#')) return `${prefix}/${link.href}`
+    return `${prefix}${link.href}`
+  }
+  // CTA "Let's Talk" → sección de contacto de la home, desde cualquier página.
+  const ctaHref = `${prefix}/#contact`
   const [scrolled, setScrolled] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
 
@@ -65,22 +80,29 @@ export default function Navbar() {
 
           {/* Desktop nav */}
           <nav className="hidden md:flex items-center gap-8" aria-label="Main navigation">
-            {NAV_LINKS.map(({ key, href }) => (
-              <a
-                key={key}
-                href={href}
-                className="text-sm text-white/60 hover:text-white transition-colors duration-200 font-medium relative group"
-              >
-                {t(key)}
-                <span className="absolute -bottom-0.5 left-0 w-0 h-px bg-gradient-to-r from-cyan-400 to-violet-500 group-hover:w-full transition-all duration-300" />
-              </a>
-            ))}
+            {NAV_LINKS.map((link) => {
+              const className =
+                'text-sm text-white/60 hover:text-white transition-colors duration-200 font-medium relative group'
+              const inner = (
+                <>
+                  {t(link.key)}
+                  <span className="absolute -bottom-0.5 left-0 w-0 h-px bg-gradient-to-r from-cyan-400 to-violet-500 group-hover:w-full transition-all duration-300" />
+                </>
+              )
+              // Todos los links (anclas normalizadas a /#x, rutas y demos) van por hrefFor →
+              // siempre <Link> con href navegable. Funciona desde cualquier página.
+              return (
+                <Link key={link.key} href={hrefFor(link)} className={className}>
+                  {inner}
+                </Link>
+              )
+            })}
           </nav>
 
           {/* Right side: locale toggle + CTA */}
           <div className="hidden md:flex items-center gap-4">
             <LocaleToggle />
-            <MagneticButton variant="primary" href="#contact" className="text-xs px-5 py-2.5">
+            <MagneticButton variant="primary" href={ctaHref} className="text-xs px-5 py-2.5">
               {t('cta')}
             </MagneticButton>
           </div>
@@ -153,20 +175,29 @@ export default function Navbar() {
 
               {/* Drawer links */}
               <div className="flex flex-col flex-1 px-6 py-8 gap-1">
-                {NAV_LINKS.map(({ key, href }, i) => (
-                  <motion.a
-                    key={key}
-                    href={href}
-                    onClick={closeMobile}
-                    initial={{ opacity: 0, x: 20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.05 + i * 0.07 }}
-                    className="flex items-center py-4 text-lg font-medium text-white/70 hover:text-white border-b border-white/[0.04] transition-colors duration-200 group"
-                  >
-                    <span className="flex-1">{t(key)}</span>
-                    <span className="w-1.5 h-1.5 rounded-full bg-cyan-400/0 group-hover:bg-cyan-400 transition-colors duration-200" />
-                  </motion.a>
-                ))}
+                {NAV_LINKS.map((link, i) => {
+                  const motionProps = {
+                    onClick: closeMobile,
+                    initial: { opacity: 0, x: 20 },
+                    animate: { opacity: 1, x: 0 },
+                    transition: { delay: 0.05 + i * 0.07 },
+                    className:
+                      'flex items-center py-4 text-lg font-medium text-white/70 hover:text-white border-b border-white/[0.04] transition-colors duration-200 group',
+                  }
+                  const inner = (
+                    <>
+                      <span className="flex-1">{t(link.key)}</span>
+                      <span className="w-1.5 h-1.5 rounded-full bg-cyan-400/0 group-hover:bg-cyan-400 transition-colors duration-200" />
+                    </>
+                  )
+                  return (
+                    <motion.div key={link.key} {...motionProps}>
+                      <Link href={hrefFor(link)} onClick={closeMobile} className="flex items-center flex-1">
+                        {inner}
+                      </Link>
+                    </motion.div>
+                  )
+                })}
               </div>
 
               {/* Drawer footer */}
@@ -174,7 +205,7 @@ export default function Navbar() {
                 <LocaleToggle />
                 <MagneticButton
                   variant="primary"
-                  href="#contact"
+                  href={ctaHref}
                   onClick={closeMobile}
                   className="w-full justify-center"
                 >

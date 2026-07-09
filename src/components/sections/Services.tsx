@@ -1,11 +1,13 @@
 'use client'
 import { motion } from 'framer-motion'
-import { useTranslations } from 'next-intl'
-import { Cloud, Smartphone, Bot, Lightbulb } from 'lucide-react'
+import { useTranslations, useLocale } from 'next-intl'
+import Link from 'next/link'
+import { Cloud, Smartphone, Bot, Lightbulb, ArrowUpRight } from 'lucide-react'
 import GradientText from '@/components/ui/GradientText'
 import SectionLabel from '@/components/ui/SectionLabel'
 import TiltCard from '@/components/ui/TiltCard'
 import { fadeInUp, staggerContainer } from '@/lib/motion'
+import { serviceSlugs } from '@/content/seo'
 
 const ICONS = [Cloud, Smartphone, Bot, Lightbulb]
 
@@ -13,7 +15,9 @@ type ServiceItem = { title: string; desc: string; stack: string[] }
 
 export default function Services() {
   const t = useTranslations('services')
+  const locale = useLocale()
   const items = t.raw('items') as ServiceItem[]
+  const prefix = locale === 'es' ? '/es' : ''
 
   return (
     <section id="services" className="relative py-24 overflow-hidden">
@@ -118,6 +122,17 @@ export default function Services() {
                       </span>
                     ))}
                   </div>
+
+                  {serviceSlugs[i] && (
+                    <Link
+                      href={`${prefix}/services/${serviceSlugs[i]}`}
+                      className="group/link mt-5 inline-flex items-center gap-1.5 text-xs font-semibold text-white/55 transition-colors hover:text-[#2FF5E0]"
+                      aria-label={`${t('learnMore')}: ${item.title}`}
+                    >
+                      {t('learnMore')}
+                      <ArrowUpRight size={13} className="transition-transform duration-200 group-hover/link:-translate-y-0.5 group-hover/link:translate-x-0.5" />
+                    </Link>
+                  )}
                 </div>
               </TiltCard>
             )

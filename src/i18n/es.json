@@ -2,9 +2,40 @@
   "nav": {
     "services": "Servicios",
     "work": "Trabajos",
+    "blog": "Blog",
+    "estimate": "Cotizar",
+    "demos": "Explora el Producto",
     "about": "Nosotros",
     "contact": "Contacto",
     "cta": "Hablemos"
+  },
+  "showcase": {
+    "label": "Demos en vivo",
+    "title": "Algunos de nuestros proyectos",
+    "subtitle": "Algunos demos interactivos que puedes abrir ahora mismo — flujos reales, datos reales, construidos de punta a punta.",
+    "open": "Abrir demo",
+    "cta": "Ver todos los demos",
+    "items": [
+      {
+        "name": "PULSE",
+        "tag": "SaaS de gimnasio"
+      },
+      {
+        "name": "VESPER",
+        "tag": "E-commerce"
+      },
+      {
+        "name": "AURA",
+        "tag": "Clínica de piel"
+      },
+      {
+        "name": "VESPER",
+        "tag": "Analytics"
+      }
+    ],
+    "pitchTitle": "Esto es solo un punto de partida.",
+    "pitch": "Cada demo se puede rediseñar, ampliar o crear desde cero para tu marca. Traes una idea y la convertimos en un producto real, listo para lanzar.",
+    "appsPitch": "¿Necesitas una app móvil? También la construimos — solución completa con documentación, del concepto a la App Store y Google Play."
   },
   "hero": {
     "badge": "SaaS · Mobile · Consultoría",
@@ -62,7 +93,8 @@
           "Team Training"
         ]
       }
-    ]
+    ],
+    "learnMore": "Ver más"
   },
   "ai": {
     "badge": "Impulsado por IA",
@@ -103,7 +135,8 @@
     ],
     "live": "En Vivo",
     "soon": "Próximamente",
-    "view": "Ver Proyecto"
+    "view": "Ver Proyecto",
+    "seeAll": "Ver todos los proyectos"
   },
   "process": {
     "title": "Cómo Trabajamos",
@@ -141,27 +174,29 @@
     "subtitle": "Una LLC con sede en EE.UU. que entrega software élite a startups y empresas en todo el mundo.",
     "stats": [
       {
-        "value": 5,
-        "label": "Proyectos Entregados",
+        "value": 8,
+        "label": "Años de ingeniería iOS",
         "suffix": "+"
       },
       {
         "value": 3,
-        "label": "Países Atendidos",
-        "suffix": "+"
+        "label": "Productos en producción",
+        "suffix": ""
       },
       {
-        "value": 99,
-        "label": "SLA de Disponibilidad",
+        "value": 100,
+        "label": "Desarrollo liderado por seniors",
         "suffix": "%"
       },
       {
         "value": 24,
-        "label": "Respuesta de Soporte",
+        "label": "Tiempo de respuesta",
         "suffix": "h"
       }
     ],
-    "body": "MS SARAVIA TECH STACK LLC es una empresa tecnológica con sede en los Estados Unidos, especializada en desarrollo SaaS, aplicaciones móviles, agentes impulsados por IA y consultoría tecnológica estratégica. Llevamos ingeniería de nivel Silicon Valley a cada proyecto — desde startups en etapa temprana hasta empresas establecidas."
+    "body": "MS SARAVIA TECH STACK LLC es una empresa tecnológica con sede en los Estados Unidos, especializada en desarrollo SaaS, aplicaciones móviles, agentes impulsados por IA y consultoría tecnológica estratégica. Llevamos ingeniería de nivel Silicon Valley a cada proyecto — desde startups en etapa temprana hasta empresas establecidas.",
+    "highlight": "Un estudio liderado por su fundador — trabajas directamente con un ingeniero senior, no con un equipo de ventas. Cada línea de código la escribe alguien que ha lanzado productos usados por millones.",
+    "highlightLabel": "Liderado por el fundador"
   },
   "contact": {
     "title": "Iniciar un Proyecto",
@@ -193,5 +228,272 @@
       "about": "Nosotros",
       "contact": "Contacto"
     }
+  },
+  "breadcrumb": {
+    "home": "Inicio",
+    "services": "Servicios",
+    "work": "Proyectos",
+    "aria": "Ruta de navegación"
+  },
+  "servicePages": {
+    "stackLabel": "Tecnología que usamos",
+    "relatedDemosLabel": "Míralo en acción",
+    "relatedWorkLabel": "Proyectos relacionados",
+    "ctaTitle": "¿Tienes un proyecto en mente?",
+    "ctaSubtitle": "Cuéntanos qué estás construyendo — respondemos en menos de 24 horas.",
+    "ctaButton": "Pide una cotización gratis",
+    "items": {
+      "saas": {
+        "metaTitle": "Desarrollo de SaaS — de MVP a Enterprise | MS Saravia Tech Stack",
+        "metaDesc": "Desarrollo de SaaS a medida, de MVP a enterprise. Plataformas multi-tenant escalables con Next.js, Node.js y Stripe. Cotización gratis.",
+        "intro": "Diseñamos y construimos plataformas SaaS escalables de punta a punta — desde la validación del MVP hasta sistemas de nivel empresarial. Arquitectura multi-tenant, cobros por suscripción e infraestructura cloud pensada para crecer contigo."
+      },
+      "mobile-apps": {
+        "metaTitle": "Desarrollo de Apps Móviles (iOS y Android) | MS Saravia Tech Stack",
+        "metaDesc": "Desarrollo de apps nativas y React Native para iOS y Android. Del concepto a la App Store y Google Play. Cotización gratis.",
+        "intro": "Apps móviles nativas y multiplataforma para iOS y Android. Entregamos productos pulidos y veloces con React Native, Swift y Kotlin — del concepto a la publicación en tiendas y las actualizaciones continuas."
+      },
+      "ai-agents": {
+        "metaTitle": "Desarrollo de Agentes de IA y Automatización | MS Saravia Tech Stack",
+        "metaDesc": "Construimos agentes de IA y automatización con OpenAI, Claude y LangChain. Asistentes LLM conectados a tus datos reales. Consulta gratis.",
+        "intro": "Construimos agentes de IA y automatización que se integran a tu operación — asistentes con LLM, automatización de flujos y sistemas de recuperación con OpenAI, Claude y LangChain, conectados a tus datos reales."
+      },
+      "tech-consulting": {
+        "metaTitle": "Consultoría Tecnológica y CTO Fraccional | MS Saravia Tech Stack",
+        "metaDesc": "Revisión de arquitectura, modernización de stack y CTO fraccional para startups y equipos. Lanza más rápido, escala seguro.",
+        "intro": "Orientación técnica estratégica para fundadores y equipos: revisión de arquitectura, modernización del stack, auditorías de código y soporte de CTO fraccional para lanzar más rápido y escalar con seguridad."
+      }
+    },
+    "industriesLabel": "Industrias para las que construimos"
+  },
+  "workPage": {
+    "metaTitle": "Nuestro Trabajo — Casos de Éxito | MS Saravia Tech Stack",
+    "metaDesc": "Productos reales que diseñamos y lanzamos: plataformas SaaS, herramientas de IA y apps móviles. Explora nuestros casos.",
+    "intro": "Productos reales, en producción. Una mirada de cerca a lo que hemos construido y cómo."
+  },
+  "caseStudy": {
+    "backToWork": "Todos los proyectos",
+    "visitSite": "Visitar sitio",
+    "categoryLabel": "Categoría",
+    "overviewLabel": "Resumen",
+    "challengeLabel": "El reto",
+    "solutionLabel": "Lo que construimos",
+    "resultsLabel": "Resultados",
+    "testimonialLabel": "En sus palabras",
+    "ctaTitle": "¿Quieres resultados como estos?",
+    "ctaButton": "Empieza tu proyecto",
+    "items": {
+      "yasmin-medrano": {
+        "metaTitle": "Yasmin Medrano — Web de Clínica Estética | Caso de Éxito",
+        "metaDesc": "Cómo construimos la presencia digital completa de una clínica de medicina estética premium. Caso de éxito de MS Saravia Tech Stack.",
+        "challenge": "Una clínica estética premium se juega todo en la confianza y la primera impresión, pero muchas dependen de plantillas genéricas o solo de redes sociales. Los pacientes potenciales no podían descubrir tratamientos, evaluar credibilidad ni agendar una consulta sin fricción.",
+        "solution": "Construimos una presencia digital completa — una vitrina pulida de tratamientos y servicios, un flujo de reserva moderno y una identidad de marca coherente — pensada para convertir visitantes en consultas agendadas y reflejar la calidad de la práctica.",
+        "results": "",
+        "testimonial": "",
+        "testimonialAuthor": ""
+      },
+      "readycv": {
+        "metaTitle": "ReadyCV — Creador de CV con IA | Caso de Éxito",
+        "metaDesc": "Cómo construimos ReadyCV, un creador de currículums con IA que ayuda a profesionales a conseguir el trabajo de sus sueños. Caso de éxito.",
+        "challenge": "Quien busca empleo sabe que un CV fuerte y a medida es decisivo, pero escribir uno que se lea bien y pase los filtros automáticos es lento e intimidante. La mayoría de herramientas se quedan en plantillas rígidas y dejan lo difícil — las palabras — al usuario.",
+        "solution": "Construimos ReadyCV, un creador de currículums con IA que ayuda a profesionales a redactar CVs convincentes y adaptados al puesto en minutos. Guía al usuario con entradas estructuradas y genera contenido pulido y compatible con ATS, convirtiendo una página en blanco en un CV listo para entrevistas.",
+        "results": "",
+        "testimonial": "",
+        "testimonialAuthor": ""
+      },
+      "nova-nutrition": {
+        "metaTitle": "NOVA Nutrition — App de Nutrición con IA | Caso de Éxito",
+        "metaDesc": "NOVA Nutrition: seguimiento nutricional inteligente con IA para iOS y Android. Caso de éxito de MS Saravia Tech Stack.",
+        "challenge": "El seguimiento nutricional constante es donde se caen la mayoría de las metas de salud — registrar a mano es tedioso, los planes genéricos ignoran el contexto de cada persona y la retroalimentación llega tarde para cambiar hábitos. Se necesita una guía que se adapte al momento.",
+        "solution": "Estamos construyendo NOVA, una app para iOS y Android que usa IA para seguimiento nutricional inteligente, planes de comidas personalizados e insights en tiempo real. Reduce la fricción del registro y convierte las decisiones diarias de comida en una guía accionable e individualizada.",
+        "results": "",
+        "testimonial": "",
+        "testimonialAuthor": ""
+      }
+    }
+  },
+  "blogPage": {
+    "metaTitle": "Blog — Ingeniería SaaS, IA y Móvil | MS Saravia Tech Stack",
+    "metaDesc": "Notas prácticas de ingeniería sobre construir SaaS, agentes de IA y apps móviles — del equipo que las lanza.",
+    "title": "Blog",
+    "intro": "Notas prácticas sobre construir SaaS, agentes de IA y productos móviles — escritas por los ingenieros que los lanzan.",
+    "readMore": "Leer artículo",
+    "minRead": "min de lectura",
+    "backToBlog": "Todos los artículos",
+    "ctaTitle": "¿Estás construyendo algo así?",
+    "ctaButton": "Pide una cotización gratis",
+    "relatedServiceLabel": "Servicio relacionado"
+  },
+  "solutionPages": {
+    "featuresLabel": "Qué incluye",
+    "seeDemoLabel": "Ver un demo en vivo",
+    "relatedServiceLabel": "Servicio relacionado",
+    "ctaTitle": "¿Lo quieres para tu negocio?",
+    "ctaSubtitle": "Cuéntanos sobre tu proyecto — respondemos en menos de 24 horas.",
+    "ctaButton": "Pide una cotización gratis",
+    "items": {
+      "gym-software": {
+        "metaTitle": "Desarrollo de Software para Gimnasios | MS Saravia Tech Stack",
+        "metaDesc": "Software de gestión para gimnasios a medida — membresías, reservas, portal del socio y panel de administración. Con tu marca.",
+        "h1": "Software para Gimnasios, con Tu Marca",
+        "intro": "Construimos software a medida para gimnasios y estudios fitness — gestión de socios, reservas de clases, pagos y un panel de administración en tiempo real, todo con tu propia marca en vez de una herramienta rígida y genérica.",
+        "bullets": [
+          "Gestión de membresías y suscripciones con pagos recurrentes",
+          "Reserva de clases y sesiones con control de aforo",
+          "Portal del socio — perfil, plan, asistencia y progreso",
+          "Panel del dueño con ingresos y asistencia en tiempo real",
+          "Tu marca, tu dominio — no un SaaS genérico"
+        ]
+      },
+      "clinic-website": {
+        "metaTitle": "Diseño y Desarrollo Web para Clínicas Estéticas | MS Saravia Tech Stack",
+        "metaDesc": "Webs premium para clínicas estéticas y médicas — vitrina de servicios, reserva online y una marca que genera confianza.",
+        "h1": "Webs para Clínicas Estéticas y Médicas",
+        "intro": "Diseñamos y construimos webs premium para clínicas estéticas y médicas — una vitrina de servicios pulida, reserva de citas online y una identidad de marca que gana la confianza del paciente desde la primera visita.",
+        "bullets": [
+          "Vitrina elegante de servicios y tratamientos",
+          "Reserva de citas online",
+          "Secciones de credibilidad de doctores y equipo",
+          "Diseño mobile-first y de carga rápida",
+          "Bases de SEO y visibilidad local"
+        ]
+      },
+      "restaurant-website": {
+        "metaTitle": "Web para Restaurante con Menú Online | MS Saravia Tech Stack",
+        "metaDesc": "Webs para restaurantes con menú online en vivo, reservas y panel de administración — diseñadas para llenar más mesas.",
+        "h1": "Webs para Restaurantes que Llenan Mesas",
+        "intro": "Construimos webs para restaurantes con un menú online bonito y siempre actualizado, reservas, y un panel para gestionarlo todo — diseñadas para convertir visitantes en comensales.",
+        "bullets": [
+          "Menú online en vivo con categorías y fotos",
+          "Reservas y contacto",
+          "Panel para actualizar menú y contenido",
+          "Mapas, horarios y direcciones en un toque",
+          "Rápida, mobile-first y fácil de compartir"
+        ]
+      },
+      "ecommerce-store": {
+        "metaTitle": "Desarrollo de Ecommerce a Medida — Tienda Online | MS Saravia Tech Stack",
+        "metaDesc": "Tiendas ecommerce a medida — catálogo, carrito, checkout y panel de administración. Hechas para convertir, no una plantilla.",
+        "h1": "Tiendas Ecommerce a Medida que Convierten",
+        "intro": "Construimos tiendas online a medida — catálogo de productos, carrito, checkout seguro y panel de administración — diseñadas para conversión y velocidad en vez de una plantilla genérica.",
+        "bullets": [
+          "Catálogo de productos con variantes y búsqueda",
+          "Carrito y checkout seguro",
+          "Panel de pedidos e inventario",
+          "Integración de pagos (Stripe y más)",
+          "Optimizada para velocidad y conversión"
+        ]
+      }
+    }
+  },
+  "estimator": {
+    "label": "Calculadora de costo de apps",
+    "title": "¿Cuánto costaría tu app?",
+    "subtitle": "Un estimado rápido y honesto en USD — ajustado a tu región. No es una cotización, pero sí un punto de partida real.",
+    "regionLabel": "Región de precios",
+    "regionHint": "Detectada por tu ubicación — cámbiala si hace falta.",
+    "region": {
+      "latam": "Latinoamérica",
+      "us": "EE.UU. y Canadá"
+    },
+    "platformLabel": "Plataforma",
+    "platform": {
+      "hybrid": "Híbrida (un solo código)",
+      "ios": "Solo iOS",
+      "android": "Solo Android",
+      "native": "Nativa iOS + Android",
+      "webapp": "Web app / PWA"
+    },
+    "platformHint": {
+      "hybrid": "React Native / Flutter — iOS + Android desde un solo código. Mejor relación costo-valor.",
+      "ios": "Swift / SwiftUI nativo para iPhone y iPad.",
+      "android": "Kotlin nativo para dispositivos Android.",
+      "native": "Dos códigos nativos separados — máximo rendimiento, mayor costo.",
+      "webapp": "Una web app progresiva — corre en el navegador, instalable, sin tiendas. Rápida de lanzar."
+    },
+    "tierLabel": "Alcance",
+    "tier": {
+      "mvp": "MVP",
+      "standard": "Estándar",
+      "complex": "Complejo"
+    },
+    "tierHint": {
+      "mvp": "La idea central, pocas pantallas — validar rápido.",
+      "standard": "Producto completo: varios flujos, UI pulida, usuarios reales.",
+      "complex": "Muchos módulos, integraciones, escala desde el día uno."
+    },
+    "featuresLabel": "Funcionalidades",
+    "features": {
+      "auth": "Cuentas y login",
+      "payments": "Pagos / suscripciones",
+      "realtime": "Chat / tiempo real",
+      "maps": "Mapas y ubicación",
+      "push": "Notificaciones push",
+      "backend": "Backend y panel admin",
+      "ai": "IA / funciones inteligentes",
+      "offline": "Modo offline y sync",
+      "social": "Login social",
+      "media": "Subida de archivos/media",
+      "analytics": "Analytics y métricas",
+      "iot": "IoT y wearables"
+    },
+    "resultLabel": "Costo estimado",
+    "resultRange": "en USD",
+    "timelineLabel": "Tiempo aproximado",
+    "weeks": "semanas",
+    "effortLabel": "Esfuerzo estimado",
+    "hours": "horas",
+    "disclaimer": "Solo referencial — el precio final depende del alcance, diseño e integraciones. El mantenimiento ronda el 15-20% del build al año.",
+    "ctaTitle": "¿Quieres una cotización real, sin compromiso?",
+    "ctaButton": "Pide un estimado exacto",
+    "designLabel": "Diseño",
+    "design": {
+      "template": "Basado en plantilla",
+      "standard": "A medida estándar",
+      "premium": "Premium a medida"
+    },
+    "designHint": {
+      "template": "Kit de UI probado adaptado a tu marca — lo más rápido y económico.",
+      "standard": "Diseño a medida según tu producto y usuarios.",
+      "premium": "Identidad visual, motion y micro-interacciones a medida."
+    },
+    "maintenanceLabel": "Mantenimiento",
+    "perYear": "/ año",
+    "complianceLabel": "Seguridad y cumplimiento",
+    "compliance": {
+      "none": "Ninguno / estándar",
+      "standard": "GDPR / privacidad",
+      "regulated": "HIPAA / PCI / regulado"
+    },
+    "complianceHint": {
+      "none": "Sin requisitos regulatorios especiales.",
+      "standard": "Privacidad de datos, consentimiento y manejo tipo GDPR.",
+      "regulated": "Salud, finanzas o datos sensibles — auditorías, cifrado, PCI/HIPAA. Suma alcance importante."
+    },
+    "includedNote": "Incluye diseño, desarrollo, QA y gestión de proyecto.",
+    "regionAuto": "Detectada por tu ubicación — los precios se ajustan solos.",
+    "categoryLabel": "Categoría de la app",
+    "categoryHint": "El tipo de app define el alcance base y el precio.",
+    "category": {
+      "other": "General / a medida",
+      "booking": "Reservas / citas",
+      "fitness": "Fitness / gimnasio",
+      "education": "Educación / e-learning",
+      "ecommerce": "E-commerce / tienda",
+      "social": "Social / comunidad",
+      "healthcare": "Salud / médica",
+      "fintech": "Fintech / pagos",
+      "marketplace": "Marketplace",
+      "ondemand": "On-demand / delivery"
+    }
+  },
+  "estimatePage": {
+    "metaTitle": "Calculadora de Costo de Apps — Estimado en USD | MS Saravia Tech Stack",
+    "metaDesc": "Estima cuánto costaría tu app móvil o web en USD — ajustado a tu región. Plataforma, alcance, diseño, compliance y funciones. Gratis, al instante, sin registro."
+  },
+  "estimateCta": {
+    "title": "¿No sabes cuánto costaría tu app?",
+    "subtitle": "Obtén un estimado honesto en USD en segundos — ajustado a tu región. Sin registro, sin compromiso.",
+    "button": "Cotizar mi app"
   }
 }

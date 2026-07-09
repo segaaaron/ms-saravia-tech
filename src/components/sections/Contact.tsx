@@ -1,7 +1,7 @@
 'use client'
 import { useState } from 'react'
 import { motion } from 'framer-motion'
-import { useTranslations } from 'next-intl'
+import { useTranslations, useLocale } from 'next-intl'
 import { toast } from 'sonner'
 import { Send, Mail, MapPin, Clock, MessageSquare, Handshake } from 'lucide-react'
 import GradientText from '@/components/ui/GradientText'
@@ -116,6 +116,7 @@ type FormState = {
 
 export default function Contact() {
   const t = useTranslations('contact')
+  const locale = useLocale()
 
   const [form, setForm] = useState<FormState>({ name: '', email: '', company: '', message: '' })
   const [sending, setSending] = useState(false)
@@ -128,10 +129,16 @@ export default function Contact() {
     e.preventDefault()
     setSending(true)
     try {
+      // Atribución de origen: las landings (/solutions, demos) enlazan a #contact con
+      // ?source=…; se persiste en el Lead para medir qué canal convierte. Máx 60 chars (zod).
+      const source =
+        typeof window !== 'undefined'
+          ? new URLSearchParams(window.location.search).get('source')?.slice(0, 60) || undefined
+          : undefined
       const res = await fetch('/api/contact', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(form),
+        body: JSON.stringify({ ...form, locale, source }),
       })
       if (!res.ok) throw new Error('Request failed')
       toast.success(t('success'))

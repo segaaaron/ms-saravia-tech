@@ -81,7 +81,7 @@ export default function Process() {
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: '-100px' }}
-          className="text-center mb-12 px-4 space-y-4 shrink-0"
+          className="flex w-full flex-col items-center text-center mb-12 px-4 space-y-4 shrink-0"
         >
           <motion.div variants={fadeInUp}>
             <SectionLabel color="violet">Process</SectionLabel>

@@ -4,6 +4,8 @@ import StackMarquee from '@/components/sections/StackMarquee'
 import AIShowcase from '@/components/sections/AIShowcase'
 import HoloDashboard from '@/components/sections/HoloDashboard'
 import Work from '@/components/sections/Work'
+import DemosShowcase from '@/components/sections/DemosShowcase'
+import EstimateCta from '@/components/sections/EstimateCta'
 import Process from '@/components/sections/Process'
 import About from '@/components/sections/About'
 import Faq from '@/components/sections/Faq'
@@ -18,6 +20,8 @@ export default function HomePage() {
       <AIShowcase />
       <HoloDashboard />
       <Work />
+      <DemosShowcase />
+      <EstimateCta />
       <Process />
       <About />
       <Faq />

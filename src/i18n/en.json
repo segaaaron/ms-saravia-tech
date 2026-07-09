@@ -2,9 +2,40 @@
   "nav": {
     "services": "Services",
     "work": "Work",
+    "blog": "Blog",
+    "estimate": "Estimate",
+    "demos": "Explore the Product",
     "about": "About",
     "contact": "Contact",
     "cta": "Let's Talk"
+  },
+  "showcase": {
+    "label": "Live demos",
+    "title": "Some of our projects",
+    "subtitle": "A few interactive demos you can open right now — real flows, real data, engineered end-to-end.",
+    "open": "Open demo",
+    "cta": "See all demos",
+    "items": [
+      {
+        "name": "PULSE",
+        "tag": "Gym SaaS"
+      },
+      {
+        "name": "VESPER",
+        "tag": "E-commerce"
+      },
+      {
+        "name": "AURA",
+        "tag": "Skin clinic"
+      },
+      {
+        "name": "VESPER",
+        "tag": "Analytics"
+      }
+    ],
+    "pitchTitle": "These are just a starting point.",
+    "pitch": "Every demo can be restyled, extended or built from scratch for your brand. Bring us an idea and we turn it into a real, shippable product.",
+    "appsPitch": "Need a mobile app? We ship those too — a complete solution with documentation, from concept to the App Store & Google Play."
   },
   "hero": {
     "badge": "SaaS · Mobile · Consulting",
@@ -62,7 +93,8 @@
           "Team Training"
         ]
       }
-    ]
+    ],
+    "learnMore": "Learn more"
   },
   "ai": {
     "badge": "AI-Powered",
@@ -103,7 +135,8 @@
     ],
     "live": "Live",
     "soon": "Coming Soon",
-    "view": "View Project"
+    "view": "View Project",
+    "seeAll": "See all work"
   },
   "process": {
     "title": "How We Work",
@@ -141,27 +174,29 @@
     "subtitle": "A USA-based LLC delivering elite software to startups and enterprises worldwide.",
     "stats": [
       {
-        "value": 5,
-        "label": "Projects Shipped",
+        "value": 8,
+        "label": "Years of iOS engineering",
         "suffix": "+"
       },
       {
         "value": 3,
-        "label": "Countries Served",
-        "suffix": "+"
+        "label": "Products live in production",
+        "suffix": ""
       },
       {
-        "value": 99,
-        "label": "Uptime SLA",
+        "value": 100,
+        "label": "Senior-led development",
         "suffix": "%"
       },
       {
         "value": 24,
-        "label": "Support Response",
+        "label": "Response time",
         "suffix": "h"
       }
     ],
-    "body": "MS SARAVIA TECH STACK LLC is a technology company based in the United States, specializing in SaaS development, mobile applications, AI-powered agents, and strategic tech consulting. We bring Silicon Valley-level engineering to every project — from early-stage startups to established enterprises."
+    "body": "MS SARAVIA TECH STACK LLC is a technology company based in the United States, specializing in SaaS development, mobile applications, AI-powered agents, and strategic tech consulting. We bring Silicon Valley-level engineering to every project — from early-stage startups to established enterprises.",
+    "highlight": "A founder-led studio — you work directly with a senior engineer, not a sales team. Every line of code is written by someone who's shipped products used by millions.",
+    "highlightLabel": "Founder-led"
   },
   "contact": {
     "title": "Start a Project",
@@ -193,5 +228,272 @@
       "about": "About",
       "contact": "Contact"
     }
+  },
+  "breadcrumb": {
+    "home": "Home",
+    "services": "Services",
+    "work": "Work",
+    "aria": "Breadcrumb"
+  },
+  "servicePages": {
+    "stackLabel": "Tech we use",
+    "relatedDemosLabel": "See it in action",
+    "relatedWorkLabel": "Related work",
+    "ctaTitle": "Have a project in mind?",
+    "ctaSubtitle": "Tell us what you're building — we'll reply within 24 hours.",
+    "ctaButton": "Get a free estimate",
+    "items": {
+      "saas": {
+        "metaTitle": "SaaS Development Company — MVP to Enterprise | MS Saravia Tech Stack",
+        "metaDesc": "Custom SaaS development from MVP to enterprise. Scalable multi-tenant platforms with Next.js, Node.js and Stripe. Get a free project estimate.",
+        "intro": "We design and build scalable SaaS platforms end-to-end — from MVP validation to enterprise-grade systems. Multi-tenant architecture, subscription billing and cloud infrastructure engineered to grow with your business."
+      },
+      "mobile-apps": {
+        "metaTitle": "Mobile App Development (iOS & Android) | MS Saravia Tech Stack",
+        "metaDesc": "Native and React Native app development for iOS and Android. From concept to the App Store & Google Play. Free project estimate.",
+        "intro": "Native and cross-platform mobile apps for iOS and Android. We ship polished, performant products with React Native, Swift and Kotlin — from concept and store submission to ongoing releases."
+      },
+      "ai-agents": {
+        "metaTitle": "AI Agent Development & Automation | MS Saravia Tech Stack",
+        "metaDesc": "Build AI agents and automation with OpenAI, Claude and LangChain. Custom LLM assistants wired to your real data. Free consultation.",
+        "intro": "We build AI agents and automation that plug into your operations — LLM-powered assistants, workflow automation and retrieval systems using OpenAI, Claude and LangChain, wired to your real data."
+      },
+      "tech-consulting": {
+        "metaTitle": "Tech Consulting & Fractional CTO | MS Saravia Tech Stack",
+        "metaDesc": "Architecture reviews, stack modernization and fractional CTO services for startups and teams. Ship faster, scale safely.",
+        "intro": "Strategic technical guidance for founders and teams: architecture reviews, stack modernization, code audits and fractional CTO support to help you ship faster and scale safely."
+      }
+    },
+    "industriesLabel": "Industries we build for"
+  },
+  "workPage": {
+    "metaTitle": "Our Work — Case Studies | MS Saravia Tech Stack",
+    "metaDesc": "Real products we've designed and shipped: SaaS platforms, AI tools and mobile apps. Explore our case studies.",
+    "intro": "Real products, live in production. A closer look at what we've built and how."
+  },
+  "caseStudy": {
+    "backToWork": "All work",
+    "visitSite": "Visit live site",
+    "categoryLabel": "Category",
+    "overviewLabel": "Overview",
+    "challengeLabel": "The challenge",
+    "solutionLabel": "What we built",
+    "resultsLabel": "Results",
+    "testimonialLabel": "In their words",
+    "ctaTitle": "Want results like these?",
+    "ctaButton": "Start your project",
+    "items": {
+      "yasmin-medrano": {
+        "metaTitle": "Yasmin Medrano — Aesthetic Clinic Website | Case Study",
+        "metaDesc": "How we built the complete digital presence for a premium aesthetic medicine practice. Case study by MS Saravia Tech Stack.",
+        "challenge": "Premium aesthetic clinics live and die on trust and first impressions, yet many rely on generic templates or social media alone. Prospective patients struggled to discover treatments, gauge credibility, and book a consultation without friction.",
+        "solution": "We built a complete digital presence — a polished treatments and services showcase, a modern booking flow, and a cohesive brand identity — designed to turn first-time visitors into booked consultations and reflect the quality of the practice.",
+        "results": "",
+        "testimonial": "",
+        "testimonialAuthor": ""
+      },
+      "readycv": {
+        "metaTitle": "ReadyCV — AI Resume Builder | Case Study",
+        "metaDesc": "How we built ReadyCV, an AI-powered resume builder helping professionals land their dream jobs. Case study by MS Saravia Tech Stack.",
+        "challenge": "Job seekers know a strong, tailored CV is decisive, but writing one that reads well and passes automated screening is slow and intimidating. Most resume tools stop at rigid templates and leave the hardest part — the words — to the user.",
+        "solution": "We built ReadyCV, an AI-powered resume builder that helps professionals craft compelling, role-tailored CVs in minutes. It guides users through structured input and generates polished, ATS-friendly content, turning a blank page into an interview-ready resume.",
+        "results": "",
+        "testimonial": "",
+        "testimonialAuthor": ""
+      },
+      "nova-nutrition": {
+        "metaTitle": "NOVA Nutrition — AI Nutrition App | Case Study",
+        "metaDesc": "NOVA Nutrition: smart, AI-powered nutrition tracking for iOS and Android. Case study by MS Saravia Tech Stack.",
+        "challenge": "Consistent nutrition tracking is where most health goals fall apart — manual logging is tedious, generic meal plans ignore individual context, and feedback arrives too late to change behavior. People need guidance that adapts to them in the moment.",
+        "solution": "We are building NOVA, an iOS and Android app that uses AI for smart nutrition tracking, personalized meal plans, and real-time insights. It reduces logging friction and turns everyday food choices into actionable, individualized guidance.",
+        "results": "",
+        "testimonial": "",
+        "testimonialAuthor": ""
+      }
+    }
+  },
+  "blogPage": {
+    "metaTitle": "Blog — SaaS, AI & Mobile Engineering | MS Saravia Tech Stack",
+    "metaDesc": "Practical engineering notes on building SaaS, AI agents and mobile apps — from the team that ships them.",
+    "title": "Blog",
+    "intro": "Practical notes on building SaaS, AI agents and mobile products — written by the engineers who ship them.",
+    "readMore": "Read article",
+    "minRead": "min read",
+    "backToBlog": "All articles",
+    "ctaTitle": "Building something like this?",
+    "ctaButton": "Get a free estimate",
+    "relatedServiceLabel": "Related service"
+  },
+  "solutionPages": {
+    "featuresLabel": "What's included",
+    "seeDemoLabel": "See a live demo",
+    "relatedServiceLabel": "Related service",
+    "ctaTitle": "Want this for your business?",
+    "ctaSubtitle": "Tell us about your project — we reply within 24 hours.",
+    "ctaButton": "Get a free estimate",
+    "items": {
+      "gym-software": {
+        "metaTitle": "Gym Management Software Development | MS Saravia Tech Stack",
+        "metaDesc": "Custom gym & fitness management software — memberships, bookings, member portal and admin dashboard. Built for your brand.",
+        "h1": "Gym Management Software, Built for Your Brand",
+        "intro": "We build custom software for gyms and fitness studios — member management, class bookings, payments and a real-time admin dashboard, all under your own brand instead of a rigid off-the-shelf tool.",
+        "bullets": [
+          "Membership & subscription management with recurring payments",
+          "Class and session booking with capacity control",
+          "Member portal — profile, plan, attendance and progress",
+          "Owner dashboard with real-time revenue and attendance",
+          "Your branding, your domain — not a generic SaaS"
+        ]
+      },
+      "clinic-website": {
+        "metaTitle": "Aesthetic Clinic Website Design & Development | MS Saravia Tech Stack",
+        "metaDesc": "Premium websites for aesthetic and medical clinics — services showcase, online booking and a brand that builds trust.",
+        "h1": "Websites for Aesthetic & Medical Clinics",
+        "intro": "We design and build premium websites for aesthetic and medical clinics — a polished services showcase, online booking, and a brand identity that earns patient trust from the first visit.",
+        "bullets": [
+          "Elegant services & treatments showcase",
+          "Online appointment booking",
+          "Doctor and team credibility sections",
+          "Mobile-first, fast-loading design",
+          "SEO and local visibility foundations"
+        ]
+      },
+      "restaurant-website": {
+        "metaTitle": "Restaurant Website with Online Menu | MS Saravia Tech Stack",
+        "metaDesc": "Restaurant websites with a live online menu, reservations and an admin panel — designed to fill more tables.",
+        "h1": "Restaurant Websites That Fill Tables",
+        "intro": "We build restaurant websites with a beautiful, always-up-to-date online menu, reservations, and an admin panel to manage it all — designed to turn visitors into diners.",
+        "bullets": [
+          "Live online menu with categories and photos",
+          "Reservations and contact",
+          "Admin panel to update menu and content",
+          "Maps, hours and one-tap directions",
+          "Fast, mobile-first and shareable"
+        ]
+      },
+      "ecommerce-store": {
+        "metaTitle": "Custom Ecommerce Development — Online Store | MS Saravia Tech Stack",
+        "metaDesc": "Custom ecommerce stores — catalog, cart, checkout and an admin dashboard. Built to convert, not a template.",
+        "h1": "Custom Ecommerce Stores That Convert",
+        "intro": "We build custom online stores — product catalog, cart, secure checkout and an admin dashboard — engineered for conversion and speed instead of a one-size-fits-all template.",
+        "bullets": [
+          "Product catalog with variants and search",
+          "Cart and secure checkout",
+          "Order and inventory admin dashboard",
+          "Payment integration (Stripe and more)",
+          "Optimized for speed and conversion"
+        ]
+      }
+    }
+  },
+  "estimator": {
+    "label": "App cost estimator",
+    "title": "What would your app cost?",
+    "subtitle": "A quick, honest ballpark in USD — adjusted to your region. Not a quote, but a real starting point.",
+    "regionLabel": "Pricing region",
+    "regionHint": "Auto-detected from your location — switch if needed.",
+    "region": {
+      "latam": "Latin America",
+      "us": "USA & Canada"
+    },
+    "platformLabel": "Platform",
+    "platform": {
+      "hybrid": "Hybrid (one codebase)",
+      "ios": "iOS only",
+      "android": "Android only",
+      "native": "Native iOS + Android",
+      "webapp": "Web app / PWA"
+    },
+    "platformHint": {
+      "hybrid": "React Native / Flutter — iOS + Android from a single codebase. Best value.",
+      "ios": "Native Swift / SwiftUI for iPhone & iPad.",
+      "android": "Native Kotlin for Android devices.",
+      "native": "Two separate native codebases — maximum performance, higher cost.",
+      "webapp": "A progressive web app — runs in the browser, installable, no app stores. Fast to ship."
+    },
+    "tierLabel": "Scope",
+    "tier": {
+      "mvp": "MVP",
+      "standard": "Standard",
+      "complex": "Complex"
+    },
+    "tierHint": {
+      "mvp": "Core idea, a handful of screens — validate fast.",
+      "standard": "Full product: several flows, polished UI, real users.",
+      "complex": "Many modules, integrations, scale from day one."
+    },
+    "featuresLabel": "Features",
+    "features": {
+      "auth": "User accounts & login",
+      "payments": "Payments / subscriptions",
+      "realtime": "Chat / real-time",
+      "maps": "Maps & location",
+      "push": "Push notifications",
+      "backend": "Backend & admin panel",
+      "ai": "AI / smart features",
+      "offline": "Offline mode & sync",
+      "social": "Social login",
+      "media": "File & media upload",
+      "analytics": "Analytics & tracking",
+      "iot": "IoT & wearables"
+    },
+    "resultLabel": "Estimated cost",
+    "resultRange": "in USD",
+    "timelineLabel": "Rough timeline",
+    "weeks": "weeks",
+    "effortLabel": "Estimated effort",
+    "hours": "hours",
+    "disclaimer": "Ballpark only — final price depends on scope, design and integrations. Maintenance runs ~15-20% of the build per year.",
+    "ctaTitle": "Want a real, no-obligation quote?",
+    "ctaButton": "Get an exact estimate",
+    "designLabel": "Design",
+    "design": {
+      "template": "Template-based",
+      "standard": "Custom standard",
+      "premium": "Premium bespoke"
+    },
+    "designHint": {
+      "template": "Proven UI kit adapted to your brand — fastest, most affordable.",
+      "standard": "Custom design tailored to your product and users.",
+      "premium": "Bespoke visual identity, motion and micro-interactions."
+    },
+    "maintenanceLabel": "Maintenance",
+    "perYear": "/ year",
+    "complianceLabel": "Security & compliance",
+    "compliance": {
+      "none": "None / standard",
+      "standard": "GDPR / privacy",
+      "regulated": "HIPAA / PCI / regulated"
+    },
+    "complianceHint": {
+      "none": "No special regulatory requirements.",
+      "standard": "Data privacy, consent and GDPR-style handling.",
+      "regulated": "Health, finance or sensitive data — audits, encryption, PCI/HIPAA. Adds significant scope."
+    },
+    "includedNote": "Includes design, development, QA and project management.",
+    "regionAuto": "Detected from your location — pricing is set automatically.",
+    "categoryLabel": "App category",
+    "categoryHint": "The type of app shapes the baseline scope and price.",
+    "category": {
+      "other": "General / custom",
+      "booking": "Booking / reservations",
+      "fitness": "Fitness / gym",
+      "education": "Education / e-learning",
+      "ecommerce": "E-commerce / store",
+      "social": "Social / community",
+      "healthcare": "Healthcare / medical",
+      "fintech": "Fintech / payments",
+      "marketplace": "Marketplace",
+      "ondemand": "On-demand / delivery"
+    }
+  },
+  "estimatePage": {
+    "metaTitle": "App Cost Estimator — Get a Ballpark in USD | MS Saravia Tech Stack",
+    "metaDesc": "Estimate what your mobile or web app would cost in USD — adjusted to your region. Platform, scope, design, compliance and features. Free, instant, no signup."
+  },
+  "estimateCta": {
+    "title": "Not sure what your app would cost?",
+    "subtitle": "Get an honest ballpark in USD in seconds — adjusted to your region. No signup, no strings.",
+    "button": "Estimate my app"
   }
 }

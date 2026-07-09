@@ -1,7 +1,8 @@
 'use client'
 import { motion } from 'framer-motion'
-import { useTranslations } from 'next-intl'
-import { ExternalLink, Clock } from 'lucide-react'
+import { useTranslations, useLocale } from 'next-intl'
+import Link from 'next/link'
+import { ExternalLink, Clock, ArrowRight } from 'lucide-react'
 import GradientText from '@/components/ui/GradientText'
 import SectionLabel from '@/components/ui/SectionLabel'
 import TiltCard from '@/components/ui/TiltCard'
@@ -17,6 +18,7 @@ type Project = {
 
 export default function Work() {
   const t = useTranslations('work')
+  const locale = useLocale()
   const projects = t.raw('projects') as Project[]
 
   return (
@@ -143,6 +145,22 @@ export default function Work() {
               </TiltCard>
             )
           })}
+        </motion.div>
+
+        <motion.div
+          variants={floatUp3D}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: '-80px' }}
+          className="mt-12 text-center"
+        >
+          <Link
+            href={locale === 'es' ? '/es/work' : '/work'}
+            className="group inline-flex items-center gap-2 text-sm font-semibold text-white/60 transition-colors hover:text-[#2FF5E0]"
+          >
+            {t('seeAll')}
+            <ArrowRight size={15} className="transition-transform duration-200 group-hover:translate-x-1" />
+          </Link>
         </motion.div>
       </div>
     </section>
