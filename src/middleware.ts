@@ -7,6 +7,11 @@ const intlMiddleware = createMiddleware(routing)
 // Canonical host: apex (no-www) -> www, 308 permanent. Keeps path + query.
 const CANONICAL_HOST = 'www.ms-tech-stack.cloud'
 
+// Params de tracking de redes que ensucian la URL (Facebook/Instagram los agregan al clickear).
+// No los usa el sitio → se limpian con un redirect a la URL sin ellos. NO tocar utm_* ni gclid
+// (esos sí sirven para atribución de analytics/ads).
+const TRACKING_PARAMS = ['fbclid', 'igshid', 'mibextid']
+
 export default function middleware(request: NextRequest) {
   const host = (
     request.headers.get('x-forwarded-host') ??
@@ -20,6 +25,16 @@ export default function middleware(request: NextRequest) {
     url.port = ''
     return NextResponse.redirect(url, 308)
   }
+
+  // Limpia params de tracking social (fbclid…) → 307 a la URL limpia (temporal: cada id es único,
+  // no conviene cachear el redirect en WebViews). Preserva el resto de la query.
+  const hasTracking = TRACKING_PARAMS.some((p) => request.nextUrl.searchParams.has(p))
+  if (hasTracking) {
+    const url = request.nextUrl.clone()
+    for (const p of TRACKING_PARAMS) url.searchParams.delete(p)
+    return NextResponse.redirect(url, 307)
+  }
+
   return intlMiddleware(request)
 }
 
