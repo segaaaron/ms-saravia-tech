@@ -269,11 +269,11 @@ type Almuerzo = { d: string; ent: string; sDet: string; pri: string; priDet: str
 const almuerzoData: Almuerzo[] = [
   { d: 'domingo', ent: 'Sopa de maní', sDet: 'Maní tostado y molido, con papa hilada y carne.', pri: 'Chicharrón de cerdo con mote', priDet: 'Presa crocante con mote pelado, llajua y ensalada fresca.', pos: 'Leche asada', posDet: 'Horneada, con caramelo lento de la casa.', beb: 'Refresco de mocochinchi', bid: 'photo-1600271886742-f049cd451bba', desc: 'Chicharrón crocante con mote pelado, llajua de la casa y ensalada fresca.', fin: true, precio: 55 },
   { d: 'lunes', ent: 'Sopa de fideo', sDet: 'Caldo de res con fideo, verduras y hierbabuena.', pri: 'Silpancho cochabambino', priDet: 'Milanesa fina sobre arroz y papa, huevo frito y sarza criolla.', pos: 'Flan de la casa', posDet: 'Suave y cremoso, con caramelo casero.', beb: 'Refresco de tumbo', bid: 'photo-1621263764928-df1444c5e859', desc: 'Milanesa fina sobre arroz y papa, huevo frito y sarza criolla.', fin: false, precio: 45 },
-  { d: 'martes', ent: 'Sopa de maní', sDet: 'El clásico del valle, con papa hilada crocante.', pri: 'Pique macho', priDet: 'Carne, salchicha y papas fritas con huevo, tomate y ají.', pos: 'Helado de canela', posDet: 'Cremoso, hecho en casa.', beb: 'Refresco de mocochinchi', bid: 'photo-1600271886742-f049cd451bba', desc: 'Carne, salchicha y papas fritas con huevo, tomate y ají.', fin: false, precio: 45 },
+  { d: 'martes', ent: 'Sopa de verduras', sDet: 'Caldo casero de verduras frescas del valle, ligero y reconfortante.', pri: 'Pique macho', priDet: 'Carne, salchicha y papas fritas con huevo, tomate y ají.', pos: 'Helado de canela', posDet: 'Cremoso, hecho en casa.', beb: 'Refresco de mocochinchi', bid: 'photo-1600271886742-f049cd451bba', desc: 'Carne, salchicha y papas fritas con huevo, tomate y ají.', fin: false, precio: 45 },
   { d: 'miércoles', ent: 'Chairo paceño', sDet: 'Sopa espesa de chuño, carne y verduras andinas.', pri: 'Fricasé cochabambino', priDet: 'Cerdo en caldo picante de ají amarillo con mote y chuño.', pos: 'Cuñapé', posDet: 'Pancitos de almidón y queso, recién horneados.', beb: 'Api de la casa', bid: 'photo-1461023058943-07fcbe16d735', desc: 'Cerdo en caldo picante de ají amarillo con mote y chuño.', fin: false, precio: 45 },
   { d: 'jueves', ent: 'Sopa de quinua', sDet: 'Quinua real con verduras frescas del valle.', pri: 'Charque de res', priDet: 'Charque desmenuzado con mote, huevo duro y queso del valle.', pos: 'Leche asada', posDet: 'Caramelo lento de la casa.', beb: 'Jugo de durazno', bid: 'photo-1622597467836-f3285f2131b8', desc: 'Charque desmenuzado con mote, huevo duro y queso del valle.', fin: false, precio: 45 },
-  { d: 'viernes', ent: 'Sopa de maní', sDet: 'Cremosa, con papa hilada crocante.', pri: 'Trancapecho', priDet: 'Silpancho dentro de pan crocante, jugoso y bien contundente.', pos: 'Helado de canela', posDet: 'Refrescante, para cerrar la semana.', beb: 'Refresco de tumbo', bid: 'photo-1621263764928-df1444c5e859', desc: 'Silpancho dentro de pan crocante, jugoso y bien contundente.', fin: false, precio: 45 },
-  { d: 'sábado', ent: 'Sopa de fideo', sDet: 'Caldo casero con fideo, verduras y hierbas.', pri: 'Pollo a la parrilla', priDet: 'Presa jugosa al carbón con guarniciones y llajua.', pos: 'Leche asada', posDet: 'Horneada, con caramelo de la casa.', beb: 'Sangría de la casa', bid: 'photo-1510812431401-41d2bd2722f3', desc: 'Presa jugosa al carbón con guarniciones. Almuerzo de fin de semana.', fin: true, precio: 55 },
+  { d: 'viernes', ent: 'Lawa de choclo', sDet: 'Crema espesa de choclo tierno con queso y hierbas.', pri: 'Trancapecho', priDet: 'Silpancho dentro de pan crocante, jugoso y bien contundente.', pos: 'Helado de canela', posDet: 'Refrescante, para cerrar la semana.', beb: 'Refresco de tumbo', bid: 'photo-1621263764928-df1444c5e859', desc: 'Silpancho dentro de pan crocante, jugoso y bien contundente.', fin: false, precio: 45 },
+  { d: 'sábado', ent: 'Chaque de trigo', sDet: 'Guiso cochabambino de trigo pelado, carne y verduras.', pri: 'Pollo a la parrilla', priDet: 'Presa jugosa al carbón con guarniciones y llajua.', pos: 'Leche asada', posDet: 'Horneada, con caramelo de la casa.', beb: 'Sangría de la casa', bid: 'photo-1510812431401-41d2bd2722f3', desc: 'Presa jugosa al carbón con guarniciones. Almuerzo de fin de semana.', fin: true, precio: 55 },
 ]
 
 const carData = [
@@ -313,16 +313,12 @@ const almToday = almuerzoData[WD]
 const dayCap: Record<string, string> = { domingo: 'Domingo', lunes: 'Lunes', martes: 'Martes', 'miércoles': 'Miércoles', jueves: 'Jueves', viernes: 'Viernes', 'sábado': 'Sábado' }
 const weekOrder = ['lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado', 'domingo']
 const heroSlug: Record<string, string> = { domingo: 'chicharron', lunes: 'silpancho', martes: 'pique', 'miércoles': 'fricase', jueves: 'charque', viernes: 'silpancho', 'sábado': 'pollo' }
-const sopaSlug: Record<string, string> = { domingo: 'sopa-mani', lunes: 'sopa-fideo', martes: 'sopa-mani', 'miércoles': 'chairo', jueves: 'sopa-quinua', viernes: 'sopa-mani', 'sábado': 'sopa-fideo' }
-/* Menú de la semana: IDs Unsplash por slug (los .png locales no existían → imágenes rotas).
-   Se reutilizan IDs ya validados en dishImg para que siempre resuelvan. */
+// 7 sopas DISTINTAS (una por día, sin repetir) — todas con foto local en /showcase/img/menu.
+const sopaSlug: Record<string, string> = { domingo: 'sopa-mani', lunes: 'sopa-fideo', martes: 'sopa-verduras', 'miércoles': 'chairo', jueves: 'sopa-quinua', viernes: 'lawa-choclo', 'sábado': 'chaque-de-trigo' }
+// Segundo del almuerzo semanal por slug — solo para los que NO tienen foto local
+// (charque, pollo). Los demás (chicharron, silpancho, pique, fricase) usan foto local.
 const mainImgId: Record<string, string> = {
-  chicharron: 'photo-1569058242253-92a9c755a0ec', silpancho: 'photo-1562967916-eb82221dfb92', pique: 'photo-1596797038530-2c107229654b',
-  fricase: 'photo-1455619452474-d2be8b1e70cd', charque: 'photo-1574484284002-952d92456975', pollo: 'photo-1532550907401-a500c9a57435',
-}
-// Una foto DISTINTA por sopa (antes fideo=maní y quinua=chairo → se repetían en el menú semanal).
-const sopaImgId: Record<string, string> = {
-  'sopa-mani': 'photo-1476718406336-bb5a9690ee2a', 'sopa-fideo': 'photo-1607330289024-1535c6b4e1c1', chairo: 'photo-1547592166-23ac45744acd', 'sopa-quinua': 'photo-1547592180-85f173990554',
+  charque: 'photo-1574484284002-952d92456975', pollo: 'photo-1532550907401-a500c9a57435',
 }
 
 const menuCatDefs: [string, string][] = [['entrantes', 'Entrantes & sopas'], ['parrilla', 'Platos de fondo'], ['principales', 'Platos bolivianos'], ['postres', 'Postres']]
@@ -341,6 +337,22 @@ const dishImg: Record<string, string> = {
   // Postres
   'Cuñapé caliente': 'photo-1509440159596-0249088772ff', 'Leche asada': 'photo-1519915028121-7d3463d20b13', 'Helado de canela': 'photo-1497034825429-c343d7c6a68f', 'Flan de la casa': 'photo-1551024506-0bccd828d307',
 }
+
+// Fotos REALES del local (subidas por el cliente) en /showcase/img/menu/*.webp.
+// Cada plato/sopa con archivo usa la local; el resto cae a Unsplash (dishImg).
+const localMenuImg = (slug: string) => `/showcase/img/menu/${slug}.webp`
+const localDish: Record<string, string> = {
+  'Anticucho de corazón': 'anticucho', 'Sopa de maní': 'sopa-mani', 'Chairo paceño': 'chairo', 'Humintas al horno': 'humintas',
+  'Chuleta de cerdo a la BBQ': 'chuleta-cerdo', 'Brazuelo de cerdo': 'brazuelo-cerdo', 'Parrillada mixta': 'parrillada', 'Chorizo criollo': 'chorizo',
+  'Silpancho cochabambino': 'silpancho', 'Trancapecho': 'trancapecho', 'Pique macho medio': 'pique', 'Pique macho grande': 'pique', 'Pique macho': 'pique',
+  'Chicharrón de cerdo': 'chicharron-cerdo', 'Chicharrón de pollo': 'chicharron-pollo', 'Fricasé cochabambino': 'fricase',
+}
+const dishImage = (name: string, w = 600) =>
+  localDish[name] ? localMenuImg(localDish[name]) : img(dishImg[name] || dishDefault, w)
+// Segundo del almuerzo semanal: local si existe (por slug de heroSlug), si no Unsplash.
+const weeklyMainLocal: Record<string, string> = { chicharron: 'chicharron-cerdo', silpancho: 'silpancho', pique: 'pique', fricase: 'fricase' }
+const weeklyMainImg = (slug: string) =>
+  weeklyMainLocal[slug] ? localMenuImg(weeklyMainLocal[slug]) : img(mainImgId[slug] || dishDefault, 420)
 
 const hoursRows = [{ day: 'Lun – Vie', time: '12:00 – 23:00' }, { day: 'Sábado', time: '12:00 – 23:30' }, { day: 'Domingo', time: '12:00 – 16:00' }]
 
@@ -648,11 +660,11 @@ const CONTENT: Record<DemoLang, Content> = {
     alm: [
       { ent: 'Peanut soup', sDet: 'Toasted, ground peanuts with shoestring potato and beef.', pri: 'Pork chicharrón with hominy', priDet: 'Crispy cut with peeled hominy, llajua and fresh salad.', pos: 'Leche asada', posDet: 'Baked, with slow house caramel.', beb: 'Mocochinchi cooler', desc: 'Crispy chicharrón with peeled hominy, house llajua and fresh salad.' },
       { ent: 'Noodle soup', sDet: 'Beef broth with noodles, vegetables and mint.', pri: 'Cochabamba silpancho', priDet: 'Thin milanesa over rice and potato, fried egg and criolla sarza.', pos: 'House flan', posDet: 'Soft and creamy, with homemade caramel.', beb: 'Tumbo cooler', desc: 'Thin milanesa over rice and potato, fried egg and criolla sarza.' },
-      { ent: 'Peanut soup', sDet: 'The valley classic, with crispy shoestring potato.', pri: 'Pique macho', priDet: 'Beef, sausage and fries with egg, tomato and chili.', pos: 'Cinnamon ice cream', posDet: 'Creamy, made in house.', beb: 'Mocochinchi cooler', desc: 'Beef, sausage and fries with egg, tomato and chili.' },
+      { ent: 'Vegetable soup', sDet: 'Homestyle broth of fresh valley vegetables, light and comforting.', pri: 'Pique macho', priDet: 'Beef, sausage and fries with egg, tomato and chili.', pos: 'Cinnamon ice cream', posDet: 'Creamy, made in house.', beb: 'Mocochinchi cooler', desc: 'Beef, sausage and fries with egg, tomato and chili.' },
       { ent: 'Chairo paceño', sDet: 'Thick soup of chuño, beef and Andean vegetables.', pri: 'Cochabamba fricasé', priDet: 'Pork in a spicy yellow chili broth with hominy and chuño.', pos: 'Cuñapé', posDet: 'Starch-and-cheese rolls, fresh from the oven.', beb: 'House api', desc: 'Pork in a spicy yellow chili broth with hominy and chuño.' },
       { ent: 'Quinoa soup', sDet: 'Royal quinoa with fresh valley vegetables.', pri: 'Beef jerky', priDet: 'Shredded jerky with hominy, hard-boiled egg and valley cheese.', pos: 'Leche asada', posDet: 'Slow house caramel.', beb: 'Peach juice', desc: 'Shredded jerky with hominy, hard-boiled egg and valley cheese.' },
-      { ent: 'Peanut soup', sDet: 'Creamy, with crispy shoestring potato.', pri: 'Trancapecho', priDet: 'Silpancho inside crispy bread, juicy and truly hearty.', pos: 'Cinnamon ice cream', posDet: 'Refreshing, to close out the week.', beb: 'Tumbo cooler', desc: 'Silpancho inside crispy bread, juicy and truly hearty.' },
-      { ent: 'Noodle soup', sDet: 'Homemade broth with noodles, vegetables and herbs.', pri: 'Grilled chicken', priDet: 'Juicy charcoal-grilled piece with sides and llajua.', pos: 'Leche asada', posDet: 'Baked, with house caramel.', beb: 'House sangria', desc: 'Juicy charcoal-grilled piece with sides. Weekend lunch.' },
+      { ent: 'Choclo lawa', sDet: 'Thick tender-corn cream with cheese and herbs.', pri: 'Trancapecho', priDet: 'Silpancho inside crispy bread, juicy and truly hearty.', pos: 'Cinnamon ice cream', posDet: 'Refreshing, to close out the week.', beb: 'Tumbo cooler', desc: 'Silpancho inside crispy bread, juicy and truly hearty.' },
+      { ent: 'Wheat chaque', sDet: 'Cochabamba stew of peeled wheat, beef and vegetables.', pri: 'Grilled chicken', priDet: 'Juicy charcoal-grilled piece with sides and llajua.', pos: 'Leche asada', posDet: 'Baked, with house caramel.', beb: 'House sangria', desc: 'Juicy charcoal-grilled piece with sides. Weekend lunch.' },
     ],
     car: [
       { name: 'Cochabamba silpancho', meta: 'Signature dish · Cochabamba', story: 'The jewel of the valley: an ultra-thin beef milanesa covering the whole plate, over a bed of rice and potato, crowned with a fried egg and fresh sarza.', ing: ['Breaded beef milanesa', 'Fluffy rice', 'Sliced potato', 'Fried egg', 'Tomato & onion sarza', 'House llajua'] },
@@ -953,10 +965,10 @@ export default function BrasaClient({ lang, currency = 'BOB' }: { lang: DemoLang
     const ai = almuerzoData.findIndex((x) => x.d === k); const a = almuerzoData[ai]; const ca = c.alm[ai]
     const on = (k === almToday.d); const fin = !!a.fin; const wknd = (k === 'sábado' || k === 'domingo')
     return {
-      day: c.dayCap[k], precioNum: currency === 'USD' ? String(usdFromBs(a.precio)) : String(a.precio), heroImg: img(sopaImgId[sopaSlug[k]] || dishDefault, 900), heroName: ca.ent, heroDetail: ca.sDet, heroEyebrow: c.carta.soupOfDay,
-      onAddAlmuerzo: () => addToCart({ id: 'alm-' + k, name: c.carta.lunchItemPre + c.dayCap[k], price: a.precio, cat: 'cocina', img: img(mainImgId[heroSlug[k]] || dishDefault, 300) }),
+      day: c.dayCap[k], precioNum: currency === 'USD' ? String(usdFromBs(a.precio)) : String(a.precio), heroImg: localMenuImg(sopaSlug[k]), heroName: ca.ent, heroDetail: ca.sDet, heroEyebrow: c.carta.soupOfDay,
+      onAddAlmuerzo: () => addToCart({ id: 'alm-' + k, name: c.carta.lunchItemPre + c.dayCap[k], price: a.precio, cat: 'cocina', img: weeklyMainImg(heroSlug[k]) }),
       sides: [
-        { label: c.carta.sideSegundo, name: ca.pri, detail: ca.priDet, img: img(mainImgId[heroSlug[k]] || dishDefault, 420), noImg: false },
+        { label: c.carta.sideSegundo, name: ca.pri, detail: ca.priDet, img: weeklyMainImg(heroSlug[k]), noImg: false },
         { label: c.carta.sidePostre, name: ca.pos, detail: ca.posDet, img: '', noImg: true },
         { label: c.carta.sideRefresco, name: ca.beb, detail: c.carta.refrescoDetail, img: img(a.bid, 420), noImg: false },
       ],
@@ -973,14 +985,14 @@ export default function BrasaClient({ lang, currency = 'BOB' }: { lang: DemoLang
 
   const menuCatIdx = menuCatDefs.findIndex(([k]) => k === menuCat)
   const menuCatLabel = menuCatIdx >= 0 ? c.menuCats[menuCatIdx] : c.carta.alaCarta
-  const carSlides = carData.map((d, i) => ({ name: c.car[i].name, price: money(d.price), meta: c.car[i].meta, story: c.car[i].story, img: img(carImgId[d.name] || dishDefault, 900), ing: c.car[i].ing, op: i === carIdx ? '1' : '0', pe: i === carIdx ? 'auto' : 'none', z: i === carIdx ? 2 : 1 }))
+  const carSlides = carData.map((d, i) => ({ name: c.car[i].name, price: money(d.price), meta: c.car[i].meta, story: c.car[i].story, img: localDish[d.name] ? localMenuImg(localDish[d.name]) : img(carImgId[d.name] || dishDefault, 900), ing: c.car[i].ing, op: i === carIdx ? '1' : '0', pe: i === carIdx ? 'auto' : 'none', z: i === carIdx ? 2 : 1 }))
   const carDots = carData.map((d, i) => ({ onClick: () => carGo(i), bg: i === carIdx ? 'var(--ember)' : 'var(--line2)', w: i === carIdx ? '26px' : '9px' }))
   const menuCats = menuCatDefs.map(([k], i) => { const on = menuCat === k; return { label: c.menuCats[i], onClick: () => setMenuCat(k), ...active(on) } })
   const menuItems = (menuData[menuCat] || []).map((m, i) => {
     const mc = c.menu[menuCat][i]
     return {
-      name: mc.name, price: money(m.price), desc: mc.desc, img: img(dishImg[m.name] || dishDefault, 600), delay: (i * 0.05) + 's',
-      onAdd: () => addToCart({ id: 'm-' + menuCat + '-' + i, name: mc.name, price: m.price, cat: 'cocina', img: img(dishImg[m.name] || dishDefault, 300) }),
+      name: mc.name, price: money(m.price), desc: mc.desc, img: dishImage(m.name, 600), delay: (i * 0.05) + 's',
+      onAdd: () => addToCart({ id: 'm-' + menuCat + '-' + i, name: mc.name, price: m.price, cat: 'cocina', img: dishImage(m.name, 300) }),
       tags: mc.tags.map(([label, kind]) => ({ label, color: kind === 'ember' ? '#fff' : '#2e7d55', bg: kind === 'ember' ? 'var(--ember)' : 'rgba(46,125,85,.14)' })),
     }
   })
