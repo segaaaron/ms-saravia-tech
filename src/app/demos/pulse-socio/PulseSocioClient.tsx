@@ -127,15 +127,15 @@ const ROUTINE_META: { dur: string; icon: string; done: boolean[] }[] = [
   { dur: '35 min', icon: 'heart-pulse', done: [true, false, false, false] },
 ]
 
-const CLASS_PHOTOS = ['uploads/training_1_web.png', 'uploads/gym_5_web.png', 'uploads/gym_4_web.png', 'uploads/training_1_web.png', 'uploads/gym_3_web.png', 'uploads/training_1_web.png']
-const EX_PHOTOS = ['uploads/gym_4_web.png', 'uploads/gym_3_web.png', 'uploads/training_1_web.png', 'uploads/gym_5_web.png']
+const CLASS_PHOTOS = ['uploads/training_1_web.webp', 'uploads/gym_5_web.webp', 'uploads/gym_4_web.webp', 'uploads/training_1_web.webp', 'uploads/gym_3_web.webp', 'uploads/training_1_web.webp']
+const EX_PHOTOS = ['uploads/gym_4_web.webp', 'uploads/gym_3_web.webp', 'uploads/training_1_web.webp', 'uploads/gym_5_web.webp']
 const R_ICON: Record<string, { bg: string; c: string }> = { dumbbell: { bg: '#e8effd', c: '#3b5bdb' }, flame: { bg: '#fdeee2', c: '#d97706' }, 'heart-pulse': { bg: '#e7f6ec', c: '#16a34a' } }
 
 const GYM_AREA_META = [
-  { slotId: 'area-musculacion', photo: 'uploads/gym_4_web.png' },
-  { slotId: 'area-funcional', photo: 'uploads/training_1_web.png' },
-  { slotId: 'area-cardio', photo: 'uploads/gym_5_web.png' },
-  { slotId: 'area-clases', photo: 'uploads/gym_3_web.png' },
+  { slotId: 'area-musculacion', photo: 'uploads/gym_4_web.webp' },
+  { slotId: 'area-funcional', photo: 'uploads/training_1_web.webp' },
+  { slotId: 'area-cardio', photo: 'uploads/gym_5_web.webp' },
+  { slotId: 'area-clases', photo: 'uploads/gym_3_web.webp' },
 ]
 
 type Content = {
@@ -555,7 +555,7 @@ export default function PulseSocioClient({ lang }: { lang: DemoLang }) {
             </div>
 
             <div style={{ position: 'relative', borderRadius: 18, overflow: 'hidden', border: '1px solid #e6e8ec' }}>
-              <Slot src="uploads/gym_3_web.png" style={{ width: '100%', height: 240, display: 'block' }} />
+              <Slot src="uploads/gym_3_web.webp" style={{ width: '100%', height: 240, display: 'block' }} />
               <div style={{ position: 'absolute', left: 24, bottom: 20, color: '#fff', textShadow: '0 2px 10px rgba(0,0,0,.5)', pointerEvents: 'none' }}>
                 <div style={{ fontSize: 12, fontWeight: 700, letterSpacing: '.08em', textTransform: 'uppercase', opacity: 0.9 }}>{t.bannerKicker}</div>
                 <div style={{ fontSize: 24, fontWeight: 800, letterSpacing: '-.02em' }}>{t.bannerTitle}</div>
