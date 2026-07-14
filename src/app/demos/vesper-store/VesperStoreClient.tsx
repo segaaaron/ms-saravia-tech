@@ -365,6 +365,7 @@ export default function VesperStoreClient({ lang: initialLang }: { lang: DemoLan
 
   const [theme, setTheme] = useState<'light' | 'dark'>('light')
   const [cat, setCatRaw] = useState('all')
+  const [menuOpen, setMenuOpen] = useState(false)
   const [sort, setSort] = useState('featured')
   const [query, setQuery] = useState('')
   const [filtersOpen, setFiltersOpen] = useState(false)
@@ -916,16 +917,34 @@ export default function VesperStoreClient({ lang: initialLang }: { lang: DemoLan
 
       {/* HEADER */}
       <header style={{ position: 'sticky', top: 0, zIndex: 50, background: 'var(--glass)', backdropFilter: 'blur(12px)', borderBottom: '1px solid var(--line)' }}>
-        <div style={{ maxWidth: 1300, margin: '0 auto', padding: '16px 28px', display: 'flex', alignItems: 'center', gap: 26 }}>
+        <div className="dnav" style={{ maxWidth: 1300, margin: '0 auto', padding: '16px 28px', display: 'flex', alignItems: 'center', gap: 26 }}>
+          {/* Menú hamburguesa (móvil) — categorías */}
+          <div className="dnav-only" style={{ position: 'relative', flexShrink: 0 }}>
+            <button onClick={() => setMenuOpen((s) => !s)} aria-label="Menu" aria-expanded={menuOpen} style={{ width: 42, height: 42, borderRadius: 40, border: '1px solid var(--line)', background: 'var(--surface2)', color: 'var(--text)', cursor: 'pointer', alignItems: 'center', justifyContent: 'center', fontSize: 19, lineHeight: 1 }}>{menuOpen
+              ? <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round"><line x1="6" y1="6" x2="18" y2="18" /><line x1="18" y1="6" x2="6" y2="18" /></svg>
+              : <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round"><line x1="4" y1="7" x2="20" y2="7" /><line x1="4" y1="12" x2="20" y2="12" /><line x1="4" y1="17" x2="20" y2="17" /></svg>}</button>
+            {menuOpen && (
+              <div style={{ position: 'absolute', top: 52, left: 0, minWidth: 200, background: 'var(--surface)', border: '1px solid var(--line)', borderRadius: 14, boxShadow: '0 24px 56px -20px rgba(0,0,0,.25)', padding: 8, zIndex: 90, display: 'flex', flexDirection: 'column', gap: 2 }}>
+                {navCats.map((n, i) => (
+                  <button key={i} onClick={() => { n.onClick(); setMenuOpen(false) }} style={{ fontSize: 14, fontWeight: n.weight as unknown as number, color: n.color, background: 'none', border: 'none', textAlign: 'left', padding: '12px 14px', borderRadius: 10, cursor: 'pointer' }}>{n.label}</button>
+                ))}
+              </div>
+            )}
+          </div>
           <a href="#top" style={{ fontFamily: "'Bodoni Moda',serif", fontSize: 23, letterSpacing: '.34em', color: 'var(--text)', textDecoration: 'none', paddingLeft: '.34em', flexShrink: 0 }}>VESPER</a>
           <div style={{ flex: 1, display: 'flex', alignItems: 'center', gap: 10, maxWidth: 520, background: 'var(--surface3)', border: '1px solid var(--line)', borderRadius: 40, padding: '11px 18px' }}>
             <span style={{ color: 'var(--muted2)', fontSize: 15 }}>⌕</span>
             <input value={query} onChange={onSearch} placeholder={c.searchPh} style={{ flex: 1, border: 'none', background: 'transparent', outline: 'none', fontFamily: "'DM Sans',sans-serif", fontSize: 14, color: 'var(--text)' }} />
             {q.length > 0 && <button onClick={clearSearch} style={{ background: 'none', border: 'none', color: 'var(--muted2)', cursor: 'pointer', fontSize: 15, padding: '0 2px' }}>✕</button>}
           </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 6, flexShrink: 0 }}>
+          <div className="dnav" style={{ display: 'flex', alignItems: 'center', gap: 6, flexShrink: 0 }}>
             <button onClick={toggleLang} aria-label={c.ariaLang} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minWidth: 44, background: 'none', border: '1px solid var(--line)', cursor: 'pointer', color: 'var(--text)', padding: '8px 14px', borderRadius: 30, fontFamily: "'DM Sans',sans-serif", fontSize: 12.5, fontWeight: 700, letterSpacing: '.03em', textAlign: 'center' }}>{langLabel}</button>
-            <button onClick={toggleTheme} aria-label={c.ariaTheme} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minWidth: 80, background: 'none', border: '1px solid var(--line)', cursor: 'pointer', color: 'var(--text)', padding: '8px 14px', borderRadius: 30, fontFamily: "'DM Sans',sans-serif", fontSize: 12.5, fontWeight: 700, letterSpacing: '.03em', textAlign: 'center' }}>{themeLabel}</button>
+            <button onClick={toggleTheme} aria-label={c.ariaTheme} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7, minWidth: 80, background: 'none', border: '1px solid var(--line)', cursor: 'pointer', color: 'var(--text)', padding: '8px 14px', borderRadius: 30, fontFamily: "'DM Sans',sans-serif", fontSize: 12.5, fontWeight: 700, letterSpacing: '.03em', textAlign: 'center' }}>
+              {theme === 'dark'
+                ? <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round"><circle cx="12" cy="12" r="4" /><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4" /></svg>
+                : <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.8} strokeLinecap="round" strokeLinejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z" /></svg>}
+              {themeLabel}
+            </button>
             <select defaultValue="USD" onChange={onCurrency} style={{ background: 'none', border: 'none', color: 'var(--muted)', fontFamily: "'DM Sans',sans-serif", fontSize: 13, cursor: 'pointer', outline: 'none', padding: '8px 4px' }}>
               <option value="USD">$ USD</option>
               <option value="EUR">€ EUR</option>
@@ -939,7 +958,7 @@ export default function VesperStoreClient({ lang: initialLang }: { lang: DemoLan
           </div>
         </div>
         <div style={{ borderTop: '1px solid var(--line)' }}>
-          <div style={{ maxWidth: 1300, margin: '0 auto', padding: '0 28px', display: 'flex', gap: 30, alignItems: 'center', height: 46 }}>
+          <div className="dnav-hide" style={{ maxWidth: 1300, margin: '0 auto', padding: '0 28px', display: 'flex', gap: 30, alignItems: 'center', height: 46 }}>
             {navCats.map((n, i) => (
               <a key={i} href="#shop" onClick={n.onClick} style={{ fontSize: 13.5, fontWeight: n.weight as unknown as number, letterSpacing: '.01em', color: n.color, textDecoration: 'none', padding: '4px 0', borderBottom: '2px solid ' + n.underline, transition: 'all .2s' }}>{n.label}</a>
             ))}
@@ -988,7 +1007,7 @@ export default function VesperStoreClient({ lang: initialLang }: { lang: DemoLan
 
       {/* CATEGORY TILES */}
       <section style={{ maxWidth: 1300, margin: '0 auto', padding: '44px 28px 8px' }}>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 16 }}>
+        <div className="dcards-4" style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 16 }}>
           {tiles.map((t, i) => (
             <a key={i} href="#shop" onClick={t.onClick} data-reveal style={{ position: 'relative', borderRadius: 14, overflow: 'hidden', aspectRatio: '1/1', textDecoration: 'none', display: 'block' }}>
               <div style={{ position: 'absolute', inset: 0, background: 'url(' + t.imgUrl + ') center/cover', transition: 'transform .7s cubic-bezier(.2,.7,.2,1)' }} />
@@ -1024,7 +1043,7 @@ export default function VesperStoreClient({ lang: initialLang }: { lang: DemoLan
 
         {filtersOpen && (
           <div style={{ border: '1px solid var(--line)', borderRadius: 14, padding: '22px 24px', marginBottom: 22, background: 'var(--surface2)', animation: 'fadeUp .3s ease both' }}>
-            <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 1.4fr 1fr', gap: 28 }}>
+            <div className="dcol-3" style={{ display: 'grid', gridTemplateColumns: '1.2fr 1.4fr 1fr', gap: 28 }}>
               <div>
                 <div style={{ fontSize: 12, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '.05em', color: 'var(--text)', marginBottom: 12 }}>{c.sizeWord}</div>
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: 7 }}>
@@ -1054,7 +1073,7 @@ export default function VesperStoreClient({ lang: initialLang }: { lang: DemoLan
           </div>
         )}
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 22 }}>
+        <div className="dcards-4" style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 22 }}>
           {products.map((p) => (
             <div key={p.id} data-card onMouseMove={cardTilt} onMouseLeave={cardUntilt} style={{ animation: 'fadeUp .5s ease both', display: 'flex', flexDirection: 'column', background: 'var(--surface)', border: '1px solid var(--line)', borderRadius: 16, overflow: 'hidden', transformStyle: 'preserve-3d', boxShadow: '0 12px 28px -18px rgba(0,0,0,.3),0 2px 6px -3px rgba(0,0,0,.12)', transition: 'box-shadow .35s,transform .18s ease-out,border-color .35s', willChange: 'transform' }}>
               <div onClick={p.open} style={{ position: 'relative', aspectRatio: '1/1', overflow: 'hidden', cursor: 'pointer', background: 'var(--surface3)' }}>
@@ -1124,7 +1143,7 @@ export default function VesperStoreClient({ lang: initialLang }: { lang: DemoLan
 
       {/* TRUST */}
       <section style={{ borderTop: '1px solid var(--line)', borderBottom: '1px solid var(--line)', marginTop: 44, background: 'var(--surface2)' }}>
-        <div style={{ maxWidth: 1300, margin: '0 auto', padding: '34px 28px', display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 24 }}>
+        <div className="dcards-4" style={{ maxWidth: 1300, margin: '0 auto', padding: '34px 28px', display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 24 }}>
           {trust.map((t, i) => (
             <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
               <div style={{ width: 44, height: 44, borderRadius: '50%', background: 'var(--surface)', border: '1px solid var(--line)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 19, flexShrink: 0 }}>{t.icon}</div>
@@ -1140,7 +1159,7 @@ export default function VesperStoreClient({ lang: initialLang }: { lang: DemoLan
           <h2 style={{ fontSize: 'clamp(24px,2.8vw,34px)', margin: 0, fontWeight: 700 }}>{c.reviewsTitle}</h2>
           <div style={{ display: 'inline-flex', alignItems: 'center', gap: 8, marginTop: 10, fontSize: 14, color: 'var(--muted)' }}><span style={{ color: '#f5a623', letterSpacing: 2 }}>★★★★★</span>{c.reviewsSub}</div>
         </div>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 18 }}>
+        <div className="dcards-3" style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 18 }}>
           {reviews.map((r, i) => (
             <div key={i} data-reveal style={{ border: '1px solid var(--line)', borderRadius: 14, padding: 24, background: 'var(--surface)' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}><span style={{ color: '#f5a623', letterSpacing: 2, fontSize: 14 }}>★★★★★</span><span style={{ display: 'inline-flex', alignItems: 'center', gap: 4, fontSize: 11, fontWeight: 600, color: '#2f7d4f', background: '#eaf6ee', padding: '3px 9px', borderRadius: 20 }}>✓ {c.verified}</span></div>
@@ -1154,7 +1173,7 @@ export default function VesperStoreClient({ lang: initialLang }: { lang: DemoLan
 
       {/* STATS COUNTERS */}
       <section data-stats style={{ maxWidth: 1300, margin: '0 auto', padding: '20px 28px 40px' }}>
-        <div style={{ background: '#171717', color: '#fff', borderRadius: 20, padding: '46px 40px', display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 24 }}>
+        <div className="dcards-4" style={{ background: '#171717', color: '#fff', borderRadius: 20, padding: '46px 40px', display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 24 }}>
           {stats.map((st, i) => (
             <div key={i} style={{ textAlign: 'center', position: 'relative' }}>
               <div style={{ fontSize: 'clamp(30px,3.4vw,46px)', fontWeight: 700, letterSpacing: '-.02em', lineHeight: 1, fontVariantNumeric: 'tabular-nums' }}>{st.display}</div>
@@ -1282,7 +1301,7 @@ export default function VesperStoreClient({ lang: initialLang }: { lang: DemoLan
             {wish.length > 0 ? (
               <>
                 <div style={{ marginBottom: 26 }}><h1 style={{ fontSize: 'clamp(28px,3.4vw,42px)', margin: '0 0 6px', fontWeight: 700, letterSpacing: '-.01em' }}>{c.wishlistTitle}</h1><p style={{ color: 'var(--muted)', fontSize: 14.5, margin: 0 }}>{c.wishlistSub}</p></div>
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 22 }}>
+                <div className="dcards-4" style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 22 }}>
                   {favItems.map((f) => (
                     <div key={f.id} data-card onMouseMove={cardTilt} onMouseLeave={cardUntilt} style={{ display: 'flex', flexDirection: 'column', background: 'var(--surface)', border: '1px solid var(--line)', borderRadius: 16, overflow: 'hidden', transformStyle: 'preserve-3d', boxShadow: '0 12px 28px -18px rgba(0,0,0,.3),0 2px 6px -3px rgba(0,0,0,.12)', transition: 'box-shadow .35s,transform .18s ease-out,border-color .35s', willChange: 'transform' }}>
                       <div onClick={f.open} style={{ position: 'relative', aspectRatio: '1/1', overflow: 'hidden', cursor: 'pointer', background: 'var(--surface3)' }}><div style={{ position: 'absolute', inset: 0, background: 'url(' + f.imgUrl + ') center/cover', transition: 'transform .8s' }} /><button onClick={f.remove} aria-label={c.ariaRemoveFav} style={{ position: 'absolute', top: 10, right: 10, width: 38, height: 38, borderRadius: '50%', background: 'var(--glass)', backdropFilter: 'blur(6px)', border: '1px solid var(--line)', cursor: 'pointer', color: '#e63329', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 4px 12px -4px rgba(0,0,0,.25)', transition: 'transform .2s' }}><svg width="18" height="18" viewBox="0 0 24 24" fill="#e63329" stroke="#e63329" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round"><path d="M12 20.8l-1.7-1.55C5.1 14.55 2.5 12 2.5 8.75 2.5 6.16 4.52 4.2 7.05 4.2c1.5 0 2.94.7 3.88 1.82L12 7.2l1.07-1.18A5.16 5.16 0 0 1 16.95 4.2c2.53 0 4.55 1.96 4.55 4.55 0 3.25-2.6 5.8-7.8 10.5L12 20.8z" /></svg></button></div>
@@ -1315,7 +1334,7 @@ export default function VesperStoreClient({ lang: initialLang }: { lang: DemoLan
             <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}><span style={{ fontFamily: "'Bodoni Moda',serif", fontSize: 20, letterSpacing: '.3em', paddingLeft: '.3em' }}>VESPER</span><span style={{ color: 'var(--line2)' }}>/</span><span style={{ fontSize: 15, fontWeight: 600 }}>{c.settings}</span></div>
             <button onClick={closeSettings} style={{ display: 'flex', alignItems: 'center', gap: 8, background: 'var(--surface3)', border: 'none', padding: '10px 18px', borderRadius: 30, color: 'var(--text)', fontFamily: "'DM Sans',sans-serif", fontSize: 13.5, fontWeight: 600, cursor: 'pointer' }}>{c.backToStore}</button>
           </div>
-          <div style={{ maxWidth: 1000, margin: '0 auto', padding: '44px 28px 80px', display: 'grid', gridTemplateColumns: '230px 1fr', gap: 44, alignItems: 'start' }}>
+          <div className="dcol-2" style={{ maxWidth: 1000, margin: '0 auto', padding: '44px 28px 80px', display: 'grid', gridTemplateColumns: '230px 1fr', gap: 44, alignItems: 'start' }}>
             <aside style={{ position: 'sticky', top: 100, display: 'flex', flexDirection: 'column', gap: 4 }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 13, padding: '0 6px 20px' }}><div style={{ width: 46, height: 46, borderRadius: '50%', background: 'linear-gradient(135deg,#c9a05f,#7a5f30)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 16, fontWeight: 700, color: '#fff' }}>{userInitials}</div><div><div style={{ fontSize: 15, fontWeight: 700 }}>{userName}</div><div style={{ fontSize: 12, color: 'var(--muted2)' }}>{c.vipMember}</div></div></div>
               <div onClick={settingsTabHandler('perfil')} style={tabStyle(settingsIsPerfil)}>{c.profile}</div>
@@ -1444,7 +1463,7 @@ export default function VesperStoreClient({ lang: initialLang }: { lang: DemoLan
       {qv && (
         <div style={{ position: 'fixed', inset: 0, zIndex: 90, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 24 }} onClick={closeQV}>
           <div style={{ position: 'absolute', inset: 0, background: 'rgba(20,20,20,.45)' }} />
-          <div onClick={stop} style={{ position: 'relative', width: 'min(900px,96vw)', maxHeight: '90vh', overflow: 'auto', display: 'grid', gridTemplateColumns: '1fr 1fr', background: 'var(--surface)', borderRadius: 16, animation: 'fadeUp .35s ease both' }}>
+          <div onClick={stop} className="dcol-2" style={{ position: 'relative', width: 'min(900px,96vw)', maxHeight: '90vh', overflow: 'auto', display: 'grid', gridTemplateColumns: '1fr 1fr', background: 'var(--surface)', borderRadius: 16, animation: 'fadeUp .35s ease both' }}>
             <div style={{ position: 'relative', minHeight: 440, background: 'url(' + qv.imgUrl + ') center/cover', backgroundColor: 'var(--surface3)' }}>
               <div style={{ position: 'absolute', top: 16, left: 16, display: 'flex', gap: 7 }}>
                 {qv.hasDisc && <span style={{ background: '#c0392b', color: '#fff', fontSize: 11, fontWeight: 700, padding: '4px 10px', borderRadius: 20 }}>{qv.discBadge}</span>}
@@ -1512,7 +1531,7 @@ export default function VesperStoreClient({ lang: initialLang }: { lang: DemoLan
         <div style={{ position: 'fixed', inset: 0, zIndex: 96, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 24 }}>
           <div onClick={closeCheckout} style={{ position: 'absolute', inset: 0, background: 'rgba(20,20,20,.5)', backdropFilter: 'blur(3px)' }} />
           {checkout === 'form' && (
-            <div style={{ position: 'relative', width: 'min(920px,96vw)', maxHeight: '90vh', overflow: 'auto', display: 'grid', gridTemplateColumns: '1.1fr 1fr', background: 'var(--surface)', borderRadius: 18, animation: 'fadeUp .35s ease both' }}>
+            <div className="dcol-2" style={{ position: 'relative', width: 'min(920px,96vw)', maxHeight: '90vh', overflow: 'auto', display: 'grid', gridTemplateColumns: '1.1fr 1fr', background: 'var(--surface)', borderRadius: 18, animation: 'fadeUp .35s ease both' }}>
               <div style={{ padding: '34px 34px 30px', borderRight: '1px solid var(--line)', background: 'var(--surface2)' }}>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 22 }}><div style={{ fontSize: 16, fontWeight: 700 }}>{c.orderSummary}</div><span style={{ fontSize: 12, color: 'var(--muted2)' }}>{count} {c.itemsWord}</span></div>
                 {coLoading ? (
@@ -1654,7 +1673,7 @@ export default function VesperStoreClient({ lang: initialLang }: { lang: DemoLan
                 </div>
               </div>
               <div style={{ padding: '22px 30px 26px' }}>
-                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 12, marginBottom: 22 }}>
+                <div className="dcards-3" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 12, marginBottom: 22 }}>
                   <div style={{ background: 'var(--surface2)', border: '1px solid var(--line)', borderRadius: 12, padding: 14, textAlign: 'center' }}><div style={{ fontSize: 20, fontWeight: 700 }}>12</div><div style={{ fontSize: 11, color: 'var(--muted2)', marginTop: 2 }}>{c.ordersStat}</div></div>
                   <div style={{ background: 'var(--surface2)', border: '1px solid var(--line)', borderRadius: 12, padding: 14, textAlign: 'center' }}><div style={{ fontSize: 20, fontWeight: 700 }}>{wish.length}</div><div style={{ fontSize: 11, color: 'var(--muted2)', marginTop: 2 }}>{c.favs}</div></div>
                   <div style={{ background: 'var(--surface2)', border: '1px solid var(--line)', borderRadius: 12, padding: 14, textAlign: 'center' }}><div style={{ fontSize: 20, fontWeight: 700 }}>VIP</div><div style={{ fontSize: 11, color: 'var(--muted2)', marginTop: 2 }}>{c.levelWord}</div></div>
@@ -1762,7 +1781,7 @@ export default function VesperStoreClient({ lang: initialLang }: { lang: DemoLan
           <div style={{ position: 'absolute', inset: 0, background: 'rgba(20,20,20,.55)', backdropFilter: 'blur(4px)' }} />
           <div onClick={stop} style={{ position: 'relative', width: 'min(880px,96vw)', maxHeight: '90vh', overflow: 'auto', background: 'var(--surface)', borderRadius: 18, animation: 'fadeUp .35s ease both' }}>
             <div style={{ position: 'sticky', top: 0, background: 'var(--surface)', display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '22px 26px', borderBottom: '1px solid var(--line)', zIndex: 2 }}><div style={{ fontSize: 19, fontWeight: 700 }}>{c.compareProducts}</div><button onClick={closeCompare} style={{ background: 'var(--surface3)', border: 'none', width: 32, height: 32, borderRadius: '50%', color: 'var(--text)', fontSize: 15, cursor: 'pointer' }}>✕</button></div>
-            <div style={{ padding: '22px 26px 30px' }}>
+            <div className="dtable-wrap" style={{ padding: '22px 26px 30px' }}>
               <div style={{ display: 'grid', gridTemplateColumns: '130px repeat(' + compare.length + ',1fr)', gap: 0, fontSize: 13.5 }}>
                 <div />
                 {compareCols.map((cc, i) => (

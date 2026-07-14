@@ -267,6 +267,7 @@ export default function AuraClient({ lang }: { lang: DemoLang }) {
   const heroEl = useRef<HTMLElement>(null)
 
   const [faqOpen, setFaqOpen] = useState(-1)
+  const [menuOpen, setMenuOpen] = useState(false)
   const [monthOffset, setMonthOffset] = useState(0)
   const [selDate, setSelDate] = useState<string | null>(null)
   const [selTime, setSelTime] = useState<string | null>(null)
@@ -408,13 +409,36 @@ export default function AuraClient({ lang }: { lang: DemoLang }) {
           </span>
           <span style={{ fontFamily: "'Marcellus',serif", fontSize: 21, letterSpacing: '.34em', color: '#f6f2ec' }}>AURA</span>
         </a>
-        <nav style={{ display: 'flex', gap: 28, alignItems: 'center' }}>
+        {/* Navegación inline (desktop) */}
+        <nav className="dnav-hide" style={{ display: 'flex', gap: 28, alignItems: 'center' }}>
           <a href="#servicios" style={navLink}>{c.nav.servicios}</a>
           <a href="#doctora" style={navLink}>{c.nav.doctora}</a>
           <a href="#resultados" style={navLink}>{c.nav.resultados}</a>
           <a href="#faq" style={navLink}>{c.nav.faq}</a>
           <a href="#agendar" style={{ fontSize: 13, letterSpacing: '.08em', color: '#0a0d12', background: ACCENT, padding: '10px 20px', borderRadius: 100, textDecoration: 'none', fontWeight: 600 }}>{c.nav.cta}</a>
         </nav>
+        {/* Menú hamburguesa (móvil) */}
+        <div className="dnav-only" style={{ position: 'relative' }}>
+          <button
+            onClick={() => setMenuOpen((s) => !s)}
+            aria-label="Menu"
+            aria-expanded={menuOpen}
+            style={{ width: 42, height: 42, borderRadius: 100, border: `1px solid ${ACCENT}66`, background: 'rgba(9,12,17,.4)', color: '#f6f2ec', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 19, lineHeight: 1 }}
+          >
+            {menuOpen
+              ? <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round"><line x1="6" y1="6" x2="18" y2="18" /><line x1="18" y1="6" x2="6" y2="18" /></svg>
+              : <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round"><line x1="4" y1="7" x2="20" y2="7" /><line x1="4" y1="12" x2="20" y2="12" /><line x1="4" y1="17" x2="20" y2="17" /></svg>}
+          </button>
+          {menuOpen && (
+            <div style={{ position: 'absolute', top: 54, right: 0, minWidth: 220, background: 'rgba(14,17,22,.98)', backdropFilter: 'blur(16px)', WebkitBackdropFilter: 'blur(16px)', border: `1px solid ${ACCENT}33`, borderRadius: 16, boxShadow: '0 26px 56px -20px rgba(0,0,0,.7)', padding: 10, zIndex: 70, display: 'flex', flexDirection: 'column', gap: 2 }}>
+              <a href="#servicios" onClick={() => setMenuOpen(false)} style={{ ...navLink, padding: '13px 14px', borderRadius: 10 }}>{c.nav.servicios}</a>
+              <a href="#doctora" onClick={() => setMenuOpen(false)} style={{ ...navLink, padding: '13px 14px', borderRadius: 10 }}>{c.nav.doctora}</a>
+              <a href="#resultados" onClick={() => setMenuOpen(false)} style={{ ...navLink, padding: '13px 14px', borderRadius: 10 }}>{c.nav.resultados}</a>
+              <a href="#faq" onClick={() => setMenuOpen(false)} style={{ ...navLink, padding: '13px 14px', borderRadius: 10 }}>{c.nav.faq}</a>
+              <a href="#agendar" onClick={() => setMenuOpen(false)} style={{ fontSize: 13, letterSpacing: '.08em', color: '#0a0d12', background: ACCENT, padding: '13px 20px', borderRadius: 100, textDecoration: 'none', fontWeight: 600, textAlign: 'center', marginTop: 6 }}>{c.nav.cta}</a>
+            </div>
+          )}
+        </div>
       </header>
 
       {/* HERO PORTAL */}
@@ -467,7 +491,7 @@ export default function AuraClient({ lang }: { lang: DemoLang }) {
 
       {/* INTRO STRIP */}
       <section style={{ background: '#f6f2ec', padding: '96px 34px 40px' }}>
-        <div data-reveal style={{ maxWidth: 1180, margin: '0 auto', display: 'grid', gridTemplateColumns: '1.35fr 0.65fr', gap: 50, alignItems: 'center' }}>
+        <div data-reveal className="dcol-2" style={{ maxWidth: 1180, margin: '0 auto', display: 'grid', gridTemplateColumns: '1.35fr 0.65fr', gap: 50, alignItems: 'center' }}>
           <div style={{ maxWidth: 640 }}>
             <div style={{ fontSize: 12, letterSpacing: '.32em', color: '#a07f47', textTransform: 'uppercase', marginBottom: 18 }}>{c.introEyebrow}</div>
             <h2 style={{ fontFamily: "'Marcellus',serif", fontSize: 'clamp(30px,4vw,50px)', lineHeight: 1.12, color: '#20211f', margin: '0 0 34px', textWrap: 'balance' as CSSProperties['textWrap'] }}>{c.introTitle}</h2>
@@ -491,7 +515,7 @@ export default function AuraClient({ lang }: { lang: DemoLang }) {
             <h2 style={{ fontFamily: "'Marcellus',serif", fontSize: 'clamp(28px,3.4vw,42px)', color: '#20211f', margin: 0 }}>{c.servicesTitle}</h2>
             <span style={{ fontSize: 13, color: '#71767c', letterSpacing: '.04em' }}>{c.servicesNote}</span>
           </div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 24 }}>
+          <div className="dcards-3" style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 24 }}>
             {c.services.map((s, i) => (
               <div key={i} data-reveal style={{ background: '#fbf9f4', border: '1px solid rgba(20,25,30,.08)', borderRadius: 16, overflow: 'hidden', display: 'flex', flexDirection: 'column', transition: 'transform .5s cubic-bezier(.16,1,.3,1),box-shadow .5s cubic-bezier(.16,1,.3,1)' }}>
                 <div style={{ position: 'relative', height: 210, overflow: 'hidden', background: 'linear-gradient(135deg,#e7dfce,#d8c3a0)' }}>
@@ -516,7 +540,7 @@ export default function AuraClient({ lang }: { lang: DemoLang }) {
 
       {/* DOCTORA */}
       <section id="doctora" style={{ background: '#0e131a', padding: '110px 34px', color: '#f6f2ec' }}>
-        <div style={{ maxWidth: 1180, margin: '0 auto', display: 'grid', gridTemplateColumns: '0.85fr 1.15fr', gap: 64, alignItems: 'center' }}>
+        <div className="dcol-2" style={{ maxWidth: 1180, margin: '0 auto', display: 'grid', gridTemplateColumns: '0.85fr 1.15fr', gap: 64, alignItems: 'center' }}>
           <div data-reveal style={{ aspectRatio: '4/5', borderRadius: 8, border: '1px solid rgba(194,162,116,.25)', position: 'relative', overflow: 'hidden', display: 'flex', alignItems: 'flex-end', justifyContent: 'flex-start', padding: 22, background: '#1a2028 url(/showcase/img/portrait.webp) center/cover' }}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=800&q=80" alt={c.portraitAlt} style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }} />
@@ -543,7 +567,7 @@ export default function AuraClient({ lang }: { lang: DemoLang }) {
             <div style={{ fontSize: 12, letterSpacing: '.32em', color: '#a07f47', textTransform: 'uppercase', marginBottom: 16 }}>{c.resultsEyebrow}</div>
             <h2 style={{ fontFamily: "'Marcellus',serif", fontSize: 'clamp(28px,3.4vw,42px)', color: '#20211f', margin: 0, maxWidth: '16ch' }}>{c.resultsTitle}</h2>
           </div>
-          <div data-reveal style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gridAutoRows: 200, gap: 14 }}>
+          <div data-reveal className="dcards-4" style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gridAutoRows: 200, gap: 14 }}>
             {GALLERY_IMG.map((g, i) => (
               <div key={i} style={{ gridColumn: g.span ? 'span 2' : undefined, gridRow: g.span ? 'span 2' : undefined, borderRadius: 8, background: `url(https://images.unsplash.com/photo-${g.unsplash}) center/cover, #e7dfce url(/showcase/img/${g.local}) center/cover`, border: '1px solid rgba(20,25,30,.08)', position: 'relative', overflow: 'hidden', display: 'flex', alignItems: 'flex-end', padding: g.span ? 18 : 16 }}>
                 <span style={label}>{c.gallery[i]}</span>
@@ -557,7 +581,7 @@ export default function AuraClient({ lang }: { lang: DemoLang }) {
       <section style={{ background: '#f6f2ec', padding: '20px 34px 100px' }}>
         <div style={{ maxWidth: 1180, margin: '0 auto' }}>
           <h2 data-reveal style={{ fontFamily: "'Marcellus',serif", fontSize: 'clamp(28px,3.4vw,42px)', color: '#20211f', margin: '0 0 44px' }}>{c.testimonialsTitle}</h2>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 22 }}>
+          <div className="dcards-3" style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 22 }}>
             {c.testimonials.map((t, i) => (
               <div key={i} data-reveal style={{ background: '#fbf9f4', border: '1px solid rgba(20,25,30,.08)', borderRadius: 10, padding: 34, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', minHeight: 250 }}>
                 <div style={{ fontFamily: "'Marcellus',serif", fontSize: 44, lineHeight: 0, color: ACCENT, height: 22 }}>&ldquo;</div>
@@ -602,7 +626,7 @@ export default function AuraClient({ lang }: { lang: DemoLang }) {
             <div style={{ fontSize: 12, letterSpacing: '.32em', color: '#a07f47', textTransform: 'uppercase', marginBottom: 16 }}>{c.agendarEyebrow}</div>
             <h2 style={{ fontFamily: "'Marcellus',serif", fontSize: 'clamp(30px,4vw,50px)', color: '#20211f', margin: 0 }}>{c.agendarTitle}</h2>
           </div>
-          <div data-reveal style={{ display: 'grid', gridTemplateColumns: '1.1fr 0.9fr', gap: 1, background: 'rgba(20,25,30,.1)', border: '1px solid rgba(20,25,30,.1)', borderRadius: 12, overflow: 'hidden' }}>
+          <div data-reveal className="dcol-2" style={{ display: 'grid', gridTemplateColumns: '1.1fr 0.9fr', gap: 1, background: 'rgba(20,25,30,.1)', border: '1px solid rgba(20,25,30,.1)', borderRadius: 12, overflow: 'hidden' }}>
             <div style={{ background: '#fbf9f4', padding: 38 }}>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 26 }}>
                 <button onClick={() => setMonthOffset((v) => Math.max(0, v - 1))} style={{ width: 40, height: 40, borderRadius: '50%', border: '1px solid rgba(20,25,30,.15)', background: 'none', cursor: 'pointer', fontSize: 18, color: '#20211f' }}>‹</button>
@@ -641,7 +665,7 @@ export default function AuraClient({ lang }: { lang: DemoLang }) {
 
       {/* UBICACIÓN */}
       <section id="contacto" style={{ background: '#0e131a', color: '#f6f2ec' }}>
-        <div style={{ maxWidth: 1180, margin: '0 auto', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 0, alignItems: 'stretch' }}>
+        <div className="dcol-2" style={{ maxWidth: 1180, margin: '0 auto', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 0, alignItems: 'stretch' }}>
           <div style={{ padding: '90px 40px 90px 34px' }}>
             <div style={{ fontSize: 12, letterSpacing: '.32em', color: ACCENT, textTransform: 'uppercase', marginBottom: 18 }}>{c.locEyebrow}</div>
             <h2 style={{ fontFamily: "'Marcellus',serif", fontSize: 'clamp(28px,3.4vw,42px)', margin: '0 0 30px' }}>{c.locTitle}</h2>

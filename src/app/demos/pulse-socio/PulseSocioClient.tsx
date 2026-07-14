@@ -361,6 +361,7 @@ const CONTENT: Record<DemoLang, Content> = {
 export default function PulseSocioClient({ lang }: { lang: DemoLang }) {
   const t = CONTENT[lang]
   const [view, setView] = useState<'inicio' | 'clases' | 'rutina' | 'pagos'>('inicio')
+  const [menuOpen, setMenuOpen] = useState(false)
   const [classes, setClasses] = useState<ClassItem[]>(() => CLASS_STATS.map((s, i) => ({ ...s, name: t.classes[i] })))
   const [routines, setRoutines] = useState<Routine[]>(() =>
     t.routines.map((r, ri) => ({
@@ -511,7 +512,7 @@ export default function PulseSocioClient({ lang }: { lang: DemoLang }) {
       `}</style>
 
       {/* TOP BAR */}
-      <header style={{ position: 'sticky', top: 0, zIndex: 40, display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 24, padding: '14px 40px', background: '#fff', borderBottom: '1px solid #e6e8ec' }}>
+      <header className="dnav" style={{ position: 'sticky', top: 0, zIndex: 40, display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 24, padding: '14px 40px', background: '#fff', borderBottom: '1px solid #e6e8ec' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 11 }}>
           <div style={{ width: 36, height: 36, borderRadius: 9, background: '#3b5bdb', display: 'grid', placeItems: 'center' }}>
             <Icon name="activity" size={19} style={{ color: '#fff', width: 19, height: 19 }} />
@@ -521,7 +522,23 @@ export default function PulseSocioClient({ lang }: { lang: DemoLang }) {
           </div>
           <span style={{ fontSize: 11, fontWeight: 700, color: '#6b7280', background: '#f0f1f4', padding: '4px 9px', borderRadius: 20, marginLeft: 4 }}>{t.socio}</span>
         </div>
-        <nav style={{ display: 'flex', gap: 4, background: '#f5f6f8', padding: 4, borderRadius: 12 }}>
+        {/* Menú hamburguesa (móvil) */}
+        <div className="dnav-only" style={{ position: 'relative' }}>
+          <button onClick={() => setMenuOpen((s) => !s)} aria-label="Menu" aria-expanded={menuOpen} style={{ width: 42, height: 42, borderRadius: 10, border: '1px solid #e2e5e9', background: '#fff', color: '#171a1f', cursor: 'pointer', alignItems: 'center', justifyContent: 'center', fontSize: 19, lineHeight: 1 }}>{menuOpen
+            ? <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round"><line x1="6" y1="6" x2="18" y2="18" /><line x1="18" y1="6" x2="6" y2="18" /></svg>
+            : <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round"><line x1="4" y1="7" x2="20" y2="7" /><line x1="4" y1="12" x2="20" y2="12" /><line x1="4" y1="17" x2="20" y2="17" /></svg>}</button>
+          {menuOpen && (
+            <div style={{ position: 'absolute', top: 52, right: 0, minWidth: 210, background: '#fff', border: '1px solid #e6e8ec', borderRadius: 14, boxShadow: '0 24px 56px -20px rgba(23,26,31,.28)', padding: 8, zIndex: 70, display: 'flex', flexDirection: 'column', gap: 2 }}>
+              {tabs.map((t) => (
+                <button key={t.key} onClick={() => { t.onClick(); setMenuOpen(false) }} style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '12px 14px', borderRadius: 10, cursor: 'pointer', fontSize: 14, fontWeight: t.weight, color: t.color, background: t.bg, border: 'none', textAlign: 'left', width: '100%' }}>
+                  <Icon name={t.icon} size={16} style={{ width: 16, height: 16 }} /> {t.label}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+        {/* Tabs inline (desktop) */}
+        <nav className="dnav-hide" style={{ display: 'flex', gap: 4, background: '#f5f6f8', padding: 4, borderRadius: 12 }}>
           {tabs.map((t) => (
             <div key={t.key} onClick={t.onClick} style={{ display: 'flex', alignItems: 'center', gap: 8, padding: '9px 16px', borderRadius: 9, cursor: 'pointer', fontSize: 14, fontWeight: t.weight, color: t.color, background: t.bg }}>
               <Icon name={t.icon} size={16} style={{ width: 16, height: 16 }} /> {t.label}
@@ -562,7 +579,7 @@ export default function PulseSocioClient({ lang }: { lang: DemoLang }) {
               </div>
             </div>
 
-            <section style={{ display: 'grid', gridTemplateColumns: '1.4fr 1fr 1fr', gap: 16 }}>
+            <section className="dcol-3" style={{ display: 'grid', gridTemplateColumns: '1.4fr 1fr 1fr', gap: 16 }}>
               <div style={{ background: '#3b5bdb', borderRadius: 16, padding: 22, color: '#fff', position: 'relative', overflow: 'hidden' }}>
                 <div style={{ position: 'absolute', top: -40, right: -30, width: 150, height: 150, borderRadius: '50%', background: 'rgba(255,255,255,.08)' }} />
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', position: 'relative' }}>
@@ -596,7 +613,7 @@ export default function PulseSocioClient({ lang }: { lang: DemoLang }) {
               </div>
             </section>
 
-            <section style={{ display: 'grid', gridTemplateColumns: '1fr 340px', gap: 16, alignItems: 'start' }}>
+            <section className="dcol-2" style={{ display: 'grid', gridTemplateColumns: '1fr 340px', gap: 16, alignItems: 'start' }}>
               <div style={{ background: '#fff', border: '1px solid #e6e8ec', borderRadius: 16, padding: '22px 24px' }}>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}>
                   <h3 style={{ fontSize: 16, fontWeight: 700 }}>{t.rutinaHoy}</h3>
@@ -639,7 +656,7 @@ export default function PulseSocioClient({ lang }: { lang: DemoLang }) {
                 <h3 style={{ fontSize: 16, fontWeight: 700 }}>{t.tuGimnasio}</h3>
                 <span style={{ fontSize: 13, color: '#9aa0a8' }}>{t.instalaciones}</span>
               </div>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 14 }}>
+              <div className="dcards-4" style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 14 }}>
                 {GYM_AREA_META.map((a, i) => (
                   <div key={a.slotId} style={{ borderRadius: 14, overflow: 'hidden', border: '1px solid #e6e8ec', background: '#fff' }}>
                     <Slot src={a.photo} style={{ width: '100%', height: 130, display: 'block' }} />
@@ -661,7 +678,7 @@ export default function PulseSocioClient({ lang }: { lang: DemoLang }) {
               <h1 style={{ fontSize: 24, fontWeight: 800, letterSpacing: '-.02em' }}>{t.classesTitle}</h1>
               <p style={{ fontSize: 14, color: '#6b7280', marginTop: 3 }}>{t.classesSub}</p>
             </div>
-            <section style={{ display: 'grid', gridTemplateColumns: 'repeat(2,1fr)', gap: 16 }}>
+            <section className="dcards-2" style={{ display: 'grid', gridTemplateColumns: 'repeat(2,1fr)', gap: 16 }}>
               {classesView.map((c) => (
                 <div key={c.slotId} style={{ background: '#fff', border: `1px solid ${c.cardBorder}`, borderRadius: 14, overflow: 'hidden' }}>
                   <Slot src={c.photo} style={{ width: '100%', height: 140, display: 'block', borderBottom: '1px solid #eceef1' }} />
@@ -702,7 +719,7 @@ export default function PulseSocioClient({ lang }: { lang: DemoLang }) {
               <h1 style={{ fontSize: 24, fontWeight: 800, letterSpacing: '-.02em' }}>{t.rutinaTitle}</h1>
               <p style={{ fontSize: 14, color: '#6b7280', marginTop: 3 }}>{t.rutinaSub}</p>
             </div>
-            <section style={{ display: 'grid', gridTemplateColumns: 'repeat(2,1fr)', gap: 16 }}>
+            <section className="dcards-2" style={{ display: 'grid', gridTemplateColumns: 'repeat(2,1fr)', gap: 16 }}>
               {routinesView.map((r, ri) => (
                 <div key={ri} style={{ background: '#fff', border: '1px solid #e6e8ec', borderRadius: 14, padding: 22 }}>
                   <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 12, marginBottom: 6 }}>
@@ -744,7 +761,7 @@ export default function PulseSocioClient({ lang }: { lang: DemoLang }) {
               <h1 style={{ fontSize: 24, fontWeight: 800, letterSpacing: '-.02em' }}>{t.pagosTitle}</h1>
               <p style={{ fontSize: 14, color: '#6b7280', marginTop: 3 }}>{t.pagosSub}</p>
             </div>
-            <section style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
+            <section className="dcards-2" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
               <div style={{ background: '#fff', border: '1px solid #e6e8ec', borderRadius: 16, padding: 24 }}>
                 <div style={{ fontSize: 13, color: '#6b7280', fontWeight: 600 }}>{t.tuPlan}</div>
                 <div style={{ display: 'flex', alignItems: 'baseline', gap: 8, marginTop: 8 }}>
@@ -770,7 +787,7 @@ export default function PulseSocioClient({ lang }: { lang: DemoLang }) {
                 <div style={{ fontSize: 13, color: '#2f7a56', marginTop: 4 }}>{t.ultimaCuota}</div>
               </div>
             </section>
-            <section style={{ background: '#fff', border: '1px solid #e6e8ec', borderRadius: 16, overflow: 'hidden' }}>
+            <section className="dtable-wrap" style={{ background: '#fff', border: '1px solid #e6e8ec', borderRadius: 16, overflow: 'hidden' }}>
               <div style={{ padding: '18px 22px', borderBottom: '1px solid #eceef1', fontSize: 16, fontWeight: 700 }}>{t.historial}</div>
               <div style={{ display: 'grid', gridTemplateColumns: '1.4fr 1fr 1fr 1fr', gap: 16, padding: '12px 22px', fontSize: 11, letterSpacing: '.05em', textTransform: 'uppercase', color: '#9aa0a8', fontWeight: 700, borderBottom: '1px solid #f0f1f4', background: '#fafbfc' }}>
                 <span>{t.thConcepto}</span>

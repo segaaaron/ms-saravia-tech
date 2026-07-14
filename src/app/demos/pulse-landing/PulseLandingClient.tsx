@@ -335,6 +335,7 @@ type Plan = {
 export default function PulseLandingClient({ lang }: { lang: DemoLang }) {
   const c = CONTENT[lang]
   const [annual, setAnnual] = useState(false)
+  const [menuOpen, setMenuOpen] = useState(false)
 
   const price = (m: number) => (annual ? '$' + Math.round(m * 0.8) : '$' + m)
   const plan = (name: string, tagline: string, m: number, feats: string[], featured: boolean): Plan => ({
@@ -377,15 +378,39 @@ export default function PulseLandingClient({ lang }: { lang: DemoLang }) {
           <div style={{ width: 36, height: 36, borderRadius: 9, background: '#3b5bdb', display: 'grid', placeItems: 'center' }}><Icon name="activity" size={19} style={{ color: '#fff' }} /></div>
           <div style={{ fontWeight: 800, fontSize: 18, letterSpacing: '-.01em' }}>FITLIFE <span style={{ color: '#3b5bdb' }}>GYM</span></div>
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 30 }}>
+        {/* Enlaces + CTA inline (desktop) */}
+        <div className="dnav-hide" style={{ display: 'flex', alignItems: 'center', gap: 30 }}>
           <a href="#producto" style={{ fontSize: 14, fontWeight: 600, color: '#4b5058' }}>{c.nav.producto}</a>
           <a href="#funciones" style={{ fontSize: 14, fontWeight: 600, color: '#4b5058' }}>{c.nav.funciones}</a>
           <a href="#precios" style={{ fontSize: 14, fontWeight: 600, color: '#4b5058' }}>{c.nav.precios}</a>
           <a href="#clientes" style={{ fontSize: 14, fontWeight: 600, color: '#4b5058' }}>{c.nav.clientes}</a>
         </div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
+        <div className="dnav-hide" style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
           <a href="#" style={{ fontSize: 14, fontWeight: 700, color: '#171a1f' }}>{c.navLogin}</a>
           <a href="#" style={{ fontSize: 14, fontWeight: 700, color: '#fff', background: '#3b5bdb', padding: '10px 18px', borderRadius: 10 }}>{c.navTry}</a>
+        </div>
+        {/* Menú hamburguesa (móvil) */}
+        <div className="dnav-only" style={{ position: 'relative' }}>
+          <button
+            onClick={() => setMenuOpen((s) => !s)}
+            aria-label="Menu"
+            aria-expanded={menuOpen}
+            style={{ width: 42, height: 42, borderRadius: 10, border: '1px solid #e2e5e9', background: '#fff', color: '#171a1f', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 19, lineHeight: 1 }}
+          >
+            {menuOpen
+              ? <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round"><line x1="6" y1="6" x2="18" y2="18" /><line x1="18" y1="6" x2="6" y2="18" /></svg>
+              : <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round"><line x1="4" y1="7" x2="20" y2="7" /><line x1="4" y1="12" x2="20" y2="12" /><line x1="4" y1="17" x2="20" y2="17" /></svg>}
+          </button>
+          {menuOpen && (
+            <div style={{ position: 'absolute', top: 52, right: 0, minWidth: 210, background: '#fff', border: '1px solid #eceef1', borderRadius: 14, boxShadow: '0 26px 56px -20px rgba(20,25,35,.28)', padding: 10, zIndex: 70, display: 'flex', flexDirection: 'column', gap: 2 }}>
+              <a href="#producto" onClick={() => setMenuOpen(false)} style={{ fontSize: 14, fontWeight: 600, color: '#4b5058', padding: '12px 14px', borderRadius: 10 }}>{c.nav.producto}</a>
+              <a href="#funciones" onClick={() => setMenuOpen(false)} style={{ fontSize: 14, fontWeight: 600, color: '#4b5058', padding: '12px 14px', borderRadius: 10 }}>{c.nav.funciones}</a>
+              <a href="#precios" onClick={() => setMenuOpen(false)} style={{ fontSize: 14, fontWeight: 600, color: '#4b5058', padding: '12px 14px', borderRadius: 10 }}>{c.nav.precios}</a>
+              <a href="#clientes" onClick={() => setMenuOpen(false)} style={{ fontSize: 14, fontWeight: 600, color: '#4b5058', padding: '12px 14px', borderRadius: 10 }}>{c.nav.clientes}</a>
+              <a href="#" onClick={() => setMenuOpen(false)} style={{ fontSize: 14, fontWeight: 700, color: '#171a1f', padding: '12px 14px', borderRadius: 10 }}>{c.navLogin}</a>
+              <a href="#" onClick={() => setMenuOpen(false)} style={{ fontSize: 14, fontWeight: 700, color: '#fff', background: '#3b5bdb', padding: '12px 16px', borderRadius: 10, textAlign: 'center', marginTop: 6 }}>{c.navTry}</a>
+            </div>
+          )}
         </div>
       </nav>
 
@@ -442,7 +467,7 @@ export default function PulseLandingClient({ lang }: { lang: DemoLang }) {
           <h2 style={{ fontSize: 38, fontWeight: 800, letterSpacing: '-.02em', marginTop: 10 }}>{c.featuresTitle}</h2>
           <p style={{ fontSize: 17, color: '#5b616b', marginTop: 14, lineHeight: 1.6 }}>{c.featuresSub}</p>
         </div>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 20 }}>
+        <div className="dcards-3" style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 20 }}>
           {FEATURE_META.map((f, i) => (
             <div key={c.features[i].title} style={{ background: '#fff', border: '1px solid #e6e8ec', borderRadius: 16, padding: 26 }}>
               <div style={{ width: 46, height: 46, borderRadius: 12, background: f.bg, display: 'grid', placeItems: 'center', color: f.color }}><Icon name={f.icon} size={22} /></div>
@@ -456,7 +481,7 @@ export default function PulseLandingClient({ lang }: { lang: DemoLang }) {
       {/* HIGHLIGHT ROW */}
       <section id="producto" style={{ background: '#f7f8fa', padding: '80px 48px' }}>
         <div style={{ maxWidth: 1080, margin: '0 auto', display: 'flex', flexDirection: 'column', gap: 72 }}>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 56, alignItems: 'center' }}>
+          <div className="dcol-2" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 56, alignItems: 'center' }}>
             <div>
               <div style={{ fontSize: 14, fontWeight: 700, color: '#3b5bdb' }}>{c.cobrosEyebrow}</div>
               <h2 style={{ fontSize: 34, fontWeight: 800, letterSpacing: '-.02em', marginTop: 10, lineHeight: 1.15 }}>{c.cobrosTitle}</h2>
@@ -473,7 +498,7 @@ export default function PulseLandingClient({ lang }: { lang: DemoLang }) {
             </div>
           </div>
 
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 56, alignItems: 'center' }}>
+          <div className="dcol-2" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 56, alignItems: 'center' }}>
             <div style={{ width: '100%', height: 360, display: 'block', border: '1px solid #e6e8ec', borderRadius: 16, backgroundImage: `url("${IMG('uploads/training_1_web.webp')}")`, backgroundSize: 'cover', backgroundPosition: 'center' }} />
             <div>
               <div style={{ fontSize: 14, fontWeight: 700, color: '#d97706' }}>{c.clasesEyebrow}</div>
@@ -496,7 +521,7 @@ export default function PulseLandingClient({ lang }: { lang: DemoLang }) {
           <h2 style={{ fontSize: 38, fontWeight: 800, letterSpacing: '-.02em', marginTop: 10 }}>{c.facilitiesTitle}</h2>
           <p style={{ fontSize: 17, color: '#5b616b', marginTop: 14, lineHeight: 1.6 }}>{c.facilitiesSub}</p>
         </div>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(6,1fr)', gridAutoRows: 170, gap: 14 }}>
+        <div className="dcards-6" style={{ display: 'grid', gridTemplateColumns: 'repeat(6,1fr)', gridAutoRows: 170, gap: 14 }}>
           {GALLERY_META.map((g, i) => (
             <div key={g.slotId} style={{ gridColumn: `span ${g.span}`, position: 'relative', borderRadius: 16, overflow: 'hidden', border: '1px solid #e6e8ec' }}>
               <div style={{ width: '100%', height: '100%', display: 'block', backgroundImage: `url("${IMG(g.photo)}")`, backgroundSize: 'cover', backgroundPosition: 'center' }} />
@@ -516,7 +541,7 @@ export default function PulseLandingClient({ lang }: { lang: DemoLang }) {
             <button onClick={() => setAnnual(true)} style={{ padding: '9px 18px', border: 'none', borderRadius: 8, fontFamily: 'inherit', fontWeight: 700, fontSize: 14, cursor: 'pointer', background: annBg, color: annColor }}>{c.annual} <span style={{ color: '#16a34a', fontSize: 12 }}>−20%</span></button>
           </div>
         </div>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 20, alignItems: 'start' }}>
+        <div className="dcards-3" style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 20, alignItems: 'start' }}>
           {plans.map((p) => (
             <div key={p.name} style={{ background: p.cardBg, border: `1.5px solid ${p.cardBorder}`, borderRadius: 18, padding: '30px 26px', position: 'relative' }}>
               {p.featured && <div style={{ position: 'absolute', top: -12, left: '50%', transform: 'translateX(-50%)', background: '#3b5bdb', color: '#fff', fontSize: 12, fontWeight: 700, padding: '5px 14px', borderRadius: 100 }}>{c.mostChosen}</div>}
@@ -539,7 +564,7 @@ export default function PulseLandingClient({ lang }: { lang: DemoLang }) {
       <section id="clientes" style={{ background: '#f7f8fa', padding: '80px 48px' }}>
         <div style={{ maxWidth: 1080, margin: '0 auto' }}>
           <h2 style={{ fontSize: 34, fontWeight: 800, letterSpacing: '-.02em', textAlign: 'center', marginBottom: 44 }}>{c.testimonialsTitle}</h2>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 20 }}>
+          <div className="dcards-3" style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 20 }}>
             {TESTIMONIAL_META.map((t, i) => (
               <div key={t.slotId} style={{ background: '#fff', border: '1px solid #e6e8ec', borderRadius: 16, padding: 26 }}>
                 <div style={{ display: 'flex', gap: 3, marginBottom: 14 }}>{STARS.map((s, j) => <StarIcon key={j} />)}</div>

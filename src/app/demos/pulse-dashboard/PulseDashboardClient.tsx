@@ -583,6 +583,7 @@ const initials = (name: string) => name.split(' ').map((x) => x[0]).slice(0, 2).
 export default function PulseDashboardClient({ lang }: { lang: DemoLang }) {
   const L = CONTENT[lang]
   const [view, setView] = useState<'panel' | 'miembros' | 'agenda' | 'rutinas' | 'pagos'>('panel')
+  const [navOpen, setNavOpen] = useState(false)
   const [query, setQuery] = useState('')
   const [sel, setSel] = useState<Member | null>(null)
   const [notifOpen, setNotifOpen] = useState(false)
@@ -819,10 +820,14 @@ export default function PulseDashboardClient({ lang }: { lang: DemoLang }) {
         .pd-h-bd:hover{border-color:#c7ccd3 !important}
         .pd-h-amber:hover{background:#fdf6ec !important}
         .pd-h-gray:hover{background:#f7f8fa !important}
+        @media (max-width:900px){
+          .pulse-scope > main{max-height:none !important}
+        }
       `}</style>
 
       {/* SIDEBAR */}
-      <nav style={{ width: 238, flexShrink: 0, display: 'flex', flexDirection: 'column', padding: '20px 16px', gap: 4, background: '#ffffff', borderRight: '1px solid #e6e8ec' }}>
+      {navOpen && <div className="dshell-backdrop" onClick={() => setNavOpen(false)} />}
+      <nav className={`dshell-nav${navOpen ? ' is-open' : ''}`} style={{ width: 238, flexShrink: 0, display: 'flex', flexDirection: 'column', padding: '20px 16px', gap: 4, background: '#ffffff', borderRight: '1px solid #e6e8ec' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 11, padding: '6px 8px 20px' }}>
           <div style={{ width: 38, height: 38, borderRadius: 10, background: '#3b5bdb', display: 'grid', placeItems: 'center' }}><Icon name="activity" size={20} style={{ color: '#fff' }} /></div>
           <div>
@@ -832,7 +837,7 @@ export default function PulseDashboardClient({ lang }: { lang: DemoLang }) {
         </div>
         <div style={{ fontSize: 11, fontWeight: 700, letterSpacing: '.08em', textTransform: 'uppercase', color: '#9aa0a8', padding: '6px 10px 4px' }}>{L.menu}</div>
         {navItems.map((item) => (
-          <div key={item.key} onClick={item.onClick} className="pd-h-f3" style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '10px 11px', borderRadius: 10, cursor: 'pointer', transition: 'background .12s', background: item.bg, color: item.color }}>
+          <div key={item.key} onClick={() => { item.onClick(); setNavOpen(false) }} className="pd-h-f3" style={{ display: 'flex', alignItems: 'center', gap: 12, padding: '10px 11px', borderRadius: 10, cursor: 'pointer', transition: 'background .12s', background: item.bg, color: item.color }}>
             <Icon name={item.icon} size={18} />
             <span style={{ fontSize: 14, fontWeight: item.weight }}>{item.label}</span>
           </div>
@@ -849,9 +854,12 @@ export default function PulseDashboardClient({ lang }: { lang: DemoLang }) {
       {/* MAIN */}
       <main style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', maxHeight: '100vh' }}>
         <header style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 20, padding: '22px 34px 18px', flexShrink: 0, background: '#ffffff', borderBottom: '1px solid #e6e8ec' }}>
-          <div>
-            <div style={{ fontSize: 12, letterSpacing: '.02em', color: '#9aa0a8', fontWeight: 600 }}>{dateStr}</div>
-            <h1 style={{ fontSize: 23, fontWeight: 800, marginTop: 2, letterSpacing: '-.02em' }}>{viewTitle}</h1>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 14, minWidth: 0 }}>
+            <button className="dshell-hamb" onClick={() => setNavOpen(true)} aria-label="Menu" aria-expanded={navOpen} style={{ width: 38, height: 38, borderRadius: 10, border: '1px solid #e2e5e9', background: '#fff', color: '#171a1f', cursor: 'pointer', alignItems: 'center', justifyContent: 'center', fontSize: 18, flexShrink: 0 }}><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round"><line x1="4" y1="7" x2="20" y2="7" /><line x1="4" y1="12" x2="20" y2="12" /><line x1="4" y1="17" x2="20" y2="17" /></svg></button>
+            <div style={{ minWidth: 0 }}>
+              <div style={{ fontSize: 12, letterSpacing: '.02em', color: '#9aa0a8', fontWeight: 600 }}>{dateStr}</div>
+              <h1 style={{ fontSize: 23, fontWeight: 800, marginTop: 2, letterSpacing: '-.02em' }}>{viewTitle}</h1>
+            </div>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 11 }}>
             <div style={{ position: 'relative' }}>
@@ -860,7 +868,7 @@ export default function PulseDashboardClient({ lang }: { lang: DemoLang }) {
                 <span style={{ position: 'absolute', top: 9, right: 10, minWidth: 15, height: 15, padding: '0 3px', borderRadius: 20, background: '#dc2626', border: '1.5px solid #fff', color: '#fff', fontSize: 9, fontWeight: 800, display: 'grid', placeItems: 'center' }}>4</span>
               </div>
               {notifOpen && (
-                <div style={{ position: 'absolute', top: 52, right: 0, width: 344, background: '#fff', border: '1px solid #e6e8ec', borderRadius: 14, boxShadow: '0 22px 50px -20px rgba(23,26,31,.35)', zIndex: 70, overflow: 'hidden', animation: 'riseIn .22s ease both' }}>
+                <div className="pd-drop" style={{ position: 'absolute', top: 52, right: 0, width: 344, background: '#fff', border: '1px solid #e6e8ec', borderRadius: 14, boxShadow: '0 22px 50px -20px rgba(23,26,31,.35)', zIndex: 70, overflow: 'hidden', animation: 'riseIn .22s ease both' }}>
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '14px 16px', borderBottom: '1px solid #eceef1' }}><span style={{ fontSize: 14, fontWeight: 800 }}>{L.notifications}</span><span style={{ fontSize: 12, color: '#3b5bdb', fontWeight: 600, cursor: 'pointer' }}>{L.markRead}</span></div>
                   <div style={{ maxHeight: 340, overflowY: 'auto' }}>
                     {notifs.map((n, i) => (
@@ -882,7 +890,7 @@ export default function PulseDashboardClient({ lang }: { lang: DemoLang }) {
           {/* ===== PANEL ===== */}
           {V === 'panel' && (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 20, animation: 'fadeUp .3s ease' }}>
-              <section style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 16 }}>
+              <section className="dcards-4" style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 16 }}>
                 {kpis.map((k, i) => (
                   <div key={i} style={{ background: '#fff', border: '1px solid #e6e8ec', borderRadius: 14, padding: '18px 18px 16px', animation: 'riseIn .5s ease both', animationDelay: k.delay }}>
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
@@ -895,7 +903,7 @@ export default function PulseDashboardClient({ lang }: { lang: DemoLang }) {
                 ))}
               </section>
 
-              <section style={{ display: 'grid', gridTemplateColumns: '1fr 320px', gap: 16, alignItems: 'start' }}>
+              <section className="dcol-2" style={{ display: 'grid', gridTemplateColumns: '1fr 320px', gap: 16, alignItems: 'start' }}>
                 <div style={{ background: '#fff', border: '1px solid #e6e8ec', borderRadius: 16, padding: '22px 24px' }}>
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 20 }}>
                     <div><h3 style={{ fontSize: 16, fontWeight: 700 }}>{L.weeklyAttendance}</h3><div style={{ fontSize: 12, color: '#9aa0a8', marginTop: 2 }}>{L.checkinsPerDay}</div></div>
@@ -921,7 +929,7 @@ export default function PulseDashboardClient({ lang }: { lang: DemoLang }) {
                 </div>
               </section>
 
-              <section style={{ display: 'grid', gridTemplateColumns: '1fr 320px', gap: 16, alignItems: 'start' }}>
+              <section className="dcol-2" style={{ display: 'grid', gridTemplateColumns: '1fr 320px', gap: 16, alignItems: 'start' }}>
                 <div style={{ background: '#fff', border: '1px solid #e6e8ec', borderRadius: 16, padding: '22px 24px' }}>
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}><h3 style={{ fontSize: 16, fontWeight: 700 }}>{L.todayRoutinePrefix} · {L.routineNames['Tren superior']}</h3><span onClick={() => nav('rutinas')} style={{ fontSize: 13, color: '#3b5bdb', cursor: 'pointer', fontWeight: 600, display: 'flex', alignItems: 'center', gap: 4 }}>{L.library} <Icon name="chevron-right" size={15} /></span></div>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: 9 }}>
@@ -953,7 +961,7 @@ export default function PulseDashboardClient({ lang }: { lang: DemoLang }) {
           {/* ===== MIEMBROS ===== */}
           {V === 'miembros' && (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 18, animation: 'fadeUp .3s ease' }}>
-              <section style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 16 }}>
+              <section className="dcards-4" style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 16 }}>
                 {memberStats.map((s, i) => (
                   <div key={i} style={{ background: '#fff', border: '1px solid #e6e8ec', borderRadius: 14, padding: 18 }}>
                     <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}><span style={{ fontSize: 13, color: '#6b7280', fontWeight: 600 }}>{s.label}</span><div style={{ width: 30, height: 30, borderRadius: 8, background: s.iconBg, display: 'grid', placeItems: 'center', color: s.color }}><Icon name={s.icon} size={16} /></div></div>
@@ -975,7 +983,7 @@ export default function PulseDashboardClient({ lang }: { lang: DemoLang }) {
                   </div>
                 </section>
               )}
-              <section style={{ background: '#fff', border: '1px solid #e6e8ec', borderRadius: 16, overflow: 'hidden' }}>
+              <section className="dtable-wrap" style={{ background: '#fff', border: '1px solid #e6e8ec', borderRadius: 16, overflow: 'hidden' }}>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 16, padding: '18px 22px', borderBottom: '1px solid #eceef1' }}>
                   <div className="pd-h-bd" style={{ display: 'flex', alignItems: 'center', gap: 9, padding: '10px 13px', borderRadius: 10, background: '#f5f6f8', border: '1px solid #e6e8ec', flex: 1, maxWidth: 360 }}>
                     <Icon name="search" size={16} style={{ color: '#9aa0a8' }} />
@@ -1018,7 +1026,7 @@ export default function PulseDashboardClient({ lang }: { lang: DemoLang }) {
               </section>
               <div>
                 <div style={{ fontSize: 14, color: '#6b7280', marginBottom: 14, display: 'flex', alignItems: 'center', gap: 8 }}><Icon name="zap" size={16} style={{ color: '#3b5bdb' }} /> {L.todayClasses}</div>
-                <section style={{ display: 'grid', gridTemplateColumns: 'repeat(2,1fr)', gap: 16 }}>
+                <section className="dcards-2" style={{ display: 'grid', gridTemplateColumns: 'repeat(2,1fr)', gap: 16 }}>
                   {classesView.map((c, i) => (
                     <div key={i} style={{ background: '#fff', border: `1px solid ${c.cardBorder}`, borderRadius: 14, padding: '20px 22px' }}>
                       <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 12 }}>
@@ -1041,7 +1049,7 @@ export default function PulseDashboardClient({ lang }: { lang: DemoLang }) {
           {V === 'rutinas' && (
             <div style={{ animation: 'fadeUp .3s ease' }}>
               <div style={{ fontSize: 14, color: '#6b7280', marginBottom: 16, display: 'flex', alignItems: 'center', gap: 8 }}><Icon name="dumbbell" size={16} style={{ color: '#3b5bdb' }} /> {L.tapExercises}</div>
-              <section style={{ display: 'grid', gridTemplateColumns: 'repeat(2,1fr)', gap: 16 }}>
+              <section className="dcards-2" style={{ display: 'grid', gridTemplateColumns: 'repeat(2,1fr)', gap: 16 }}>
                 {routinesView.map((r, i) => (
                   <div key={i} style={{ background: '#fff', border: '1px solid #e6e8ec', borderRadius: 14, padding: 22 }}>
                     <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', gap: 12, marginBottom: 6 }}>
@@ -1066,7 +1074,7 @@ export default function PulseDashboardClient({ lang }: { lang: DemoLang }) {
           {/* ===== PAGOS ===== */}
           {V === 'pagos' && (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 18, animation: 'fadeUp .3s ease' }}>
-              <section style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 16 }}>
+              <section className="dcards-3" style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 16 }}>
                 <div style={{ background: '#3b5bdb', borderRadius: 14, padding: 22, color: '#fff' }}>
                   <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}><span style={{ fontSize: 13, color: '#c7d0f5', fontWeight: 600 }}>MRR</span><Icon name="repeat" size={18} style={{ color: '#c7d0f5' }} /></div>
                   <div style={{ fontSize: 34, fontWeight: 800, marginTop: 10 }}>$48.2K</div>
@@ -1083,7 +1091,7 @@ export default function PulseDashboardClient({ lang }: { lang: DemoLang }) {
                   <div style={{ fontSize: 12, color: '#dc2626', marginTop: 6 }}>{L.overduePayments}</div>
                 </div>
               </section>
-              <section style={{ background: '#fff', border: '1px solid #e6e8ec', borderRadius: 16, overflow: 'hidden' }}>
+              <section className="dtable-wrap" style={{ background: '#fff', border: '1px solid #e6e8ec', borderRadius: 16, overflow: 'hidden' }}>
                 <div style={{ padding: '18px 22px', borderBottom: '1px solid #eceef1', fontSize: 16, fontWeight: 700 }}>{L.recentTransactions}</div>
                 <div style={{ display: 'grid', gridTemplateColumns: '2fr 1fr 1fr 1fr', gap: 16, padding: '12px 22px', fontSize: 11, letterSpacing: '.05em', textTransform: 'uppercase', color: '#9aa0a8', fontWeight: 700, borderBottom: '1px solid #f0f1f4', background: '#fafbfc' }}><span>{L.colMember}</span><span>{L.colPlan}</span><span>{L.colAmount}</span><span>{L.colStatus}</span></div>
                 {transactions.map((t, i) => (
@@ -1109,7 +1117,7 @@ export default function PulseDashboardClient({ lang }: { lang: DemoLang }) {
                   <div onClick={closeMember} className="pd-h-f3" style={{ width: 34, height: 34, borderRadius: 9, display: 'grid', placeItems: 'center', cursor: 'pointer', color: '#6b7280', border: '1px solid #e6e8ec' }}><Icon name="x" size={18} /></div>
                 </div>
                 <div style={{ flex: 1, overflowY: 'auto', padding: '22px 24px', display: 'flex', flexDirection: 'column', gap: 20 }}>
-                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 10 }}>
+                  <div className="dcards-3" style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 10 }}>
                     <div style={{ background: '#f7f8fa', border: '1px solid #eceef1', borderRadius: 12, padding: 14, textAlign: 'center' }}><div style={{ fontSize: 22, fontWeight: 800 }}>{selView.visits}</div><div style={{ fontSize: 11, color: '#9aa0a8', fontWeight: 600, marginTop: 2 }}>{L.visitsMonth}</div></div>
                     <div style={{ background: '#f7f8fa', border: '1px solid #eceef1', borderRadius: 12, padding: 14, textAlign: 'center' }}><div style={{ fontSize: 22, fontWeight: 800 }}>{selView.streak}</div><div style={{ fontSize: 11, color: '#9aa0a8', fontWeight: 600, marginTop: 2 }}>{L.streakDays}</div></div>
                     <div style={{ background: '#f7f8fa', border: '1px solid #eceef1', borderRadius: 12, padding: 14, textAlign: 'center' }}><div style={{ fontSize: 22, fontWeight: 800 }}>{selView.price}</div><div style={{ fontSize: 11, color: '#9aa0a8', fontWeight: 600, marginTop: 2 }}>{L.planTag(selView.plan)}</div></div>
@@ -1138,7 +1146,7 @@ export default function PulseDashboardClient({ lang }: { lang: DemoLang }) {
           {/* ===== KIOSCO CHECK-IN ===== */}
           {kioskOpen && (
             <div onClick={closeKiosk} style={{ position: 'fixed', inset: 0, background: 'rgba(23,26,31,.5)', zIndex: 80, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: 24, animation: 'fadeBg .2s ease both' }}>
-              <div onClick={(e) => e.stopPropagation()} style={{ width: 720, maxWidth: '100%', background: '#fff', borderRadius: 20, overflow: 'hidden', boxShadow: '0 40px 80px -30px rgba(23,26,31,.5)', animation: 'riseIn .28s ease both', display: 'grid', gridTemplateColumns: '1fr 1fr' }}>
+              <div onClick={(e) => e.stopPropagation()} className="dcol-2" style={{ width: 720, maxWidth: '100%', background: '#fff', borderRadius: 20, overflow: 'hidden', boxShadow: '0 40px 80px -30px rgba(23,26,31,.5)', animation: 'riseIn .28s ease both', display: 'grid', gridTemplateColumns: '1fr 1fr' }}>
                 <div style={{ background: '#3b5bdb', color: '#fff', padding: '34px 30px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center' }}>
                   <div style={{ fontSize: 12, fontWeight: 700, letterSpacing: '.08em', textTransform: 'uppercase', color: '#c7d0f5' }}>{L.memberCheckin}</div>
                   <div style={{ width: 186, height: 186, background: '#fff', borderRadius: 18, margin: '22px 0 16px', display: 'grid', placeItems: 'center', color: '#3b5bdb' }}><Icon name="qr-code" size={120} /></div>

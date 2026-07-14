@@ -589,6 +589,7 @@ export default function VesperDashboardClient({ lang }: { lang: DemoLang }) {
   const tr = CONTENT[lang]
   const [theme, setTheme] = useState<'light' | 'dark'>('light')
   const [nav, setNavState] = useState('Inicio')
+  const [navOpen, setNavOpen] = useState(false)
   const [range, setRange] = useState('30d')
   const [toast, setToast] = useState<string | null>(null)
   const [hoverIdx, setHoverIdx] = useState(-1)
@@ -985,7 +986,7 @@ export default function VesperDashboardClient({ lang }: { lang: DemoLang }) {
   const draftCatLabel = tr.cat[draftCat] ?? draftCat
 
   return (
-    <div data-theme={theme} className="vesper-root" style={{ display: 'grid', gridTemplateColumns: '236px 1fr', minHeight: '100vh', background: 'var(--bg)', color: 'var(--text)', transition: 'background .35s', fontFamily: "'DM Sans',system-ui,sans-serif" }}>
+    <div data-theme={theme} className="vesper-root dshell" style={{ display: 'grid', gridTemplateColumns: '236px 1fr', minHeight: '100vh', background: 'var(--bg)', color: 'var(--text)', transition: 'background .35s', fontFamily: "'DM Sans',system-ui,sans-serif" }}>
       {/* eslint-disable-next-line @next/next/no-page-custom-font */}
       <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600;9..40,700&family=Bodoni+Moda:wght@500;600&display=swap" />
       <style>{`
@@ -1019,7 +1020,8 @@ export default function VesperDashboardClient({ lang }: { lang: DemoLang }) {
       `}</style>
 
       {/* ============ SIDEBAR ============ */}
-      <aside style={{ background: 'var(--nav)', color: 'var(--navtext)', padding: '20px 14px', display: 'flex', flexDirection: 'column', position: 'sticky', top: 0, height: '100vh' }}>
+      {navOpen && <div className="dshell-backdrop" onClick={() => setNavOpen(false)} />}
+      <aside className={`dshell-nav${navOpen ? ' is-open' : ''}`} style={{ background: 'var(--nav)', color: 'var(--navtext)', padding: '20px 14px', display: 'flex', flexDirection: 'column', position: 'sticky', top: 0, height: '100vh' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 10, padding: '4px 10px 20px' }}>
           <span style={{ fontFamily: "'Bodoni Moda',serif", fontSize: 20, letterSpacing: '.32em', paddingLeft: '.32em', color: '#fff' }}>VESPER</span>
           <span style={{ fontSize: 9, letterSpacing: '.14em', color: '#0d0d0f', background: '#c7a36a', padding: '2px 7px', borderRadius: 5, fontWeight: 600, marginLeft: 'auto' }}>ADMIN</span>
@@ -1046,7 +1048,7 @@ export default function VesperDashboardClient({ lang }: { lang: DemoLang }) {
         </div>
         <nav style={{ display: 'flex', flexDirection: 'column', gap: 2, overflowY: 'auto' }}>
           {navItems.map((n, i) => (
-            <div key={i} onClick={n.onClick} className="hv-nav" style={{ display: 'flex', alignItems: 'center', gap: 11, padding: '9px 11px', borderRadius: 8, cursor: 'pointer', fontSize: 13.5, fontWeight: n.weight as CSSProperties['fontWeight'], background: n.bg, color: n.color, transition: 'background .18s' }}>
+            <div key={i} onClick={() => { n.onClick(); setNavOpen(false) }} className="hv-nav" style={{ display: 'flex', alignItems: 'center', gap: 11, padding: '9px 11px', borderRadius: 8, cursor: 'pointer', fontSize: 13.5, fontWeight: n.weight as CSSProperties['fontWeight'], background: n.bg, color: n.color, transition: 'background .18s' }}>
               <span style={{ width: 18, display: 'flex', alignItems: 'center', justifyContent: 'center', opacity: 0.92 }}>{n.iconEl}</span>{n.label}
               {n.badge && <span style={{ marginLeft: 'auto', fontSize: 10.5, background: n.badgeBg, color: n.badgeColor, padding: '1px 7px', borderRadius: 10, fontWeight: 600 }}>{n.badge}</span>}
             </div>
@@ -1065,6 +1067,7 @@ export default function VesperDashboardClient({ lang }: { lang: DemoLang }) {
       <main style={{ display: 'flex', flexDirection: 'column', minWidth: 0 }}>
         {/* TOPBAR */}
         <header style={{ position: 'sticky', top: 0, zIndex: 20, background: 'var(--surface)', borderBottom: '1px solid var(--line)', padding: '0 30px', height: 62, display: 'flex', alignItems: 'center', gap: 16 }}>
+          <button className="dshell-hamb" onClick={() => setNavOpen(true)} aria-label="Menu" aria-expanded={navOpen} style={{ width: 38, height: 38, borderRadius: 9, border: '1px solid var(--line)', background: 'var(--surface2)', color: 'var(--text)', cursor: 'pointer', alignItems: 'center', justifyContent: 'center', fontSize: 18, flexShrink: 0 }}><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round"><line x1="4" y1="7" x2="20" y2="7" /><line x1="4" y1="12" x2="20" y2="12" /><line x1="4" y1="17" x2="20" y2="17" /></svg></button>
           <div style={{ minWidth: 0 }}><div style={{ fontSize: 15, fontWeight: 600, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{crumb}</div></div>
           <div style={{ flex: 1 }} />
           {showRange && (
@@ -1120,7 +1123,7 @@ export default function VesperDashboardClient({ lang }: { lang: DemoLang }) {
               </div>
 
               {/* KPI strip */}
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5,1fr)', gap: 0, border: '1px solid var(--line)', borderRadius: 14, background: 'var(--surface)', overflow: 'hidden', marginBottom: 20 }}>
+              <div className="dcards-5" style={{ display: 'grid', gridTemplateColumns: 'repeat(5,1fr)', gap: 0, border: '1px solid var(--line)', borderRadius: 14, background: 'var(--surface)', overflow: 'hidden', marginBottom: 20 }}>
                 {kpis.map((k, i) => (
                   <div key={i} style={{ padding: '18px 20px', borderRight: '1px solid var(--line)' }}>
                     <div style={{ fontSize: 12, color: 'var(--muted)', marginBottom: 9 }}>{k.label}</div>
@@ -1134,7 +1137,7 @@ export default function VesperDashboardClient({ lang }: { lang: DemoLang }) {
               </div>
 
               {/* Chart + funnel */}
-              <div style={{ display: 'grid', gridTemplateColumns: '1.65fr 1fr', gap: 18, marginBottom: 18 }}>
+              <div className="dcol-2" style={{ display: 'grid', gridTemplateColumns: '1.65fr 1fr', gap: 18, marginBottom: 18 }}>
                 <div style={{ border: '1px solid var(--line)', borderRadius: 14, background: 'var(--surface)', padding: '22px 24px' }}>
                   <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 22 }}>
                     <div>
@@ -1195,7 +1198,7 @@ export default function VesperDashboardClient({ lang }: { lang: DemoLang }) {
               </div>
 
               {/* bottom row */}
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 18 }}>
+              <div className="dcards-3" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 18 }}>
                 <div style={{ border: '1px solid var(--line)', borderRadius: 14, background: 'var(--surface)', padding: '22px 24px' }}>
                   <div style={{ fontSize: 13, color: 'var(--muted)', marginBottom: 18 }}>{tr.channelTitle}</div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 18 }}>
@@ -1254,7 +1257,7 @@ export default function VesperDashboardClient({ lang }: { lang: DemoLang }) {
                 </div>
                 <button onClick={openNew} className="hv-op" style={{ display: 'flex', alignItems: 'center', gap: 8, background: '#171717', color: '#fff', border: 'none', padding: '11px 18px', borderRadius: 10, cursor: 'pointer', fontSize: 13, fontWeight: 600, whiteSpace: 'nowrap' }}><span style={{ fontSize: 15 }}>＋</span>{tr.addProduct}</button>
               </div>
-              <div style={{ border: '1px solid var(--line)', borderRadius: 14, background: 'var(--surface)', overflow: 'hidden' }}>
+              <div className="dtable-wrap" style={{ border: '1px solid var(--line)', borderRadius: 14, background: 'var(--surface)', overflow: 'hidden' }}>
                 <div style={{ display: 'grid', gridTemplateColumns: '52px 1.7fr 110px 1fr 1fr 90px 70px', gap: 14, padding: '14px 22px', borderBottom: '1px solid var(--line)', fontSize: 11, letterSpacing: '.03em', textTransform: 'uppercase', color: 'var(--muted2)', fontWeight: 600 }}>
                   <span /><span>{tr.thProducto}</span><span>{tr.thEstado}</span><span>{tr.thInventario}</span><span>{tr.thCategoria}</span><span>{tr.thPrecio}</span><span />
                 </div>
@@ -1284,13 +1287,13 @@ export default function VesperDashboardClient({ lang }: { lang: DemoLang }) {
                 <span style={{ fontSize: 12.5, color: 'var(--muted2)' }}>{draftStatusPill}</span>
               </div>
 
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 300px', gap: 18, alignItems: 'start' }}>
+              <div className="dcol-2" style={{ display: 'grid', gridTemplateColumns: '1fr 300px', gap: 18, alignItems: 'start' }}>
                 {/* LEFT */}
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 18 }}>
                   <div style={{ border: '1px solid var(--line)', borderRadius: 14, background: 'var(--surface)', padding: '22px 24px' }}>
                     <div style={{ fontSize: 13.5, fontWeight: 600, marginBottom: 4 }}>{tr.typeOfProduct}</div>
                     <p style={{ margin: '0 0 15px', fontSize: 12, color: 'var(--muted2)' }}>{tr.typeHint}</p>
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 10 }}>
+                    <div className="dcards-3" style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 10 }}>
                       {typeCards.map((t, i) => (
                         <button key={i} onClick={t.onClick} className="hv-l2" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 8, padding: '15px 8px', borderRadius: 12, border: `1px solid ${t.border}`, background: t.bg, color: t.color, cursor: 'pointer', transition: 'all .18s' }}>
                           <span style={{ color: t.iconColor, display: 'flex' }}>{t.iconEl}</span>
@@ -1308,7 +1311,7 @@ export default function VesperDashboardClient({ lang }: { lang: DemoLang }) {
                   <div style={{ border: '1px solid var(--line)', borderRadius: 14, background: 'var(--surface)', padding: '22px 24px' }}>
                     <div style={{ fontSize: 13.5, fontWeight: 600, marginBottom: 5 }}>{tr.media}</div>
                     <p style={{ margin: '0 0 16px', fontSize: 12, color: 'var(--muted2)' }}>{tr.mediaHint}</p>
-                    <div style={{ display: 'grid', gridTemplateColumns: '1.5fr 1fr 1fr', gap: 12 }}>
+                    <div className="dcol-3" style={{ display: 'grid', gridTemplateColumns: '1.5fr 1fr 1fr', gap: 12 }}>
                       <div style={{ width: '100%', height: 180, borderRadius: 12, overflow: 'hidden', background: d.img ? `var(--surface3) url(${d.img}) center/cover` : 'var(--surface2)', border: '1px solid var(--line)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--muted2)', fontSize: 12.5 }}>{d.img ? '' : tr.mainPhoto}</div>
                       <div style={{ width: '100%', height: 180, borderRadius: 12, background: 'var(--surface2)', border: '1px solid var(--line)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--muted2)', fontSize: 12.5 }}>{tr.addSlot}</div>
                       <div style={{ width: '100%', height: 180, borderRadius: 12, background: 'var(--surface2)', border: '1px solid var(--line)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'var(--muted2)', fontSize: 12.5 }}>{tr.addSlot}</div>
@@ -1318,7 +1321,7 @@ export default function VesperDashboardClient({ lang }: { lang: DemoLang }) {
                   {/* Pricing */}
                   <div style={{ border: '1px solid var(--line)', borderRadius: 14, background: 'var(--surface)', padding: '22px 24px' }}>
                     <div style={{ fontSize: 13.5, fontWeight: 600, marginBottom: 16 }}>{tr.pricing}</div>
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 14 }}>
+                    <div className="dcards-3" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 14 }}>
                       <label style={{ display: 'flex', flexDirection: 'column', gap: 7 }}><span style={{ fontSize: 12, color: 'var(--muted)' }}>{tr.fPrice}</span><div style={{ display: 'flex', alignItems: 'center', background: 'var(--surface2)', border: '1px solid var(--line)', borderRadius: 10, padding: '0 12px' }}><span style={{ color: 'var(--muted2)', fontSize: 14 }}>$</span><input value={d.price || ''} onChange={numInput('price')} inputMode="numeric" placeholder="0.00" style={{ border: 'none', background: 'transparent', padding: '11px 6px', fontSize: 14, width: '100%' }} /></div></label>
                       <label style={{ display: 'flex', flexDirection: 'column', gap: 7 }}><span style={{ fontSize: 12, color: 'var(--muted)' }}>{tr.comparePrice}</span><div style={{ display: 'flex', alignItems: 'center', background: 'var(--surface2)', border: '1px solid var(--line)', borderRadius: 10, padding: '0 12px' }}><span style={{ color: 'var(--muted2)', fontSize: 14 }}>$</span><input value={d.compare || ''} onChange={numInput('compare')} inputMode="numeric" placeholder="0.00" style={{ border: 'none', background: 'transparent', padding: '11px 6px', fontSize: 14, width: '100%' }} /></div></label>
                       <label style={{ display: 'flex', flexDirection: 'column', gap: 7 }}><span style={{ fontSize: 12, color: 'var(--muted)' }}>{tr.costPerItem}</span><div style={{ display: 'flex', alignItems: 'center', background: 'var(--surface2)', border: '1px solid var(--line)', borderRadius: 10, padding: '0 12px' }}><span style={{ color: 'var(--muted2)', fontSize: 14 }}>$</span><input value={d.cost || ''} onChange={numInput('cost')} inputMode="numeric" placeholder="0.00" style={{ border: 'none', background: 'transparent', padding: '11px 6px', fontSize: 14, width: '100%' }} /></div></label>
@@ -1333,7 +1336,7 @@ export default function VesperDashboardClient({ lang }: { lang: DemoLang }) {
                   <div style={{ border: '1px solid var(--line)', borderRadius: 14, background: 'var(--surface)', padding: '22px 24px' }}>
                     <div style={{ display: 'flex', alignItems: 'center', gap: 9, marginBottom: 5 }}><div style={{ fontSize: 13.5, fontWeight: 600 }}>{tr.specs}</div><span style={{ fontSize: 11, fontWeight: 600, color: '#8a6d1e', background: 'rgba(199,163,106,.2)', padding: '2px 9px', borderRadius: 7 }}>{typeLabel}</span></div>
                     <p style={{ margin: '0 0 16px', fontSize: 12, color: 'var(--muted2)' }}>{tr.specsHint}</p>
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
+                    <div className="dcards-2" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
                       {typeAttrs.map((f, i) => (
                         <label key={i} style={{ display: 'flex', flexDirection: 'column', gap: 7 }}>
                           <span style={{ fontSize: 12, color: 'var(--muted)' }}>{f.label}</span>
@@ -1354,7 +1357,7 @@ export default function VesperDashboardClient({ lang }: { lang: DemoLang }) {
                   {/* Inventory */}
                   <div style={{ border: '1px solid var(--line)', borderRadius: 14, background: 'var(--surface)', padding: '22px 24px' }}>
                     <div style={{ fontSize: 13.5, fontWeight: 600, marginBottom: 16 }}>{tr.invWord}</div>
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
+                    <div className="dcards-2" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
                       <label style={{ display: 'flex', flexDirection: 'column', gap: 7 }}><span style={{ fontSize: 12, color: 'var(--muted)' }}>{tr.skuCode}</span><input value={d.sku || ''} onChange={(e) => patchDraft('sku', e.target.value)} placeholder="VS-000" style={{ background: 'var(--surface2)', border: '1px solid var(--line)', borderRadius: 10, padding: '11px 14px', fontSize: 13.5 }} /></label>
                       <label style={{ display: 'flex', flexDirection: 'column', gap: 7 }}><span style={{ fontSize: 12, color: 'var(--muted)' }}>{tr.qtyAvailable}</span><input value={d.stock || ''} onChange={numInput('stock')} inputMode="numeric" placeholder="0" style={{ background: 'var(--surface2)', border: '1px solid var(--line)', borderRadius: 10, padding: '11px 14px', fontSize: 13.5 }} /></label>
                     </div>
@@ -1370,7 +1373,7 @@ export default function VesperDashboardClient({ lang }: { lang: DemoLang }) {
                       ))}
                     </div>
                     {variantRows.length > 0 && (
-                      <div style={{ border: '1px solid var(--line)', borderRadius: 11, overflow: 'hidden' }}>
+                      <div className="dtable-wrap" style={{ border: '1px solid var(--line)', borderRadius: 11, overflow: 'hidden' }}>
                         <div style={{ display: 'grid', gridTemplateColumns: '1fr 110px 130px', gap: 12, padding: '10px 16px', background: 'var(--surface2)', borderBottom: '1px solid var(--line)', fontSize: 11, textTransform: 'uppercase', letterSpacing: '.03em', color: 'var(--muted2)', fontWeight: 600 }}><span>{tr.thVariante}</span><span>{tr.fPrice}</span><span>{tr.thStock}</span></div>
                         {variantRows.map((v, i) => (
                           <div key={i} style={{ display: 'grid', gridTemplateColumns: '1fr 110px 130px', gap: 12, padding: '11px 16px', borderBottom: '1px solid var(--line)', alignItems: 'center' }}>
@@ -1409,7 +1412,7 @@ export default function VesperDashboardClient({ lang }: { lang: DemoLang }) {
           {/* ==================== INVENTARIO ==================== */}
           {nav === 'Inventario' && (
             <div key="v-inv" style={{ animation: 'viewIn .45s cubic-bezier(.2,.7,.2,1) both' }}>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5,1fr)', gap: 16, marginBottom: 20 }}>
+              <div className="dcards-5" style={{ display: 'grid', gridTemplateColumns: 'repeat(5,1fr)', gap: 16, marginBottom: 20 }}>
                 {invStats.map((s, i) => (
                   <div key={i} style={{ border: '1px solid var(--line)', borderRadius: 13, background: 'var(--surface)', padding: '18px 20px' }}>
                     <div style={{ fontSize: 12, color: 'var(--muted)', marginBottom: 9 }}>{s.label}</div>
@@ -1417,7 +1420,7 @@ export default function VesperDashboardClient({ lang }: { lang: DemoLang }) {
                   </div>
                 ))}
               </div>
-              <div style={{ border: '1px solid var(--line)', borderRadius: 14, background: 'var(--surface)', overflow: 'hidden' }}>
+              <div className="dtable-wrap" style={{ border: '1px solid var(--line)', borderRadius: 14, background: 'var(--surface)', overflow: 'hidden' }}>
                 <div style={{ display: 'grid', gridTemplateColumns: '52px 1.8fr 1fr 110px 130px 120px', gap: 14, padding: '14px 22px', borderBottom: '1px solid var(--line)', fontSize: 11, letterSpacing: '.03em', textTransform: 'uppercase', color: 'var(--muted2)', fontWeight: 600 }}>
                   <span /><span>{tr.thProducto}</span><span>{tr.thSku}</span><span>{tr.thCommitted}</span><span>{tr.thAvailable}</span><span>{tr.thAdjust}</span>
                 </div>
@@ -1448,7 +1451,7 @@ export default function VesperDashboardClient({ lang }: { lang: DemoLang }) {
                   <button key={i} onClick={f.onClick} style={{ background: f.bg, color: f.color, border: 'none', padding: '10px 16px', cursor: 'pointer', fontSize: 12.5, fontWeight: 500, transition: 'all .18s' }}>{f.label}</button>
                 ))}
               </div>
-              <div style={{ border: '1px solid var(--line)', borderRadius: 14, background: 'var(--surface)', overflow: 'hidden' }}>
+              <div className="dtable-wrap" style={{ border: '1px solid var(--line)', borderRadius: 14, background: 'var(--surface)', overflow: 'hidden' }}>
                 <div style={{ display: 'grid', gridTemplateColumns: '110px 1.3fr 1.4fr 100px 120px 120px 80px', gap: 14, padding: '14px 22px', borderBottom: '1px solid var(--line)', fontSize: 11, letterSpacing: '.03em', textTransform: 'uppercase', color: 'var(--muted2)', fontWeight: 600 }}>
                   <span>{tr.thPedido}</span><span>{tr.thCliente}</span><span>{tr.thArticulos}</span><span>{tr.thTotal}</span><span>{tr.thPago}</span><span>{tr.thEnvio}</span><span>{tr.thHora}</span>
                 </div>
@@ -1470,7 +1473,7 @@ export default function VesperDashboardClient({ lang }: { lang: DemoLang }) {
           {/* ==================== CLIENTES ==================== */}
           {nav === 'Clientes' && (
             <div key="v-clients" style={{ animation: 'viewIn .45s cubic-bezier(.2,.7,.2,1) both' }}>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 16, marginBottom: 20 }}>
+              <div className="dcards-4" style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 16, marginBottom: 20 }}>
                 {clientStats.map((s, i) => (
                   <div key={i} style={{ border: '1px solid var(--line)', borderRadius: 13, background: 'var(--surface)', padding: '18px 20px' }}>
                     <div style={{ fontSize: 12, color: 'var(--muted)', marginBottom: 9 }}>{s.label}</div>
@@ -1482,7 +1485,7 @@ export default function VesperDashboardClient({ lang }: { lang: DemoLang }) {
                 <span style={{ position: 'absolute', left: 13, top: '50%', transform: 'translateY(-50%)', color: 'var(--muted2)' }}>⌕</span>
                 <input value={cQuery} onChange={(e) => { setCQuery(e.target.value); setPgClients(1) }} placeholder={tr.searchClient} style={{ width: '100%', background: 'var(--surface)', border: '1px solid var(--line)', borderRadius: 10, padding: '11px 14px 11px 36px', fontSize: 13.5 }} />
               </div>
-              <div style={{ border: '1px solid var(--line)', borderRadius: 14, background: 'var(--surface)', overflow: 'hidden' }}>
+              <div className="dtable-wrap" style={{ border: '1px solid var(--line)', borderRadius: 14, background: 'var(--surface)', overflow: 'hidden' }}>
                 <div style={{ display: 'grid', gridTemplateColumns: '1.6fr 1.6fr 120px 90px 110px 110px', gap: 14, padding: '14px 22px', borderBottom: '1px solid var(--line)', fontSize: 11, letterSpacing: '.03em', textTransform: 'uppercase', color: 'var(--muted2)', fontWeight: 600 }}>
                   <span>{tr.thCliente}</span><span>{tr.thCorreo}</span><span>{tr.thSegmento}</span><span>{tr.navLabels.pedidos}</span><span>{tr.thGastado}</span><span>{tr.thUltCompra}</span>
                 </div>
@@ -1504,7 +1507,7 @@ export default function VesperDashboardClient({ lang }: { lang: DemoLang }) {
           {/* ==================== PAGOS ==================== */}
           {nav === 'Pagos' && (
             <div key="v-pay" style={{ animation: 'viewIn .45s cubic-bezier(.2,.7,.2,1) both' }}>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 16, marginBottom: 20 }}>
+              <div className="dcards-4" style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 16, marginBottom: 20 }}>
                 {payStats.map((s, i) => (
                   <div key={i} style={{ border: '1px solid var(--line)', borderRadius: 13, background: 'var(--surface)', padding: '20px 22px' }}>
                     <div style={{ fontSize: 12, color: 'var(--muted)', marginBottom: 11 }}>{s.label}</div>
@@ -1513,7 +1516,7 @@ export default function VesperDashboardClient({ lang }: { lang: DemoLang }) {
                   </div>
                 ))}
               </div>
-              <div style={{ border: '1px solid var(--line)', borderRadius: 14, background: 'var(--surface)', overflow: 'hidden' }}>
+              <div className="dtable-wrap" style={{ border: '1px solid var(--line)', borderRadius: 14, background: 'var(--surface)', overflow: 'hidden' }}>
                 <div style={{ display: 'grid', gridTemplateColumns: '130px 1.6fr 130px 130px 110px', gap: 14, padding: '14px 22px', borderBottom: '1px solid var(--line)', fontSize: 11, letterSpacing: '.03em', textTransform: 'uppercase', color: 'var(--muted2)', fontWeight: 600 }}>
                   <span>{tr.thTransaccion}</span><span>{tr.thCliente}</span><span>{tr.thMonto}</span><span>{tr.thEstado}</span><span>{tr.thFecha}</span>
                 </div>
@@ -1534,7 +1537,7 @@ export default function VesperDashboardClient({ lang }: { lang: DemoLang }) {
           {/* ==================== DESCUENTOS ==================== */}
           {nav === 'Descuentos' && (
             <div key="v-disc" style={{ animation: 'viewIn .45s cubic-bezier(.2,.7,.2,1) both' }}>
-              <div style={{ border: '1px solid var(--line)', borderRadius: 14, background: 'var(--surface)', overflow: 'hidden' }}>
+              <div className="dtable-wrap" style={{ border: '1px solid var(--line)', borderRadius: 14, background: 'var(--surface)', overflow: 'hidden' }}>
                 <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 1.4fr 1fr 100px 120px 110px', gap: 14, padding: '14px 22px', borderBottom: '1px solid var(--line)', fontSize: 11, letterSpacing: '.03em', textTransform: 'uppercase', color: 'var(--muted2)', fontWeight: 600 }}>
                   <span>{tr.thCodigo}</span><span>{tr.thTipo}</span><span>{tr.thValor}</span><span>{tr.thUsos}</span><span>{tr.thEstado}</span><span>{tr.thVence}</span>
                 </div>
@@ -1560,7 +1563,7 @@ export default function VesperDashboardClient({ lang }: { lang: DemoLang }) {
                 <button onClick={exportCaja} className="hv-s3" style={{ display: 'flex', alignItems: 'center', gap: 7, background: 'var(--surface2)', color: 'var(--text)', border: '1px solid var(--line)', padding: '10px 15px', borderRadius: 9, cursor: 'pointer', fontSize: 13, fontWeight: 500 }}><span style={{ fontSize: 14 }}>↓</span>{tr.exportCut}</button>
                 <button onClick={() => flash(tr.toastCashClosed)} className="hv-op" style={{ background: '#171717', color: '#fff', border: 'none', padding: '10px 16px', borderRadius: 9, cursor: 'pointer', fontSize: 13, fontWeight: 600 }}>{tr.closeReg}</button>
               </div>
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5,1fr)', gap: 14, marginBottom: 18 }}>
+              <div className="dcards-5" style={{ display: 'grid', gridTemplateColumns: 'repeat(5,1fr)', gap: 14, marginBottom: 18 }}>
                 {cashCards.map((c, i) => (
                   <div key={i} style={{ border: '1px solid var(--line)', borderRadius: 13, background: 'var(--surface)', padding: '16px 18px' }}>
                     <div style={{ fontSize: 11.5, color: 'var(--muted)', marginBottom: 8 }}>{c.label}</div>
@@ -1568,11 +1571,11 @@ export default function VesperDashboardClient({ lang }: { lang: DemoLang }) {
                   </div>
                 ))}
               </div>
-              <div style={{ display: 'grid', gridTemplateColumns: '1.35fr 1fr', gap: 18 }}>
+              <div className="dcol-2" style={{ display: 'grid', gridTemplateColumns: '1.35fr 1fr', gap: 18 }}>
                 <div style={{ border: '1px solid var(--line)', borderRadius: 14, background: 'var(--surface)', padding: '22px 24px' }}>
                   <div style={{ fontSize: 13.5, fontWeight: 600, marginBottom: 5 }}>{tr.cashCount}</div>
                   <p style={{ margin: '0 0 16px', fontSize: 12, color: 'var(--muted2)' }}>{tr.cashCountHint}</p>
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px 22px' }}>
+                  <div className="dcards-2" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '8px 22px' }}>
                     {denoms.map((dn, i) => (
                       <div key={i} style={{ display: 'flex', alignItems: 'center', gap: 11, padding: '7px 0', borderBottom: '1px solid var(--line)' }}>
                         <span style={{ fontSize: 13, width: 54, color: dn.labelColor, fontWeight: 500 }}>{dn.label}</span>
@@ -1628,7 +1631,7 @@ export default function VesperDashboardClient({ lang }: { lang: DemoLang }) {
               <div style={{ border: '1px solid var(--line)', borderRadius: 14, background: 'var(--surface)', padding: '22px 24px', marginTop: 18 }}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 9, marginBottom: 4 }}><span style={{ color: '#2e7d55', display: 'flex' }}>{ic('trend', 16)}</span><div style={{ fontSize: 13.5, fontWeight: 600 }}>{tr.netEarnings}</div><span style={{ fontSize: 11, color: 'var(--muted2)', marginLeft: 'auto' }}>{tr.plToday}</span></div>
                 <p style={{ margin: '0 0 16px', fontSize: 12, color: 'var(--muted2)' }}>{tr.plHint}</p>
-                <div style={{ display: 'grid', gridTemplateColumns: '1.4fr 1fr', gap: 24, alignItems: 'center' }}>
+                <div className="dcol-2" style={{ display: 'grid', gridTemplateColumns: '1.4fr 1fr', gap: 24, alignItems: 'center' }}>
                   <div style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
                     {pnlRows.map((r, i) => (
                       <div key={i} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '9px 0', borderBottom: '1px solid var(--line)' }}>

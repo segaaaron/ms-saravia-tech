@@ -295,6 +295,10 @@ export default function PulseLoginClient({ lang }: { lang: DemoLang }) {
         .pulse-input:focus-within{border-color:#3b5bdb}
         .pulse-submit:hover{background:#2f49b8 !important}
         .pulse-soc:hover{background:#f7f8fa !important}
+        @media (max-width:820px){
+          .pulse-scope{flex-direction:column !important}
+          .pulse-scope > div{width:100% !important;flex-shrink:1 !important}
+        }
       `}</style>
 
       {/* BRAND PANEL */}

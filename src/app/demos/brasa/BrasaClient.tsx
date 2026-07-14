@@ -755,6 +755,7 @@ export default function BrasaClient({ lang, currency = 'BOB' }: { lang: DemoLang
   const [auPass, setAuPass] = useState('')
   const [authErr, setAuthErr] = useState('')
   const [acctOpen, setAcctOpen] = useState(false)
+  const [menuOpen, setMenuOpen] = useState(false)
   const [myRes, setMyRes] = useState<MyRes[]>([])
 
   const [cart, setCart] = useState<CartItem[]>([])
@@ -1060,21 +1061,43 @@ export default function BrasaClient({ lang, currency = 'BOB' }: { lang: DemoLang
 
       {/* ============ HEADER ============ */}
       <header style={{ position: 'sticky', top: 0, zIndex: 40, background: 'var(--glass)', backdropFilter: 'blur(14px)', WebkitBackdropFilter: 'blur(14px)', borderBottom: '1px solid var(--line)' }}>
-        <div style={{ maxWidth: 1240, margin: '0 auto', padding: '0 26px', height: 70, display: 'flex', alignItems: 'center', gap: 26 }}>
+        <div className="dnav" style={{ maxWidth: 1240, margin: '0 auto', padding: '0 26px', height: 70, display: 'flex', alignItems: 'center', gap: 26 }}>
           <div onClick={goInicio} style={{ display: 'flex', alignItems: 'center', gap: 11, cursor: 'pointer', flexShrink: 0 }}>
             <span style={{ width: 34, height: 34, borderRadius: 9, background: 'linear-gradient(150deg,var(--ember),#7d2a15)', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 6px 18px -6px var(--ember)', color: '#fff' }}><Icon name="flame" size={19} /></span>
             <span className="serif" style={{ fontSize: 25, fontWeight: 600, letterSpacing: '.26em', paddingLeft: '.26em' }}>BRASA</span>
           </div>
-          <nav style={{ display: 'flex', gap: 4, marginLeft: 8 }}>
+          {/* Menú de secciones inline (desktop) */}
+          <nav className="dnav-hide" style={{ display: 'flex', gap: 4, marginLeft: 8 }}>
             {navLinks.map((n, i) => (
               <button key={i} onClick={n.onClick} {...hover({ color: n.color }, { color: 'var(--ink)' })} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: 13.5, fontWeight: Number(n.weight), color: n.color, padding: '9px 14px', borderRadius: 9, transition: 'color .2s' }}>{n.label}</button>
             ))}
           </nav>
-          <div style={{ flex: 1 }} />
-          <button onClick={toggleTheme} title={c.header.themeTitle} {...hover({ background: 'var(--surface)' }, { background: 'var(--surface2)' })} style={{ width: 38, height: 38, borderRadius: 10, border: '1px solid var(--line)', background: 'var(--surface)', color: 'var(--ink)', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{theme === 'light' ? <Icon name="moon" size={17} /> : <Icon name="sun" size={17} />}</button>
-          <button onClick={openCart} title={c.header.cartTitle} {...hover({ background: 'var(--surface)' }, { background: 'var(--surface2)' })} style={{ position: 'relative', width: 38, height: 38, borderRadius: 10, border: '1px solid var(--line)', background: 'var(--surface)', color: 'var(--ink)', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+          {/* Menú hamburguesa (móvil) — mismas secciones en un desplegable */}
+          <div className="dnav-only" style={{ position: 'relative', flexShrink: 0, order: -1 }}>
+            <button
+              onClick={() => setMenuOpen((s) => !s)}
+              aria-label="Menu"
+              aria-expanded={menuOpen}
+              {...hover({ background: 'var(--surface2)' }, { background: 'var(--surface)' })}
+              style={{ width: 38, height: 38, borderRadius: 10, border: '1px solid var(--line)', background: 'var(--surface)', color: 'var(--ink)', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 18, lineHeight: 1 }}
+            >
+              {menuOpen
+                ? <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round"><line x1="6" y1="6" x2="18" y2="18" /><line x1="18" y1="6" x2="6" y2="18" /></svg>
+                : <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round"><line x1="4" y1="7" x2="20" y2="7" /><line x1="4" y1="12" x2="20" y2="12" /><line x1="4" y1="17" x2="20" y2="17" /></svg>}
+            </button>
+            {menuOpen && (
+              <div style={{ position: 'absolute', top: 48, left: 0, minWidth: 210, background: 'var(--surface)', border: '1px solid var(--line)', borderRadius: 14, boxShadow: '0 26px 56px -20px rgba(20,14,8,.55)', padding: 8, zIndex: 60, display: 'flex', flexDirection: 'column', gap: 2 }}>
+                {navLinks.map((n, i) => (
+                  <button key={i} onClick={() => { n.onClick(); setMenuOpen(false) }} style={{ background: view === navDefs[i][0] ? 'var(--surface2)' : 'none', border: 'none', cursor: 'pointer', fontSize: 14, fontWeight: Number(n.weight), color: n.color, padding: '12px 14px', borderRadius: 10, textAlign: 'left', transition: 'background .2s,color .2s' }}>{n.label}</button>
+                ))}
+              </div>
+            )}
+          </div>
+          <div className="dnav-hide" style={{ flex: 1 }} />
+          <button onClick={toggleTheme} title={c.header.themeTitle} aria-label={c.header.themeTitle} {...hover({ background: 'var(--surface)', borderColor: 'var(--line)', color: 'var(--ink)' }, { background: 'var(--surface2)', borderColor: 'var(--ember)', color: 'var(--ember)' })} style={{ width: 42, height: 42, borderRadius: '50%', border: '1px solid var(--line)', background: 'var(--surface)', color: 'var(--ink)', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'background .22s, border-color .22s, color .22s', flexShrink: 0 }}>{theme === 'light' ? <Icon name="moon" size={17} /> : <Icon name="sun" size={17} />}</button>
+          <button onClick={openCart} title={c.header.cartTitle} aria-label={c.header.cartTitle} {...hover({ background: 'var(--surface)', borderColor: 'var(--line)', color: 'var(--ink)' }, { background: 'var(--surface2)', borderColor: 'var(--ember)', color: 'var(--ember)' })} style={{ position: 'relative', width: 42, height: 42, borderRadius: '50%', border: '1px solid var(--line)', background: 'var(--surface)', color: 'var(--ink)', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'background .22s, border-color .22s, color .22s', flexShrink: 0 }}>
             <Icon name="bag" size={18} />
-            {cartCount > 0 && <span style={{ position: 'absolute', top: -6, right: -6, minWidth: 18, height: 18, padding: '0 4px', borderRadius: 9, background: 'var(--ember)', color: '#fff', fontSize: 11, fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center', boxSizing: 'border-box' }}>{cartCount}</span>}
+            {cartCount > 0 && <span style={{ position: 'absolute', top: -3, right: -3, minWidth: 19, height: 19, padding: '0 4px', borderRadius: 10, background: 'var(--ember)', color: '#fff', fontSize: 11, fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center', boxSizing: 'border-box', border: '2px solid var(--surface)' }}>{cartCount}</span>}
           </button>
           {isGuest && (
             <button onClick={openLogin} {...hover({ background: 'var(--surface)' }, { background: 'var(--surface2)' })} style={{ background: 'var(--surface)', border: '1px solid var(--line)', color: 'var(--ink)', padding: '10px 17px', borderRadius: 40, cursor: 'pointer', fontSize: 13.5, fontWeight: 600, flexShrink: 0, display: 'flex', alignItems: 'center', gap: 7 }}><Icon name="users" size={16} />{c.header.login}</button>
@@ -1179,7 +1202,7 @@ export default function BrasaClient({ lang, currency = 'BOB' }: { lang: DemoLang
                       <span style={{ fontSize: 13, textTransform: 'uppercase', letterSpacing: '.1em', color: 'var(--muted)' }}>{c.cart.tabTotal}</span>
                       <span className="serif" style={{ fontSize: 28, fontWeight: 600, color: 'var(--ink)' }}>{tabTotalFmt}</span>
                     </div>
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginBottom: 11 }}>
+                    <div className="dcards-2" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginBottom: 11 }}>
                       <button onClick={addMore} {...hover({ borderColor: 'var(--line)' }, { borderColor: 'var(--ember)' })} style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 5, background: 'var(--surface2)', border: '1px solid var(--line)', color: 'var(--ink)', padding: 15, borderRadius: 14, cursor: 'pointer', textAlign: 'left' }}><span style={{ fontSize: 19 }}>🍽️</span><span style={{ fontSize: 13, fontWeight: 600 }}>{c.cart.addDishes}</span><span style={{ fontSize: 11, color: 'var(--muted)' }}>{c.cart.addDishesSub}</span></button>
                       <button onClick={orderDrink} {...hover({ borderColor: 'var(--line)' }, { borderColor: 'var(--ember)' })} style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 5, background: 'var(--surface2)', border: '1px solid var(--line)', color: 'var(--ink)', padding: 15, borderRadius: 14, cursor: 'pointer', textAlign: 'left' }}><span style={{ fontSize: 19 }}>🍸</span><span style={{ fontSize: 13, fontWeight: 600 }}>{c.cart.orderDrink}</span><span style={{ fontSize: 11, color: 'var(--muted)' }}>{c.cart.orderDrinkSub}</span></button>
                     </div>
@@ -1280,7 +1303,7 @@ export default function BrasaClient({ lang, currency = 'BOB' }: { lang: DemoLang
 
           {/* QUICK RESERVE BAR */}
           <section style={{ maxWidth: 1080, margin: '-42px auto 0', padding: '0 26px', position: 'relative', zIndex: 5 }}>
-            <div style={{ background: 'var(--surface)', border: '1px solid var(--line)', borderRadius: 18, boxShadow: '0 30px 70px -30px rgba(20,14,8,.4)', padding: '20px 22px', display: 'grid', gridTemplateColumns: '1.1fr 1fr 1fr auto', gap: 14, alignItems: 'end', animation: 'brasaRise .7s ease both' }}>
+            <div className="dcol-3" style={{ background: 'var(--surface)', border: '1px solid var(--line)', borderRadius: 18, boxShadow: '0 30px 70px -30px rgba(20,14,8,.4)', padding: '20px 22px', display: 'grid', gridTemplateColumns: '1.1fr 1fr 1fr auto', gap: 14, alignItems: 'end', animation: 'brasaRise .7s ease both' }}>
               <label style={{ display: 'flex', flexDirection: 'column', gap: 7 }}><span style={{ fontSize: 11, textTransform: 'uppercase', letterSpacing: '.05em', color: 'var(--muted)' }}>{c.home.qFecha}</span>
                 <select value={String(qDateI)} onChange={(e) => setQDateI(parseInt(e.target.value, 10))} style={selectStyle}>
                   {dateOptions.map((d) => <option key={d.value} value={d.value}>{d.label}</option>)}
@@ -1299,7 +1322,7 @@ export default function BrasaClient({ lang, currency = 'BOB' }: { lang: DemoLang
 
           {/* HIGHLIGHTS */}
           <section style={{ maxWidth: 1240, margin: '0 auto', padding: '72px 26px 20px' }}>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 22 }}>
+            <div className="dcards-3" style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 22 }}>
               {highlights.map((h, i) => (
                 <div key={i} {...hover({ borderColor: 'var(--line)' }, { borderColor: 'var(--line2)' })} style={{ border: '1px solid var(--line)', borderRadius: 16, background: 'var(--surface)', padding: '28px 26px' }}>
                   <span style={{ width: 44, height: 44, borderRadius: 12, background: 'var(--surface2)', color: 'var(--ember)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: 16 }}>{h.icon}</span>
@@ -1318,11 +1341,11 @@ export default function BrasaClient({ lang, currency = 'BOB' }: { lang: DemoLang
             </div>
             {/* CARRUSEL DE PLATOS */}
             <div onMouseEnter={() => { carHover.current = true }} onMouseLeave={() => { carHover.current = false }} style={{ position: 'relative' }}>
-              <div style={{ position: 'relative', borderRadius: 24, overflow: 'hidden', border: '1px solid var(--line)', minHeight: 460, background: 'var(--surface)', boxShadow: '0 30px 60px -36px rgba(0,0,0,.4)' }}>
+              <div className="brasa-carousel" style={{ position: 'relative', borderRadius: 24, overflow: 'hidden', border: '1px solid var(--line)', minHeight: 460, background: 'var(--surface)', boxShadow: '0 30px 60px -36px rgba(0,0,0,.4)' }}>
                 {carSlides.map((d, i) => (
-                  <div key={i} style={{ position: 'absolute', inset: 0, opacity: Number(d.op), pointerEvents: d.pe as CSSProperties['pointerEvents'], zIndex: d.z, transition: 'opacity .6s ease', display: 'grid', gridTemplateColumns: '1.05fr .95fr' }}>
-                    <div style={{ width: '100%', height: '100%', minHeight: 460, background: `url(${d.img}) center/cover` }} />
-                    <div style={{ padding: '44px 42px', display: 'flex', flexDirection: 'column', justifyContent: 'center', background: 'var(--surface)' }}>
+                  <div key={i} className="brasa-slide" style={{ position: 'absolute', inset: 0, opacity: Number(d.op), pointerEvents: d.pe as CSSProperties['pointerEvents'], zIndex: d.z, transition: 'opacity .6s ease', display: 'grid', gridTemplateColumns: '1.05fr .95fr' }}>
+                    <div className="brasa-slide-img" style={{ width: '100%', height: '100%', minHeight: 460, background: `url(${d.img}) center/cover` }} />
+                    <div className="brasa-slide-txt" style={{ padding: '44px 42px', display: 'flex', flexDirection: 'column', justifyContent: 'center', background: 'var(--surface)' }}>
                       <div style={{ fontSize: 11.5, textTransform: 'uppercase', letterSpacing: '.16em', color: 'var(--ember)', marginBottom: 12 }}>{d.meta}</div>
                       <h3 className="serif" style={{ fontSize: 'clamp(30px,3.6vw,44px)', margin: '0 0 12px', fontWeight: 600, lineHeight: 1.05 }}>{d.name}</h3>
                       <p style={{ margin: '0 0 22px', fontSize: 14.5, lineHeight: 1.6, color: 'var(--muted)', maxWidth: '46ch' }}>{d.story}</p>
@@ -1345,7 +1368,7 @@ export default function BrasaClient({ lang, currency = 'BOB' }: { lang: DemoLang
 
           {/* HOURS STRIP */}
           <section style={{ maxWidth: 1240, margin: '0 auto', padding: '20px 26px 80px' }}>
-            <div style={{ background: 'var(--ink)', color: 'var(--bg)', borderRadius: 20, padding: '44px 40px', display: 'grid', gridTemplateColumns: '1.3fr 1fr 1fr', gap: 32 }}>
+            <div className="dcol-3" style={{ background: 'var(--ink)', color: 'var(--bg)', borderRadius: 20, padding: '44px 40px', display: 'grid', gridTemplateColumns: '1.3fr 1fr 1fr', gap: 32 }}>
               <div><div className="serif" style={{ fontSize: 30, fontWeight: 600, marginBottom: 10 }}>{c.home.alwaysTitle}</div><p style={{ margin: 0, fontSize: 14, lineHeight: 1.65, opacity: .72, maxWidth: '34ch' }}>{c.home.alwaysDesc}</p></div>
               <div><div style={{ fontSize: 12, textTransform: 'uppercase', letterSpacing: '.1em', opacity: .6, marginBottom: 12 }}>{c.home.hoursTitle}</div>
                 {c.hoursRows.map((h, i) => <div key={i} style={{ display: 'flex', justifyContent: 'space-between', padding: '7px 0', borderBottom: '1px solid rgba(255,255,255,.12)', fontSize: 13.5 }}><span style={{ opacity: .8 }}>{h.day}</span><span>{h.time}</span></div>)}
@@ -1385,7 +1408,7 @@ export default function BrasaClient({ lang, currency = 'BOB' }: { lang: DemoLang
                   ))}
                 </div>
               </div>
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1.4fr', gap: 24 }}>
+              <div className="dcol-2" style={{ display: 'grid', gridTemplateColumns: '1fr 1.4fr', gap: 24 }}>
                 <div style={{ border: '1px solid var(--line)', borderRadius: 16, background: 'var(--surface)', padding: 26 }}>
                   <div style={{ fontSize: 14, fontWeight: 600, marginBottom: 15 }}>{c.res.comensales}</div>
                   <div style={{ display: 'flex', gap: 9, flexWrap: 'wrap' }}>
@@ -1401,7 +1424,7 @@ export default function BrasaClient({ lang, currency = 'BOB' }: { lang: DemoLang
                       {turnoTabs.map((t, i) => <button key={i} onClick={t.onClick} style={{ background: t.bg, color: t.color, border: 'none', padding: '8px 15px', cursor: 'pointer', fontSize: 12.5, fontWeight: 500 }}>{t.label}</button>)}
                     </div>
                   </div>
-                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 9 }}>
+                  <div className="dcards-4" style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 9 }}>
                     {timeSlots.map((t, i) => (
                       <button key={i} onClick={t.onClick} style={{ padding: '11px 4px', borderRadius: 10, border: `1px solid ${t.border}`, background: t.bg, color: t.color, cursor: t.cursor, fontSize: 13, fontWeight: 600, textDecoration: t.deco, transition: 'all .15s' }}>{t.label}</button>
                     ))}
@@ -1439,12 +1462,12 @@ export default function BrasaClient({ lang, currency = 'BOB' }: { lang: DemoLang
 
           {/* STEP 3: CONFIRM */}
           {resStep === 3 && (
-            <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr', gap: 24, animation: 'brasaViewIn .35s ease both' }}>
+            <div className="dcol-2" style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr', gap: 24, animation: 'brasaViewIn .35s ease both' }}>
               <div style={{ border: '1px solid var(--line)', borderRadius: 16, background: 'var(--surface)', padding: 28 }}>
                 <div style={{ fontSize: 14, fontWeight: 600, marginBottom: 18 }}>{c.res.yourData}</div>
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
                   <label style={{ display: 'flex', flexDirection: 'column', gap: 7 }}><span style={{ fontSize: 12, color: 'var(--muted)' }}>{c.res.fullName}</span><input value={resName} onChange={(e) => setResName(e.target.value)} placeholder={c.res.yourNamePh} style={resInput} /></label>
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
+                  <div className="dcards-2" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
                     <label style={{ display: 'flex', flexDirection: 'column', gap: 7 }}><span style={{ fontSize: 12, color: 'var(--muted)' }}>{c.res.phone}</span><input value={resPhone} onChange={(e) => setResPhone(e.target.value)} placeholder={c.res.phonePh} style={resInput} /></label>
                     <label style={{ display: 'flex', flexDirection: 'column', gap: 7 }}><span style={{ fontSize: 12, color: 'var(--muted)' }}>{c.res.email}</span><input value={resEmail} onChange={(e) => setResEmail(e.target.value)} placeholder={c.res.emailPh} style={resInput} /></label>
                   </div>
@@ -1573,7 +1596,7 @@ export default function BrasaClient({ lang, currency = 'BOB' }: { lang: DemoLang
             {menuCats.map((c, i) => <button key={i} onClick={c.onClick} style={{ background: c.bg, color: c.color, border: `1px solid ${c.border}`, padding: '10px 20px', borderRadius: 40, cursor: 'pointer', fontSize: 13.5, fontWeight: 600, transition: 'all .18s' }}>{c.label}</button>)}
           </div>
           <div style={{ position: 'relative' }}>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 20 }}>
+            <div className="dcards-3" style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 20 }}>
               {menuItems.map((m, i) => (
                 <div key={i} {...hover({ transform: 'none' }, { transform: 'translateY(-4px)' })} style={{ border: '1px solid var(--line)', borderRadius: 18, background: 'var(--surface)', overflow: 'hidden', animation: 'brasaViewIn .4s both', animationDelay: m.delay, boxShadow: '0 20px 44px -38px rgba(0,0,0,.5)' }}>
                   <div style={{ position: 'relative', height: 190, overflow: 'hidden' }}>
@@ -1608,7 +1631,7 @@ export default function BrasaClient({ lang, currency = 'BOB' }: { lang: DemoLang
           <div style={{ display: 'flex', gap: 10, flexWrap: 'wrap', justifyContent: 'center', margin: '28px 0' }}>
             {barCats.map((c, i) => <button key={i} onClick={c.onClick} style={{ background: c.bg, color: c.color, border: `1px solid ${c.border}`, padding: '10px 20px', borderRadius: 40, cursor: 'pointer', fontSize: 13.5, fontWeight: 600, transition: 'all .18s' }}>{c.label}</button>)}
           </div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 18 }}>
+          <div className="dcards-3" style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 18 }}>
             {barItems.map((b, i) => (
               <div key={i} {...hover({ transform: 'none' }, { transform: 'translateY(-3px)' })} style={{ border: '1px solid var(--line)', borderRadius: 16, background: 'var(--surface)', overflow: 'hidden', animation: 'brasaViewIn .35s both', animationDelay: b.delay }}>
                 <div style={{ height: 158, background: `url(${b.img}) center/cover`, position: 'relative' }}>{!!b.prep && <span style={{ position: 'absolute', top: 10, left: 10, fontSize: 10.5, fontWeight: 600, background: 'rgba(20,14,8,.6)', color: '#fff', backdropFilter: 'blur(4px)', padding: '4px 10px', borderRadius: 20 }}>{b.prep}</span>}</div>

@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useRef, type CSSProperties } from 'react'
+import { useEffect, useRef, useState, type CSSProperties } from 'react'
 import type { DemoLang } from '../lang'
 
 /* ============================================================
@@ -306,6 +306,7 @@ export default function RomanClient({ lang }: { lang: DemoLang }) {
   const c = CONTENT[lang]
   const rootEl = useRef<HTMLDivElement>(null)
   const navEl = useRef<HTMLElement>(null)
+  const [menuOpen, setMenuOpen] = useState(false)
 
   useEffect(() => {
     const root = rootEl.current
@@ -497,7 +498,8 @@ export default function RomanClient({ lang }: { lang: DemoLang }) {
             <span style={{ fontSize: 9, letterSpacing: '.34em', color: '#8a93a2', textTransform: 'uppercase' }}>{c.attorneysAtLaw}</span>
           </span>
         </a>
-        <nav style={{ display: 'flex', gap: 30, alignItems: 'center' }}>
+        {/* Navegación inline (desktop) */}
+        <nav className="dnav-hide" style={{ display: 'flex', gap: 30, alignItems: 'center' }}>
           <a href="#firma" className="ra-nav" style={navLink}>{c.nav.firm}</a>
           <a href="#areas" className="ra-nav" style={navLink}>{c.nav.practice}</a>
           <a href="#abogados" className="ra-nav" style={navLink}>{c.nav.attorneys}</a>
@@ -505,11 +507,34 @@ export default function RomanClient({ lang }: { lang: DemoLang }) {
           <a href="#contacto" className="ra-nav" style={navLink}>{c.nav.contact}</a>
           <a href="#consulta" className="ra-gold" style={{ fontSize: 12, letterSpacing: '.08em', color: '#0c0f14', background: '#c2a15a', padding: '11px 20px', textDecoration: 'none', fontWeight: 600 }}>{c.bookConsult}</a>
         </nav>
+        {/* Menú hamburguesa (móvil) */}
+        <div className="dnav-only" style={{ position: 'relative' }}>
+          <button
+            onClick={() => setMenuOpen((s) => !s)}
+            aria-label="Menu"
+            aria-expanded={menuOpen}
+            style={{ width: 42, height: 42, borderRadius: 6, border: '1px solid rgba(194,161,90,.5)', background: 'rgba(12,15,20,.35)', color: '#ece7dd', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 19, lineHeight: 1 }}
+          >
+            {menuOpen
+              ? <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round"><line x1="6" y1="6" x2="18" y2="18" /><line x1="18" y1="6" x2="6" y2="18" /></svg>
+              : <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round"><line x1="4" y1="7" x2="20" y2="7" /><line x1="4" y1="12" x2="20" y2="12" /><line x1="4" y1="17" x2="20" y2="17" /></svg>}
+          </button>
+          {menuOpen && (
+            <div style={{ position: 'absolute', top: 54, right: 0, minWidth: 230, background: '#12161d', border: '1px solid rgba(194,161,90,.28)', borderRadius: 8, boxShadow: '0 26px 56px -20px rgba(0,0,0,.7)', padding: 10, zIndex: 70, display: 'flex', flexDirection: 'column', gap: 2 }}>
+              <a href="#firma" onClick={() => setMenuOpen(false)} style={{ ...navLink, padding: '13px 14px', borderRadius: 6 }}>{c.nav.firm}</a>
+              <a href="#areas" onClick={() => setMenuOpen(false)} style={{ ...navLink, padding: '13px 14px', borderRadius: 6 }}>{c.nav.practice}</a>
+              <a href="#abogados" onClick={() => setMenuOpen(false)} style={{ ...navLink, padding: '13px 14px', borderRadius: 6 }}>{c.nav.attorneys}</a>
+              <a href="#casos" onClick={() => setMenuOpen(false)} style={{ ...navLink, padding: '13px 14px', borderRadius: 6 }}>{c.nav.results}</a>
+              <a href="#contacto" onClick={() => setMenuOpen(false)} style={{ ...navLink, padding: '13px 14px', borderRadius: 6 }}>{c.nav.contact}</a>
+              <a href="#consulta" onClick={() => setMenuOpen(false)} style={{ fontSize: 12, letterSpacing: '.08em', color: '#0c0f14', background: '#c2a15a', padding: '13px 16px', textDecoration: 'none', fontWeight: 600, borderRadius: 6, textAlign: 'center', marginTop: 6 }}>{c.bookConsult}</a>
+            </div>
+          )}
+        </div>
       </header>
 
       {/* ===================== SOBRE LA FIRMA ===================== */}
       <section id="firma" style={{ background: '#f3efe8', color: '#1a1c20', padding: '130px 40px' }}>
-        <div style={{ maxWidth: 1200, margin: '0 auto', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 80, alignItems: 'center' }}>
+        <div className="dcol-2" style={{ maxWidth: 1200, margin: '0 auto', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 80, alignItems: 'center' }}>
           <div data-reveal>
             <div style={{ display: 'flex', alignItems: 'center', gap: 14, marginBottom: 24 }}>
               <span style={{ width: 36, height: 1, background: '#c2a15a' }} />
@@ -546,7 +571,7 @@ export default function RomanClient({ lang }: { lang: DemoLang }) {
             </div>
             <p style={{ maxWidth: 340, fontSize: 15, lineHeight: 1.7, color: 'rgba(236,231,221,.6)', fontWeight: 300 }}>{c.areasNote}</p>
           </div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 20 }}>
+          <div className="dcards-4" style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 20 }}>
             {AREA_META.map((a, i) => (
               <div key={a.n} className="ra-card" style={cardBase} data-reveal data-delay={a.delay}>
                 <div style={{ display: 'flex', alignItems: 'center', gap: 12, fontFamily: "'Cormorant Garamond',serif", fontSize: 15, color: '#c2a15a', letterSpacing: '.14em' }}><span style={{ width: 22, height: 1, background: 'rgba(194,161,90,.55)' }} />{a.n}</div>
@@ -570,7 +595,7 @@ export default function RomanClient({ lang }: { lang: DemoLang }) {
             </div>
             <h2 style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 'clamp(32px,4.4vw,60px)', lineHeight: 1.08, fontWeight: 500, margin: 0, color: '#f3efe8' }}>{c.casosTitle}</h2>
           </div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 40, textAlign: 'center' }} data-reveal data-delay="100">
+          <div className="dcards-4" style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 40, textAlign: 'center' }} data-reveal data-delay="100">
             <div><div style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 'clamp(44px,5vw,72px)', color: '#c2a15a', lineHeight: 1 }}><span data-count="500" data-suffix="+">0</span></div><div style={{ fontSize: 13, color: '#8a93a2', marginTop: 10, letterSpacing: '.04em' }}>{c.casosStats[0]}</div></div>
             <div><div style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 'clamp(44px,5vw,72px)', color: '#c2a15a', lineHeight: 1 }}><span data-count="120" data-prefix="$" data-suffix="M">0</span></div><div style={{ fontSize: 13, color: '#8a93a2', marginTop: 10, letterSpacing: '.04em' }}>{c.casosStats[1]}</div></div>
             <div><div style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 'clamp(44px,5vw,72px)', color: '#c2a15a', lineHeight: 1 }}><span data-count="98" data-suffix="%">0</span></div><div style={{ fontSize: 13, color: '#8a93a2', marginTop: 10, letterSpacing: '.04em' }}>{c.casosStats[2]}</div></div>
@@ -589,7 +614,7 @@ export default function RomanClient({ lang }: { lang: DemoLang }) {
             </div>
             <h2 style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 'clamp(32px,4.2vw,58px)', lineHeight: 1.08, fontWeight: 500, margin: 0, maxWidth: '16ch' }}>{c.abogadosTitle}</h2>
           </div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 28 }}>
+          <div className="dcards-3" style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 28 }}>
             {ATTORNEY_META.map((at, i) => (
               <div key={at.name} data-reveal data-delay={at.delay}>
                 <div style={{ aspectRatio: '3/4', overflow: 'hidden', background: '#dcd6ca', marginBottom: 20 }}><div className="ra-att" style={{ width: '100%', height: '100%', background: `url(${at.img}) center/cover`, filter: 'grayscale(.35)', transition: 'filter .5s, transform .8s' }} /></div>
@@ -613,7 +638,7 @@ export default function RomanClient({ lang }: { lang: DemoLang }) {
             </div>
             <h2 style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 'clamp(32px,4.2vw,58px)', lineHeight: 1.08, fontWeight: 500, margin: 0, color: '#f3efe8' }}>{c.procesoTitle}</h2>
           </div>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 32 }}>
+          <div className="dcards-4" style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gap: 32 }}>
             {PROCESS_META.map((p, i) => (
               <div key={p.n} data-reveal data-delay={p.delay} style={{ borderTop: '1px solid rgba(255,255,255,.14)', paddingTop: 26 }}>
                 <div style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 44, color: '#c2a15a', marginBottom: 16 }}>{p.n}</div>
@@ -629,7 +654,7 @@ export default function RomanClient({ lang }: { lang: DemoLang }) {
       <section style={{ background: '#f3efe8', color: '#1a1c20', padding: '130px 40px' }}>
         <div style={{ maxWidth: 1200, margin: '0 auto' }}>
           <h2 style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 'clamp(30px,3.8vw,52px)', lineHeight: 1.1, fontWeight: 500, margin: '0 0 56px', maxWidth: '18ch' }} data-reveal>{c.testimonialsTitle}</h2>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 26 }}>
+          <div className="dcards-3" style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 26 }}>
             {TESTIMONIAL_META.map((t, i) => (
               <div key={t.name} data-reveal data-delay={t.delay} style={{ background: '#fff', border: '1px solid rgba(20,25,30,.08)', padding: 38, minHeight: 280, display: 'flex', flexDirection: 'column', justifyContent: 'space-between' }}>
                 <div><div style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 56, lineHeight: 0, color: '#c2a15a', height: 28 }}>“</div><p style={{ fontSize: 15.5, lineHeight: 1.75, color: '#3a3e43', fontWeight: 300, margin: 0 }}>{c.testimonials[i].q}</p></div>
@@ -675,7 +700,7 @@ export default function RomanClient({ lang }: { lang: DemoLang }) {
 
       {/* ===================== AGENDAR CONSULTA ===================== */}
       <section id="consulta" style={{ background: '#0c0f14', padding: '130px 40px' }}>
-        <div style={{ maxWidth: 1200, margin: '0 auto', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 70, alignItems: 'start' }}>
+        <div className="dcol-2" style={{ maxWidth: 1200, margin: '0 auto', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 70, alignItems: 'start' }}>
           <div data-reveal>
             <div style={{ display: 'flex', alignItems: 'center', gap: 14, marginBottom: 22 }}>
               <span style={{ width: 36, height: 1, background: '#c2a15a' }} />
@@ -709,7 +734,7 @@ export default function RomanClient({ lang }: { lang: DemoLang }) {
 
       {/* ===================== CONTACTO / UBICACIÓN ===================== */}
       <section id="contacto" style={{ background: '#f3efe8', color: '#1a1c20' }}>
-        <div style={{ maxWidth: 1280, margin: '0 auto', display: 'grid', gridTemplateColumns: '1fr 1fr', alignItems: 'stretch' }}>
+        <div className="dcol-2" style={{ maxWidth: 1280, margin: '0 auto', display: 'grid', gridTemplateColumns: '1fr 1fr', alignItems: 'stretch' }}>
           <div style={{ padding: '100px 50px 100px 40px' }} data-reveal>
             <div style={{ display: 'flex', alignItems: 'center', gap: 14, marginBottom: 22 }}>
               <span style={{ width: 36, height: 1, background: '#c2a15a' }} />

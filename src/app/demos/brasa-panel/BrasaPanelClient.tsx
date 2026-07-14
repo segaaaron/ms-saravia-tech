@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useReducer, useRef } from 'react'
+import { useEffect, useReducer, useRef, useState } from 'react'
 import type { DemoLang } from '../lang'
 
 /* ============================================================
@@ -466,7 +466,11 @@ function seedStaff(): void { try { if (!localStorage.getItem('brasa_staff')) loc
 function seedDemo(): void {
   try {
     const SEEDV = 'v4'
-    if (localStorage.getItem('brasa_seed_v') !== SEEDV) {
+    // Demo: re-siembra con timestamps frescos si los datos tienen > 8 h, para que
+    // los timers de mesa no queden "colgados" mostrando cientos de horas.
+    const seedTs = Number(localStorage.getItem('brasa_seed_ts') || 0)
+    const stale = Date.now() - seedTs > 8 * 60 * 60 * 1000
+    if (localStorage.getItem('brasa_seed_v') !== SEEDV || stale) {
       const mn = (m: number) => Date.now() - m * 60000
       const hm = (m: number) => { const d = new Date(Date.now() - m * 60000); return ('0' + d.getHours()).slice(-2) + ':' + ('0' + d.getMinutes()).slice(-2) }
       const O = (m: number, rest: Partial<Order>): Order => ({ time: hm(m), ts: mn(m), ...rest } as Order)
@@ -484,6 +488,7 @@ function seedDemo(): void {
       ]))
       try { localStorage.removeItem('brasa_item_stage'); localStorage.removeItem('brasa_serve_modes') } catch { /* noop */ }
       localStorage.setItem('brasa_seed_v', SEEDV)
+      localStorage.setItem('brasa_seed_ts', String(Date.now()))
     }
     if (!localStorage.getItem('brasa_reservations')) {
       localStorage.setItem('brasa_reservations', JSON.stringify([
@@ -514,6 +519,7 @@ export default function BrasaPanelClient({ lang }: { lang: DemoLang }) {
   const md = (m?: string): string => (m && c.modeLabels[m]) || m || ''
   const payLabel = (m?: string): string => (m && c.pay[m]) || m || ''
   const [, bump] = useReducer((x: number) => x + 1, 0)
+  const [navOpen, setNavOpen] = useState(false)
   const stateRef = useRef<State>(makeInitialState())
 
   const setState = (patch: Partial<State> | ((s: State) => Partial<State>)) => {
@@ -985,7 +991,7 @@ export default function BrasaPanelClient({ lang }: { lang: DemoLang }) {
 
         {/* ==================== LOGIN ==================== */}
         {v.notLogged && (
-          <div style={{ minHeight: '100vh', display: 'grid', gridTemplateColumns: '1.05fr .95fr' }}>
+          <div className="dcol-2" style={{ minHeight: '100vh', display: 'grid', gridTemplateColumns: '1.05fr .95fr' }}>
             <div style={{ position: 'relative', background: 'linear-gradient(160deg,#c8492b,#2a1a10 85%)', padding: '56px 54px', display: 'flex', flexDirection: 'column', justifyContent: 'space-between', overflow: 'hidden' }}>
               <div style={{ position: 'absolute', top: '-80px', right: '-60px', width: '320px', height: '320px', borderRadius: '50%', background: 'radial-gradient(circle,rgba(255,180,120,.35),transparent 70%)' }} />
               <div style={{ position: 'relative', display: 'flex', alignItems: 'center', gap: '12px' }}>
@@ -1014,7 +1020,7 @@ export default function BrasaPanelClient({ lang }: { lang: DemoLang }) {
                 <button onClick={v.doLogin} style={{ width: '100%', marginTop: '18px', background: '#d1642f', color: '#fff', border: 'none', padding: '14px', borderRadius: '12px', cursor: 'pointer', fontSize: '14.5px', fontWeight: 600 }}>{c.login.enterBtn}</button>
                 <div style={{ marginTop: '22px', paddingTop: '20px', borderTop: '1px solid #2a2016' }}>
                   <div style={{ fontSize: '11px', textTransform: 'uppercase', letterSpacing: '.1em', color: '#8c7a63', marginBottom: '11px' }}>{c.login.quickAccess}</div>
-                  <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '9px' }}>
+                  <div className="dcards-2" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '9px' }}>
                     {v.roleCards.map(r => (
                       <button key={r.email} onClick={r.onClick} style={{ textAlign: 'left', background: '#1e160e', border: '1px solid #33261a', borderRadius: '11px', padding: '11px 12px', cursor: 'pointer' }}>
                         <div style={{ fontSize: '16px', marginBottom: '4px' }}>{r.emoji}</div>
@@ -1032,16 +1038,17 @@ export default function BrasaPanelClient({ lang }: { lang: DemoLang }) {
 
         {/* ==================== DASHBOARD ==================== */}
         {v.isLogged && (
-          <div style={{ display: 'flex', minHeight: '100vh' }}>
+          <div className="dshell-flex" style={{ display: 'flex', minHeight: '100vh' }}>
             {/* SIDEBAR */}
-            <aside style={{ width: '236px', flexShrink: 0, background: '#180f08', borderRight: '1px solid #2a2016', display: 'flex', flexDirection: 'column', padding: '22px 16px', position: 'sticky', top: 0, height: '100vh' }}>
+            {navOpen && <div className="dshell-backdrop" onClick={() => setNavOpen(false)} />}
+            <aside className={`dshell-nav${navOpen ? ' is-open' : ''}`} style={{ width: '236px', flexShrink: 0, background: '#180f08', borderRight: '1px solid #2a2016', display: 'flex', flexDirection: 'column', padding: '22px 16px', position: 'sticky', top: 0, height: '100vh' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '11px', padding: '0 8px 22px' }}>
                 <span style={{ width: '34px', height: '34px', borderRadius: '9px', background: 'linear-gradient(150deg,#d1642f,#7d2a15)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '17px' }}>🔥</span>
                 <div><div className="serif" style={{ fontSize: '20px', fontWeight: 600, letterSpacing: '.2em', lineHeight: 1 }}>BRASA</div><div style={{ fontSize: '9.5px', textTransform: 'uppercase', letterSpacing: '.16em', color: '#8c7a63' }}>{c.panelWord}</div></div>
               </div>
               <nav style={{ display: 'flex', flexDirection: 'column', gap: '3px', flex: 1 }}>
                 {v.nav.map((n, i) => (
-                  <button key={i} onClick={n.onClick} style={{ display: 'flex', alignItems: 'center', gap: '11px', textAlign: 'left', background: n.bg, border: 'none', color: n.color, padding: '11px 13px', borderRadius: '10px', cursor: 'pointer', fontSize: '13.5px', fontWeight: n.weight }}>
+                  <button key={i} onClick={() => { n.onClick(); setNavOpen(false) }} style={{ display: 'flex', alignItems: 'center', gap: '11px', textAlign: 'left', background: n.bg, border: 'none', color: n.color, padding: '11px 13px', borderRadius: '10px', cursor: 'pointer', fontSize: '13.5px', fontWeight: n.weight }}>
                     <span style={{ width: '20px', textAlign: 'center' }}>{n.emoji}</span>{n.label}<span style={{ flex: 1 }} />
                     {n.badge && <span style={{ background: '#d1642f', color: '#fff', fontSize: '10.5px', fontWeight: 700, minWidth: '19px', height: '19px', padding: '0 5px', borderRadius: '10px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{n.badge}</span>}
                   </button>
@@ -1057,6 +1064,7 @@ export default function BrasaPanelClient({ lang }: { lang: DemoLang }) {
             {/* MAIN */}
             <main style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column' }}>
               <header style={{ display: 'flex', alignItems: 'center', gap: '16px', padding: '20px 30px', borderBottom: '1px solid #2a2016', position: 'sticky', top: 0, background: 'rgba(20,15,9,.85)', backdropFilter: 'blur(10px)', zIndex: 10 }}>
+                <button className="dshell-hamb" onClick={() => setNavOpen(true)} aria-label="Menu" aria-expanded={navOpen} style={{ width: 38, height: 38, borderRadius: 10, border: '1px solid #33261a', background: '#211810', color: '#f2e8da', cursor: 'pointer', alignItems: 'center', justifyContent: 'center', fontSize: 18, flexShrink: 0 }}><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round"><line x1="4" y1="7" x2="20" y2="7" /><line x1="4" y1="12" x2="20" y2="12" /><line x1="4" y1="17" x2="20" y2="17" /></svg></button>
                 <div><h1 className="serif" style={{ fontSize: '27px', fontWeight: 600, margin: 0, lineHeight: 1 }}>{v.viewTitle}</h1><div style={{ fontSize: '12px', color: '#8c7a63', marginTop: '3px' }}>{v.viewSubtitle}</div></div>
                 <div style={{ flex: 1 }} />
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '12px', color: '#8c7a63' }}><span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#6bbf7a', animation: 'pulse 1.8s infinite' }} />{c.live}</div>
@@ -1077,7 +1085,7 @@ export default function BrasaPanelClient({ lang }: { lang: DemoLang }) {
                         </div>
                       ))}
                     </div>
-                    <div style={{ display: 'grid', gridTemplateColumns: '1.4fr 1fr', gap: '18px' }}>
+                    <div className="dcol-2" style={{ display: 'grid', gridTemplateColumns: '1.4fr 1fr', gap: '18px' }}>
                       <div style={{ background: '#1a120b', border: '1px solid #2a2016', borderRadius: '16px', padding: '22px' }}>
                         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '16px' }}><h3 className="serif" style={{ fontSize: '20px', fontWeight: 600, margin: 0 }}>{c.resumen.recientes}</h3><span style={{ fontSize: '12px', color: '#8c7a63' }}>{c.resumen.ultimos} {v.recentCount}</span></div>
                         {v.noOrders && <div style={{ padding: '30px', textAlign: 'center', color: '#8c7a63', fontSize: '13px' }}>{c.resumen.noOrders}</div>}
@@ -1100,7 +1108,7 @@ export default function BrasaPanelClient({ lang }: { lang: DemoLang }) {
                         ))}
                       </div>
                     </div>
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '18px', marginTop: '18px' }}>
+                    <div className="dcards-2" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '18px', marginTop: '18px' }}>
                       <div style={{ background: '#1a120b', border: '1px solid #2a2016', borderRadius: '16px', padding: '22px' }}>
                         <h3 className="serif" style={{ fontSize: '20px', fontWeight: 600, margin: '0 0 16px' }}>{c.resumen.ventasCanal}</h3>
                         {v.byChannel.map((ch, i) => (
@@ -1135,7 +1143,7 @@ export default function BrasaPanelClient({ lang }: { lang: DemoLang }) {
                 {/* MONITOR DE OPERACIONES (admin, solo lectura) */}
                 {v.isKanban && (
                   <>
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5,1fr)', gap: '12px', marginBottom: '18px' }}>
+                    <div className="dcards-5" style={{ display: 'grid', gridTemplateColumns: 'repeat(5,1fr)', gap: '12px', marginBottom: '18px' }}>
                       {v.monKpis.map((k, i) => (
                         <div key={i} style={{ background: '#1a120b', border: '1px solid #2a2016', borderRadius: '14px', padding: '16px 18px' }}>
                           <div style={{ fontSize: '30px', fontWeight: 800, color: k.color, lineHeight: 1 }}>{k.value}</div>
@@ -1143,9 +1151,9 @@ export default function BrasaPanelClient({ lang }: { lang: DemoLang }) {
                         </div>
                       ))}
                     </div>
-                    <div style={{ display: 'grid', gridTemplateColumns: '1.15fr .85fr', gap: '16px', alignItems: 'start' }}>
+                    <div className="dcol-2" style={{ display: 'grid', gridTemplateColumns: '1.15fr .85fr', gap: '16px', alignItems: 'start' }}>
                       <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px' }}>
+                        <div className="dcards-2" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '14px' }}>
                           {v.monStations.map((s, i) => (
                             <div key={i} style={{ background: '#1a120b', border: '1px solid #2a2016', borderRadius: '16px', padding: '18px' }}>
                               <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '14px' }}>
@@ -1201,7 +1209,7 @@ export default function BrasaPanelClient({ lang }: { lang: DemoLang }) {
                 {v.isStation && (
                   <>
                     {v.cocinaEmpty && <div style={{ background: '#1a120b', border: '1px dashed #33261a', borderRadius: '16px', padding: '60px', textAlign: 'center', color: '#8c7a63' }}><div style={{ fontSize: '34px', marginBottom: '10px' }}>👨‍🍳</div><div style={{ fontSize: '15px', fontWeight: 600, color: '#c9b79c' }}>{c.kds.empty1}</div><div style={{ fontSize: '13px', marginTop: '5px' }}>{c.kds.empty2}</div></div>}
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4,minmax(0,1fr))', gap: '12px', alignItems: 'start' }}>
+                    <div className="dcards-4" style={{ display: 'grid', gridTemplateColumns: 'repeat(4,minmax(0,1fr))', gap: '12px', alignItems: 'start' }}>
                       {v.cocinaColumns.map((col) => (
                         <div key={col.key} style={{ background: '#160f08', border: '1px solid #2a2016', borderRadius: '14px', padding: '12px', minWidth: 0, minHeight: '140px' }}>
                           <div style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '5px 6px 13px' }}>
@@ -1359,7 +1367,7 @@ export default function BrasaPanelClient({ lang }: { lang: DemoLang }) {
 
                 {/* RESERVAS */}
                 {v.isReservas && (
-                  <div style={{ background: '#1a120b', border: '1px solid #2a2016', borderRadius: '16px', overflow: 'hidden' }}>
+                  <div className="dtable-wrap brasa-tbl" style={{ background: '#1a120b', border: '1px solid #2a2016', borderRadius: '16px', overflow: 'hidden' }}>
                     <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 1fr .7fr .7fr .9fr', gap: '12px', padding: '14px 20px', borderBottom: '1px solid #2a2016', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '.08em', color: '#8c7a63' }}>
                       <span>{c.reservas.cliente}</span><span>{c.reservas.fechaHora}</span><span>{c.reservas.personas}</span><span>{c.reservas.mesa}</span><span>{c.reservas.codigo}</span>
                     </div>
@@ -1384,7 +1392,7 @@ export default function BrasaPanelClient({ lang }: { lang: DemoLang }) {
                           </div>
                           <button onClick={v.tableDetail.close} style={{ background: 'transparent', border: '1px solid #3a2c1e', color: '#a8977f', width: '32px', height: '32px', borderRadius: '9px', cursor: 'pointer', fontSize: '15px' }}>✕</button>
                         </div>
-                        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
+                        <div className="dcards-2" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
                           <div>
                             <div style={{ fontSize: '11px', textTransform: 'uppercase', letterSpacing: '.08em', color: '#e8934f', fontWeight: 700, marginBottom: '10px' }}>🍳 {c.mesas.platos} <span style={{ color: '#6f5f4a' }}>· {v.tableDetail.dishCount}</span></div>
                             {v.tableDetail.hasDishes && v.tableDetail.dishes.map((d, i) => (
@@ -1430,7 +1438,7 @@ export default function BrasaPanelClient({ lang }: { lang: DemoLang }) {
 
                 {/* MENU */}
                 {v.isMenu && (
-                  <div style={{ background: '#1a120b', border: '1px solid #2a2016', borderRadius: '16px', overflow: 'hidden' }}>
+                  <div className="dtable-wrap brasa-tbl" style={{ background: '#1a120b', border: '1px solid #2a2016', borderRadius: '16px', overflow: 'hidden' }}>
                     <div style={{ display: 'grid', gridTemplateColumns: '1.5fr .8fr .5fr 1.5fr', gap: '12px', padding: '14px 20px', borderBottom: '1px solid #2a2016', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '.08em', color: '#8c7a63' }}><span>{v.menuItemLabel}</span><span>{c.menu.categoria}</span><span>{c.menu.precio}</span><span>{c.menu.disponibilidad}</span></div>
                     {v.menuList.map((m, i) => (
                       <div key={i} style={{ display: 'grid', gridTemplateColumns: '1.5fr .8fr .5fr 1.5fr', gap: '12px', padding: '14px 20px', borderTop: '1px solid #241a10', alignItems: 'center', fontSize: '13.5px' }}>
@@ -1531,7 +1539,7 @@ export default function BrasaPanelClient({ lang }: { lang: DemoLang }) {
                       {v.cocinaHistStats.map((k, i) => (<div key={i} style={{ flex: 1, minWidth: '130px', background: '#1a120b', border: '1px solid #2a2016', borderRadius: '14px', padding: '14px 18px' }}><div style={{ fontSize: '11px', textTransform: 'uppercase', letterSpacing: '.05em', color: '#8c7a63' }}>{k.label}</div><div style={{ fontFamily: "'DM Sans',system-ui,sans-serif", fontVariantNumeric: 'tabular-nums', fontSize: '26px', fontWeight: 700, color: '#f2e8da', marginTop: '4px', letterSpacing: '-.01em' }}>{k.value}</div></div>))}
                     </div>
                     {v.cocinaHistEmpty && <div style={{ background: '#1a120b', border: '1px dashed #33261a', borderRadius: '16px', padding: '50px', textAlign: 'center', color: '#8c7a63' }}><div style={{ fontSize: '30px', marginBottom: '8px' }}>📜</div><div style={{ fontSize: '14px', color: '#c9b79c' }}>{c.histc.empty1}</div><div style={{ fontSize: '12.5px', marginTop: '4px' }}>{c.histc.empty2}</div></div>}
-                    <div style={{ background: '#1a120b', border: '1px solid #2a2016', borderRadius: '16px', overflow: 'hidden' }}>
+                    <div className="dtable-wrap" style={{ background: '#1a120b', border: '1px solid #2a2016', borderRadius: '16px', overflow: 'hidden' }}>
                       {v.cocinaHist.map((h, i) => (
                         <div key={i} style={{ display: 'grid', gridTemplateColumns: 'auto 1fr auto auto auto auto', gap: '14px', padding: '14px 20px', borderTop: '1px solid #241a10', alignItems: 'center' }}>
                           <span style={{ fontSize: '12px', fontWeight: 700, color: '#6bbf7a' }}>✓ {h.time}</span>
@@ -1612,7 +1620,7 @@ export default function BrasaPanelClient({ lang }: { lang: DemoLang }) {
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(180px,1fr))', gap: '14px', marginBottom: '20px' }}>
                       {v.cajaSummary.map((k, i) => (<div key={i} style={{ background: 'linear-gradient(160deg,#211810,#1a120b)', border: '1px solid #2f2418', borderRadius: '16px', padding: '18px' }}><div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}><span style={{ fontSize: '11px', textTransform: 'uppercase', letterSpacing: '.07em', color: '#8c7a63' }}>{k.label}</span><span style={{ fontSize: '16px' }}>{k.emoji}</span></div><div className="serif" style={{ fontSize: '30px', fontWeight: 600, color: '#fff', marginTop: '6px' }}>{k.value}</div></div>))}
                     </div>
-                    <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '18px', alignItems: 'start' }}>
+                    <div className="dcards-2" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '18px', alignItems: 'start' }}>
                       <div style={{ background: '#1a120b', border: '1px solid #2a2016', borderRadius: '16px', padding: '22px' }}>
                         <h3 className="serif" style={{ fontSize: '20px', fontWeight: 600, margin: '0 0 16px' }}>{c.caja.ventasMetodo}</h3>
                         {v.cajaByMethod.map((m, i) => (
@@ -1652,7 +1660,7 @@ export default function BrasaPanelClient({ lang }: { lang: DemoLang }) {
                     <div style={{ marginTop: '20px' }}>
                       <div style={{ fontSize: '11px', textTransform: 'uppercase', letterSpacing: '.1em', color: '#8c7a63', marginBottom: '12px' }}>{c.caja.cortesHist}</div>
                       {v.cortesEmpty && <div style={{ background: '#1a120b', border: '1px dashed #33261a', borderRadius: '14px', padding: '26px', textAlign: 'center', color: '#8c7a63', fontSize: '13px' }}>{c.caja.sinCortes}</div>}
-                      <div style={{ background: '#1a120b', border: '1px solid #2a2016', borderRadius: '16px', overflow: 'hidden' }}>
+                      <div className="dtable-wrap" style={{ background: '#1a120b', border: '1px solid #2a2016', borderRadius: '16px', overflow: 'hidden' }}>
                         {v.cortesList.map((z, i) => (
                           <div key={i} style={{ display: 'grid', gridTemplateColumns: 'auto 1fr auto auto', gap: '14px', padding: '14px 20px', borderTop: '1px solid #241a10', alignItems: 'center' }}>
                             <span style={{ fontSize: '12px', fontWeight: 700, color: '#c9a0e8' }}>{z.id}</span>
@@ -1678,7 +1686,7 @@ export default function BrasaPanelClient({ lang }: { lang: DemoLang }) {
                         </div>
                       ))}
                     </div>
-                    <div style={{ display: 'grid', gridTemplateColumns: '1.1fr .9fr', gap: '18px', alignItems: 'start' }}>
+                    <div className="dcol-2" style={{ display: 'grid', gridTemplateColumns: '1.1fr .9fr', gap: '18px', alignItems: 'start' }}>
                       <div style={{ background: '#1a120b', border: '1px solid #2a2016', borderRadius: '16px', padding: '22px' }}>
                         <h3 className="serif" style={{ fontSize: '20px', fontWeight: 600, margin: '0 0 4px' }}>{c.fin.registrarGasto}</h3>
                         <p style={{ margin: '0 0 16px', fontSize: '12.5px', color: '#8c7a63' }}>{c.fin.registrarSub}</p>
