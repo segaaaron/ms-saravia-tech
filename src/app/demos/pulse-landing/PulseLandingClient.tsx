@@ -401,6 +401,7 @@ export default function PulseLandingClient({ lang }: { lang: DemoLang }) {
               ? <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round"><line x1="6" y1="6" x2="18" y2="18" /><line x1="18" y1="6" x2="6" y2="18" /></svg>
               : <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round"><line x1="4" y1="7" x2="20" y2="7" /><line x1="4" y1="12" x2="20" y2="12" /><line x1="4" y1="17" x2="20" y2="17" /></svg>}
           </button>
+          {menuOpen && <div onClick={() => setMenuOpen(false)} style={{ position: 'fixed', inset: 0, zIndex: 69 }} />}
           {menuOpen && (
             <div style={{ position: 'absolute', top: 52, right: 0, minWidth: 210, background: '#fff', border: '1px solid #eceef1', borderRadius: 14, boxShadow: '0 26px 56px -20px rgba(20,25,35,.28)', padding: 10, zIndex: 70, display: 'flex', flexDirection: 'column', gap: 2 }}>
               <a href="#producto" onClick={() => setMenuOpen(false)} style={{ fontSize: 14, fontWeight: 600, color: '#4b5058', padding: '12px 14px', borderRadius: 10 }}>{c.nav.producto}</a>

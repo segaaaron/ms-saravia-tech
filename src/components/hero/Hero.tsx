@@ -111,8 +111,7 @@ export default function Hero() {
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 1.4, ease: [0.16, 1, 0.3, 1], delay: 0.4 }}
-            className="relative flex items-center justify-center"
-            style={{ height: 480 }}
+            className="relative flex items-center justify-center h-[360px] sm:h-[480px] scale-[0.8] sm:scale-100"
           >
             <ReactorVisual />
           </motion.div>
@@ -122,7 +121,7 @@ export default function Hero() {
 
       {/* Scroll indicator */}
       <motion.div
-        className="absolute bottom-8 left-8 flex flex-col items-center gap-2"
+        className="hidden sm:flex absolute bottom-8 left-8 flex-col items-center gap-2"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 2, duration: 0.8 }}

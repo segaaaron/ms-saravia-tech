@@ -1,4 +1,5 @@
 'use client'
+import { useTranslations } from 'next-intl'
 
 const ITEMS = [
   'React', 'React Native', 'Next.js', 'Node.js', 'TypeScript',
@@ -9,6 +10,7 @@ const ITEMS = [
 const DOUBLE = [...ITEMS, ...ITEMS]
 
 export default function StackMarquee() {
+  const t = useTranslations('stackMarquee')
   return (
     <section
       className="relative overflow-hidden py-10"
@@ -26,7 +28,7 @@ export default function StackMarquee() {
         className="text-center font-mono text-xs tracking-[0.3em] uppercase mb-8"
         style={{ color: 'rgba(255,255,255,0.18)' }}
       >
-        {'// CONSTRUIDO CON TECNOLOGÍA DE FRONTERA'}
+        {t('label')}
       </p>
 
       {/* Marquee */}

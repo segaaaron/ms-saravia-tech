@@ -49,6 +49,16 @@ canvas {
   html {
     scroll-behavior: auto;
   }
+  /* Neutraliza animaciones CSS decorativas (kenBurns, marquees, spins, sweeps) y hace
+     instantáneas las transiciones/reveals. Las animaciones scroll-driven en JS (puertas de
+     aura/roman) se cortan aparte en su efecto. */
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
 
 /* ============================================================
@@ -269,4 +279,15 @@ body {
 /* El botón hamburguesa se oculta en desktop (el nav inline lo reemplaza). */
 .dnav-only {
   display: none;
+}
+
+/* iOS auto-zoom: Safari móvil hace zoom al enfocar un campo con font-size < 16px. Forzamos
+   16px en móvil para TODOS los campos de los demos (el tamaño de diseño se mantiene en desktop).
+   Un solo lugar, sin tocar los estilos inline de cada input. */
+@media (max-width: 768px) {
+  input,
+  select,
+  textarea {
+    font-size: 16px !important;
+  }
 }

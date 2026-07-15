@@ -160,7 +160,7 @@ export default function Footer() {
                         rel="noopener noreferrer"
                         aria-label={label}
                         className={cn(
-                          'w-9 h-9 rounded-full glass border border-white/10 flex items-center justify-center',
+                          'w-11 h-11 rounded-full glass border border-white/10 flex items-center justify-center',
                           'text-white/40 hover:text-cyan-400 hover:border-cyan-400/40',
                           'hover:shadow-[0_0_16px_rgba(0,229,255,0.25)]',
                           'transition-all duration-200 cursor-pointer'

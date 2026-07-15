@@ -1,6 +1,6 @@
 'use client'
 import { useRef } from 'react'
-import { motion } from 'framer-motion'
+import { motion, useReducedMotion } from 'framer-motion'
 import { useTranslations } from 'next-intl'
 import { useGSAP } from '@gsap/react'
 import gsap from 'gsap'
@@ -25,45 +25,46 @@ export default function Process() {
   const t = useTranslations('process')
   const steps = t.raw('steps') as Step[]
 
+  const reduce = useReducedMotion()
   const sectionRef = useRef<HTMLDivElement>(null)
   const stepsRef = useRef<HTMLDivElement>(null)
   const containerRef = useRef<HTMLDivElement>(null)
 
   useGSAP(() => {
-    if (!sectionRef.current || !stepsRef.current || !containerRef.current) return
+    // El pin + scroll horizontal SOLO en ≥768px Y con movimiento permitido. En móvil el pin con
+    // 100vh se rompe con la barra dinámica y recorta las cards; con prefers-reduced-motion el
+    // scroll-hijack es desorientador → en ambos casos los pasos van en stack vertical (sin GSAP).
+    const mm = gsap.matchMedia()
+    mm.add('(min-width: 768px) and (prefers-reduced-motion: no-preference)', () => {
+      if (!sectionRef.current || !stepsRef.current || !containerRef.current) return
 
-    const totalWidth = stepsRef.current.scrollWidth
-    const viewportWidth = containerRef.current.offsetWidth
-    const scrollDistance = totalWidth - viewportWidth
+      const totalWidth = stepsRef.current.scrollWidth
+      const viewportWidth = containerRef.current.offsetWidth
+      const scrollDistance = totalWidth - viewportWidth
 
-    const tl = gsap.timeline({
-      scrollTrigger: {
-        trigger: sectionRef.current,
-        start: 'top top',
-        end: `+=${scrollDistance + 200}`,
-        pin: true,
-        scrub: 1,
-        anticipatePin: 1,
-        invalidateOnRefresh: true,
-      },
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: sectionRef.current,
+          start: 'top top',
+          end: `+=${scrollDistance + 200}`,
+          pin: true,
+          scrub: 1,
+          anticipatePin: 1,
+          invalidateOnRefresh: true,
+        },
+      })
+
+      tl.to(stepsRef.current, { x: -scrollDistance, ease: 'none' })
     })
 
-    tl.to(stepsRef.current, {
-      x: -scrollDistance,
-      ease: 'none',
-    })
-
-    return () => {
-      ScrollTrigger.getAll().forEach((st) => st.kill())
-    }
+    return () => mm.revert()
   }, { scope: sectionRef })
 
   return (
     <section
       ref={sectionRef}
       id="process"
-      className="relative overflow-hidden"
-      style={{ minHeight: '100vh' }}
+      className="relative overflow-hidden md:min-h-[100dvh]"
     >
       {/* Background */}
       <div className="absolute inset-0 grid-bg opacity-30 pointer-events-none" />
@@ -74,7 +75,7 @@ export default function Process() {
         }}
       />
 
-      <div className="relative z-10 flex flex-col h-screen py-16">
+      <div className={`relative z-10 flex flex-col py-12 ${reduce ? '' : 'md:h-[100dvh] md:py-16'}`}>
         {/* Header — static */}
         <motion.div
           variants={staggerContainer}
@@ -104,26 +105,26 @@ export default function Process() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.8 }}
-          className="text-center text-white/25 text-xs tracking-widest uppercase mb-8 shrink-0"
+          className={`${reduce ? 'hidden' : 'hidden md:block'} text-center text-white/25 text-xs tracking-widest uppercase mb-8 shrink-0`}
         >
           Scroll to explore →
         </motion.p>
 
         {/* Horizontal scroll container */}
-        <div ref={containerRef} className="flex-1 overflow-hidden flex items-center">
-          <div ref={stepsRef} className="flex items-stretch gap-0 will-change-transform">
+        <div ref={containerRef} className={`flex-1 flex items-center ${reduce ? '' : 'md:overflow-hidden'}`}>
+          <div ref={stepsRef} className={`flex flex-col items-stretch gap-6 will-change-transform ${reduce ? '' : 'md:flex-row md:gap-0'}`}>
             {/* Left padding */}
-            <div className="shrink-0 w-[8vw]" />
+            <div className={`${reduce ? 'hidden' : 'hidden md:block'} shrink-0 w-[8vw]`} />
 
             {steps.map((step, i) => {
               const c = STEP_COLORS[i]
               const isLast = i === steps.length - 1
 
               return (
-                <div key={step.num} className="flex items-center shrink-0">
+                <div key={step.num} className={`flex items-center w-full ${reduce ? '' : 'md:w-auto md:shrink-0'}`}>
                   {/* Step card */}
                   <div
-                    className={`w-[360px] rounded-2xl border ${c.accent} p-8 flex flex-col gap-4 relative
+                    className={`w-full ${reduce ? '' : 'md:w-[360px]'} rounded-2xl border ${c.accent} p-8 flex flex-col gap-4 relative
                       glass transition-all duration-300 hover:scale-[1.02] cursor-default`}
                     style={{
                       boxShadow: `0 0 0 1px rgba(255,255,255,0.05), 0 20px 60px rgba(0,0,0,0.4)`,
@@ -154,7 +155,7 @@ export default function Process() {
 
                   {/* Connecting line between steps */}
                   {!isLast && (
-                    <div className="shrink-0 flex items-center mx-4">
+                    <div className={`${reduce ? 'hidden' : 'hidden md:flex'} shrink-0 items-center mx-4`}>
                       <div
                         className="w-16 h-px"
                         style={{
@@ -175,7 +176,7 @@ export default function Process() {
             })}
 
             {/* Right padding */}
-            <div className="shrink-0 w-[8vw]" />
+            <div className={`${reduce ? 'hidden' : 'hidden md:block'} shrink-0 w-[8vw]`} />
           </div>
         </div>
       </div>

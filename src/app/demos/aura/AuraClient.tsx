@@ -265,6 +265,7 @@ export default function AuraClient({ lang }: { lang: DemoLang }) {
   const c = CONTENT[lang]
   const rootEl = useRef<HTMLDivElement>(null)
   const heroEl = useRef<HTMLElement>(null)
+  const stageEl = useRef<HTMLDivElement>(null)
 
   const [faqOpen, setFaqOpen] = useState(-1)
   const [menuOpen, setMenuOpen] = useState(false)
@@ -278,11 +279,24 @@ export default function AuraClient({ lang }: { lang: DemoLang }) {
     const r = document.documentElement.style
     r.setProperty('--accent', ACCENT)
 
+    // Reduced-motion: sin portal animado. Estado "entrado" estático (puertas abiertas + CTA) y
+    // colapsa el track a una pantalla para no dejar 340svh de scroll vacío. Sin listeners.
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      if (heroEl.current) heroEl.current.style.height = '100svh'
+      r.setProperty('--door', '1'); r.setProperty('--p', '1'); r.setProperty('--fly', String(IMMERSION))
+      r.setProperty('--heroText', '0'); r.setProperty('--enterText', '1'); r.setProperty('--flare', '0.3')
+      return
+    }
+
     let ticking = false
     const updateScene = () => {
       const t = heroEl.current
       if (!t) return
-      const total = t.offsetHeight - window.innerHeight
+      // Altura del stage sticky REAL (px), no window.innerHeight: en mobile la barra de URL
+      // cambia innerHeight a mitad de scroll y desincroniza el progreso → la puerta "saltaba".
+      // El stage usa svh (constante), así este valor no cambia durante el scroll.
+      const stageH = stageEl.current?.offsetHeight || window.innerHeight
+      const total = t.offsetHeight - stageH
       const scrolled = Math.min(Math.max(-t.getBoundingClientRect().top, 0), Math.max(total, 1))
       const p = total > 0 ? scrolled / total : 0
       const ease = p < 0.5 ? 2 * p * p : 1 - Math.pow(-2 * p + 2, 2) / 2
@@ -402,7 +416,7 @@ export default function AuraClient({ lang }: { lang: DemoLang }) {
       `}</style>
 
       {/* HEADER */}
-      <header style={{ position: 'fixed', top: 0, left: 0, right: 0, zIndex: 60, display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '16px 34px', background: 'rgba(9,12,17,.5)', backdropFilter: 'blur(16px)', WebkitBackdropFilter: 'blur(16px)', borderBottom: '1px solid rgba(255,255,255,.07)' }}>
+      <header style={{ position: 'fixed', top: 0, left: 0, right: 0, zIndex: 60, display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '16px 34px', background: 'rgba(9,12,17,.72)', backdropFilter: 'blur(10px)', WebkitBackdropFilter: 'blur(10px)', borderBottom: '1px solid rgba(255,255,255,.07)' }}>
         <a href="#top" style={{ display: 'flex', alignItems: 'center', gap: 11, textDecoration: 'none' }}>
           <span style={{ width: 26, height: 26, borderRadius: '50%', border: `1px solid ${ACCENT}`, display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }}>
             <span style={{ width: 8, height: 8, borderRadius: '50%', background: ACCENT }} />
@@ -429,8 +443,9 @@ export default function AuraClient({ lang }: { lang: DemoLang }) {
               ? <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round"><line x1="6" y1="6" x2="18" y2="18" /><line x1="18" y1="6" x2="6" y2="18" /></svg>
               : <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round"><line x1="4" y1="7" x2="20" y2="7" /><line x1="4" y1="12" x2="20" y2="12" /><line x1="4" y1="17" x2="20" y2="17" /></svg>}
           </button>
+          {menuOpen && <div onClick={() => setMenuOpen(false)} style={{ position: 'fixed', inset: 0, zIndex: 69 }} />}
           {menuOpen && (
-            <div style={{ position: 'absolute', top: 54, right: 0, minWidth: 220, background: 'rgba(14,17,22,.98)', backdropFilter: 'blur(16px)', WebkitBackdropFilter: 'blur(16px)', border: `1px solid ${ACCENT}33`, borderRadius: 16, boxShadow: '0 26px 56px -20px rgba(0,0,0,.7)', padding: 10, zIndex: 70, display: 'flex', flexDirection: 'column', gap: 2 }}>
+            <div style={{ position: 'absolute', top: 54, right: 0, minWidth: 220, background: 'rgba(14,17,22,.98)', border: `1px solid ${ACCENT}33`, borderRadius: 16, boxShadow: '0 26px 56px -20px rgba(0,0,0,.7)', padding: 10, zIndex: 70, display: 'flex', flexDirection: 'column', gap: 2 }}>
               <a href="#servicios" onClick={() => setMenuOpen(false)} style={{ ...navLink, padding: '13px 14px', borderRadius: 10 }}>{c.nav.servicios}</a>
               <a href="#doctora" onClick={() => setMenuOpen(false)} style={{ ...navLink, padding: '13px 14px', borderRadius: 10 }}>{c.nav.doctora}</a>
               <a href="#resultados" onClick={() => setMenuOpen(false)} style={{ ...navLink, padding: '13px 14px', borderRadius: 10 }}>{c.nav.resultados}</a>
@@ -442,8 +457,8 @@ export default function AuraClient({ lang }: { lang: DemoLang }) {
       </header>
 
       {/* HERO PORTAL */}
-      <section ref={heroEl} style={{ position: 'relative', height: '340vh', background: '#080b0f' }}>
-        <div style={{ position: 'sticky', top: 0, height: '100vh', overflow: 'hidden', background: '#0e1116' }}>
+      <section ref={heroEl} style={{ position: 'relative', height: '340svh', background: '#080b0f' }}>
+        <div ref={stageEl} style={{ position: 'sticky', top: 0, height: '100svh', overflow: 'hidden', background: '#0e1116' }}>
           <div style={{ position: 'absolute', inset: 0, overflow: 'hidden' }}>
             <div style={{ position: 'absolute', inset: '-3%', background: 'url(/showcase/img/recepcion.webp) center/cover', transform: 'scale(calc(1.02 + var(--door,0) * 0.14))' }} />
             <div style={{ position: 'absolute', left: '50%', top: '9%', transform: 'translateX(-50%)', textAlign: 'center', opacity: 'clamp(0, calc((var(--door,0) - 0.5) / 0.4), 1)' as unknown as number }}>
@@ -455,12 +470,12 @@ export default function AuraClient({ lang }: { lang: DemoLang }) {
           <div style={{ position: 'absolute', left: '50%', top: 0, bottom: 0, width: 'calc(2% + var(--door,0) * 42%)', transform: 'translateX(-50%)', pointerEvents: 'none', background: 'radial-gradient(closest-side, rgba(255,247,228,.9), rgba(255,240,214,0) 100%)', filter: 'blur(16px)', opacity: 'calc(0.12 + var(--door,0) * 0.5)' as unknown as number }} />
 
           <div style={{ position: 'absolute', inset: 0 }}>
-            <div style={{ position: 'absolute', left: 0, top: 0, width: '50.4%', height: '100%', overflow: 'hidden', transform: 'translateX(calc(var(--door,0) * -103%))', boxShadow: '3px 0 34px rgba(0,0,0,.4)' }}>
+            <div style={{ position: 'absolute', left: 0, top: 0, width: '50.4%', height: '100%', overflow: 'hidden', transform: 'translateX(calc(var(--door,0) * -103%))', willChange: 'transform', boxShadow: '3px 0 34px rgba(0,0,0,.4)' }}>
               <div style={{ position: 'absolute', top: 0, left: 0, width: '198.4%', height: '100%', background: 'url(/showcase/img/puerta.webp) center/cover' }}>
                 <DoorText tagline={c.tagline} />
               </div>
             </div>
-            <div style={{ position: 'absolute', right: 0, top: 0, width: '50.4%', height: '100%', overflow: 'hidden', transform: 'translateX(calc(var(--door,0) * 103%))', boxShadow: '-3px 0 34px rgba(0,0,0,.4)' }}>
+            <div style={{ position: 'absolute', right: 0, top: 0, width: '50.4%', height: '100%', overflow: 'hidden', transform: 'translateX(calc(var(--door,0) * 103%))', willChange: 'transform', boxShadow: '-3px 0 34px rgba(0,0,0,.4)' }}>
               <div style={{ position: 'absolute', top: 0, right: 0, width: '198.4%', height: '100%', background: 'url(/showcase/img/puerta.webp) center/cover' }}>
                 <DoorText tagline={c.tagline} />
               </div>

@@ -1,13 +1,14 @@
 'use client'
 import { useRef, useState } from 'react'
 import { motion, useInView } from 'framer-motion'
+import { useTranslations } from 'next-intl'
 import { slideInLeft, slideInRight, staggerContainer } from '@/lib/motion'
 
 const METRICS = [
-  { key: '// Uptime',          value: '99.9%', pct: 99 },
-  { key: '// Latencia API',    value: '42ms',  pct: 88 },
-  { key: '// Deploys / sem',   value: '26',    pct: 74 },
-  { key: '// Cobertura tests', value: '92%',   pct: 92 },
+  { key: 'uptime',   value: '99.9%', pct: 99 },
+  { key: 'latency',  value: '42ms',  pct: 88 },
+  { key: 'deploys',  value: '26',    pct: 74 },
+  { key: 'coverage', value: '92%',   pct: 92 },
 ]
 
 const GRAD = 'linear-gradient(120deg, #2FF5E0 0%, #4D7CFF 50%, #9B6CFF 100%)'
@@ -118,6 +119,7 @@ function HoloCube() {
 }
 
 export default function HoloDashboard() {
+  const t = useTranslations('system')
   const [tilt, setTilt] = useState({ rx: 0, ry: 0, hover: false })
   const [sheen, setSheen] = useState({ mx: '50%', my: '50%' })
 
@@ -219,7 +221,7 @@ export default function HoloDashboard() {
                   className="inline-block animate-pulse"
                   style={{ width: 7, height: 7, borderRadius: '50%', background: '#2FF5E0', boxShadow: '0 0 10px #2FF5E0' }}
                 />
-                Sistema operativo · en vivo
+                {t('badge')}
               </span>
 
               <h2
@@ -233,7 +235,7 @@ export default function HoloDashboard() {
                   color: '#EEF3F8',
                 }}
               >
-                Tu producto, monitoreado en tiempo real.
+                {t('title')}
               </h2>
 
               <p
@@ -244,12 +246,12 @@ export default function HoloDashboard() {
                   margin: '0 0 26px',
                 }}
               >
-                Visibilidad total del stack: rendimiento, despliegues y salud del sistema en un solo panel holográfico.
+                {t('subtitle')}
               </p>
 
               <div>
                 {METRICS.map((m, i) => (
-                  <MetricRow key={m.key} label={m.key} value={m.value} pct={m.pct} index={i} />
+                  <MetricRow key={m.key} label={t(`metrics.${m.key}`)} value={m.value} pct={m.pct} index={i} />
                 ))}
               </div>
             </div>

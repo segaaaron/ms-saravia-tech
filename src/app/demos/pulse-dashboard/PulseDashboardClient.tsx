@@ -1154,7 +1154,7 @@ export default function PulseDashboardClient({ lang }: { lang: DemoLang }) {
                   <div style={{ fontSize: 13, color: '#c7d0f5', marginTop: 4 }}>{L.orSearchName}</div>
                 </div>
                 <div style={{ padding: '22px 24px', display: 'flex', flexDirection: 'column' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}><span style={{ fontSize: 15, fontWeight: 800 }}>{L.recentCheckins}</span><div onClick={closeKiosk} className="pd-h-f3" style={{ width: 32, height: 32, borderRadius: 9, display: 'grid', placeItems: 'center', cursor: 'pointer', color: '#6b7280', border: '1px solid #e6e8ec' }}><Icon name="x" size={17} /></div></div>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 14 }}><span style={{ fontSize: 15, fontWeight: 800 }}>{L.recentCheckins}</span><div onClick={closeKiosk} className="pd-h-f3" style={{ width: 40, height: 40, borderRadius: 9, display: 'grid', placeItems: 'center', cursor: 'pointer', color: '#6b7280', border: '1px solid #e6e8ec' }}><Icon name="x" size={17} /></div></div>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 9, padding: '10px 13px', borderRadius: 10, background: '#f5f6f8', border: '1px solid #e6e8ec', marginBottom: 14 }}><Icon name="search" size={16} style={{ color: '#9aa0a8' }} /><input placeholder={L.searchMemberKiosk} style={{ background: 'none', border: 'none', fontSize: 14, width: '100%', color: '#171a1f' }} /></div>
                   <div style={{ flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: 8, maxHeight: 300 }}>
                     {recentCheckins.map((r, i) => (

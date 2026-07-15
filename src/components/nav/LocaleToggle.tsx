@@ -7,7 +7,7 @@ import { Globe } from 'lucide-react'
 // Toggle de idioma de un solo botón: muestra el idioma AL QUE se cambia (destino) y alterna.
 // Usa la navegación de next-intl para setear la cookie NEXT_LOCALE y armar la URL correcta
 // (con next/navigation crudo + localeDetection quedaba atascado al volver al idioma por defecto).
-export default function LocaleToggle() {
+export default function LocaleToggle({ onSwitch }: { onSwitch?: () => void } = {}) {
   const currentLocale = useLocale()
   const router = useRouter()
   const pathname = usePathname() // pathname SIN prefijo de locale (locale-agnóstico)
@@ -17,6 +17,9 @@ export default function LocaleToggle() {
     // Setea la cookie explícito ANTES de navegar: así el middleware (localeDetection) respeta
     // el cambio incluso al volver al locale por defecto (/), sin rebotar por Accept-Language.
     document.cookie = `NEXT_LOCALE=${other};path=/;max-age=31536000;samesite=lax`
+    // router.replace es soft-nav: el Navbar NO se remonta, así que el drawer mobile queda
+    // abierto (mobileOpen sigue true) tapando todo. Cerrarlo explícito antes de navegar.
+    onSwitch?.()
     router.replace(pathname, { locale: other })
   }
 

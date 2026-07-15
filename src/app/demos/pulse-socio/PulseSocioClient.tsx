@@ -527,6 +527,7 @@ export default function PulseSocioClient({ lang }: { lang: DemoLang }) {
           <button onClick={() => setMenuOpen((s) => !s)} aria-label="Menu" aria-expanded={menuOpen} style={{ width: 42, height: 42, borderRadius: 10, border: '1px solid #e2e5e9', background: '#fff', color: '#171a1f', cursor: 'pointer', alignItems: 'center', justifyContent: 'center', fontSize: 19, lineHeight: 1 }}>{menuOpen
             ? <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round"><line x1="6" y1="6" x2="18" y2="18" /><line x1="18" y1="6" x2="6" y2="18" /></svg>
             : <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round"><line x1="4" y1="7" x2="20" y2="7" /><line x1="4" y1="12" x2="20" y2="12" /><line x1="4" y1="17" x2="20" y2="17" /></svg>}</button>
+          {menuOpen && <div onClick={() => setMenuOpen(false)} style={{ position: 'fixed', inset: 0, zIndex: 69 }} />}
           {menuOpen && (
             <div style={{ position: 'absolute', top: 52, right: 0, minWidth: 210, background: '#fff', border: '1px solid #e6e8ec', borderRadius: 14, boxShadow: '0 24px 56px -20px rgba(23,26,31,.28)', padding: 8, zIndex: 70, display: 'flex', flexDirection: 'column', gap: 2 }}>
               {tabs.map((t) => (

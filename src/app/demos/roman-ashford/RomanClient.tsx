@@ -306,6 +306,7 @@ export default function RomanClient({ lang }: { lang: DemoLang }) {
   const c = CONTENT[lang]
   const rootEl = useRef<HTMLDivElement>(null)
   const navEl = useRef<HTMLElement>(null)
+  const stageEl = useRef<HTMLDivElement>(null)
   const [menuOpen, setMenuOpen] = useState(false)
 
   useEffect(() => {
@@ -365,7 +366,10 @@ export default function RomanClient({ lang }: { lang: DemoLang }) {
         root.style.setProperty('--sy', y.toFixed(1))
         const it = document.getElementById('introTrack')
         if (it) {
-          const tot = it.offsetHeight - window.innerHeight
+          // Altura del stage sticky REAL (svh constante), no window.innerHeight: evita que la
+          // barra de URL móvil desincronice el progreso y haga saltar la apertura de puertas.
+          const stageH = stageEl.current?.offsetHeight || window.innerHeight
+          const tot = it.offsetHeight - stageH
           const sc = Math.min(Math.max(-it.getBoundingClientRect().top, 0), Math.max(tot, 1))
           root.style.setProperty('--intro', (tot > 0 ? sc / tot : 0).toFixed(4))
         }
@@ -378,8 +382,18 @@ export default function RomanClient({ lang }: { lang: DemoLang }) {
         ticking = false
       })
     }
-    window.addEventListener('scroll', onScroll, { passive: true })
-    onScroll()
+    // Reduced-motion: sin scroll-hijack. Poster estático (puertas cerradas + marca visible en
+    // --intro 0.3) y colapsa el track a una pantalla. Los reveals quedan instantáneos por el
+    // reset CSS de reduced-motion.
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      const it = document.getElementById('introTrack')
+      if (it) it.style.height = '100svh'
+      root.style.setProperty('--intro', '0.3')
+      root.style.setProperty('--sy', '0')
+    } else {
+      window.addEventListener('scroll', onScroll, { passive: true })
+      onScroll()
+    }
 
     return () => {
       window.removeEventListener('scroll', onScroll)
@@ -437,18 +451,18 @@ export default function RomanClient({ lang }: { lang: DemoLang }) {
       `}</style>
 
       {/* CINEMATIC INTRO (scroll-driven): the court doors open and you step outside */}
-      <section id="introTrack" style={{ position: 'relative', height: '280vh', background: '#0c0f14', zIndex: 5 }}>
-        <div style={{ position: 'sticky', top: 0, height: '100vh', overflow: 'hidden' }}>
+      <section id="introTrack" style={{ position: 'relative', height: '280svh', background: '#0c0f14', zIndex: 5 }}>
+        <div ref={stageEl} style={{ position: 'sticky', top: 0, height: '100svh', overflow: 'hidden' }}>
           {/* EXTERIOR: al abrirse las puertas se "sale a la calle" y se ven los edificios. */}
           <div style={{ position: 'absolute', inset: 0, overflow: 'hidden' }}><div style={{ position: 'absolute', inset: '-8%', background: 'url(https://images.unsplash.com/photo-1449824913935-59a10b8d2000?w=1900&q=80) center/cover', animation: 'kenBurns 26s ease-in-out infinite alternate' }} /></div>
           {/* Gradiente ligero: revela los edificios (antes .66→.9 los tapaba en negro) y aún da legibilidad al texto abajo. */}
           <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(180deg, rgba(8,11,16,.34) 0%, rgba(8,11,16,.24) 45%, rgba(8,11,16,.86) 100%)' }} />
 
           <div style={{ position: 'absolute', inset: 0, transform: 'scale(calc(1 + var(--intro,0) * 0.55))' }}>
-            <div style={{ position: 'absolute', left: 0, top: 0, width: '51%', height: '100%', overflow: 'hidden', transform: 'translateX(calc(clamp(0, calc((var(--intro,0) - 0.48) / 0.5), 1) * -103%))' }}>
+            <div style={{ position: 'absolute', left: 0, top: 0, width: '51%', height: '100%', overflow: 'hidden', transform: 'translateX(calc(clamp(0, calc((var(--intro,0) - 0.48) / 0.5), 1) * -103%))', willChange: 'transform' }}>
               <div style={{ position: 'absolute', left: 0, top: 0, width: '196%', height: '100%', background: 'url(/showcase/img/corte-corredor.webp) center/cover' }} />
             </div>
-            <div style={{ position: 'absolute', right: 0, top: 0, width: '51%', height: '100%', overflow: 'hidden', transform: 'translateX(calc(clamp(0, calc((var(--intro,0) - 0.48) / 0.5), 1) * 103%))' }}>
+            <div style={{ position: 'absolute', right: 0, top: 0, width: '51%', height: '100%', overflow: 'hidden', transform: 'translateX(calc(clamp(0, calc((var(--intro,0) - 0.48) / 0.5), 1) * 103%))', willChange: 'transform' }}>
               <div style={{ position: 'absolute', right: 0, top: 0, width: '196%', height: '100%', background: 'url(/showcase/img/corte-corredor.webp) center/cover' }} />
             </div>
             <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', background: 'radial-gradient(circle at 50% 46%, rgba(255,247,225,0) 12%, rgba(12,15,20,.32) 60%, rgba(12,15,20,.82) 100%)', opacity: op('clamp(0, calc((0.5 - var(--intro,0)) / 0.5), 1)') }} />
@@ -519,6 +533,7 @@ export default function RomanClient({ lang }: { lang: DemoLang }) {
               ? <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round"><line x1="6" y1="6" x2="18" y2="18" /><line x1="18" y1="6" x2="6" y2="18" /></svg>
               : <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round"><line x1="4" y1="7" x2="20" y2="7" /><line x1="4" y1="12" x2="20" y2="12" /><line x1="4" y1="17" x2="20" y2="17" /></svg>}
           </button>
+          {menuOpen && <div onClick={() => setMenuOpen(false)} style={{ position: 'fixed', inset: 0, zIndex: 69 }} />}
           {menuOpen && (
             <div style={{ position: 'absolute', top: 54, right: 0, minWidth: 230, background: '#12161d', border: '1px solid rgba(194,161,90,.28)', borderRadius: 8, boxShadow: '0 26px 56px -20px rgba(0,0,0,.7)', padding: 10, zIndex: 70, display: 'flex', flexDirection: 'column', gap: 2 }}>
               <a href="#firma" onClick={() => setMenuOpen(false)} style={{ ...navLink, padding: '13px 14px', borderRadius: 6 }}>{c.nav.firm}</a>
@@ -715,9 +730,9 @@ export default function RomanClient({ lang }: { lang: DemoLang }) {
           </div>
           <form onSubmit={submitForm} data-reveal data-delay="120" style={{ background: '#12161d', border: '1px solid rgba(255,255,255,.08)', padding: 40, display: 'flex', flexDirection: 'column', gap: 16 }}>
             <input name="nombre" required placeholder={c.formName} className="ra-form-input" style={{ width: '100%', ...inputBase }} />
-            <div style={{ display: 'flex', gap: 14 }}>
-              <input name="email" type="email" required placeholder={c.formEmail} className="ra-form-input" style={{ flex: 1, ...inputBase }} />
-              <input name="telefono" placeholder={c.formPhone} className="ra-form-input" style={{ flex: 1, ...inputBase }} />
+            <div className="dcards-2" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 14 }}>
+              <input name="email" type="email" required placeholder={c.formEmail} className="ra-form-input" style={{ width: '100%', ...inputBase }} />
+              <input name="telefono" placeholder={c.formPhone} className="ra-form-input" style={{ width: '100%', ...inputBase }} />
             </div>
             <select name="area" style={{ width: '100%', padding: '15px 16px', background: '#0c0f14', border: '1px solid rgba(255,255,255,.12)', color: '#8a93a2', fontSize: 14, fontFamily: "'Manrope',sans-serif", outline: 'none' }}>
               <option value="">{c.formAreaPlaceholder}</option>

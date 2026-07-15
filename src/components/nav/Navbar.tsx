@@ -57,7 +57,7 @@ export default function Navbar() {
       <motion.header
         className={cn(
           'fixed top-0 left-0 right-0 z-50 transition-all duration-500',
-          scrolled && 'backdrop-blur-xl'
+          scrolled && 'backdrop-blur-md'
         )}
         style={{
           backgroundColor: scrolled ? 'rgba(5,6,10,0.85)' : 'transparent',
@@ -79,7 +79,7 @@ export default function Navbar() {
           </Link>
 
           {/* Desktop nav */}
-          <nav className="hidden md:flex items-center gap-8" aria-label="Main navigation">
+          <nav className="hidden lg:flex items-center gap-8" aria-label="Main navigation">
             {NAV_LINKS.map((link) => {
               const className =
                 'text-sm text-white/60 hover:text-white transition-colors duration-200 font-medium relative group'
@@ -100,7 +100,7 @@ export default function Navbar() {
           </nav>
 
           {/* Right side: locale toggle + CTA */}
-          <div className="hidden md:flex items-center gap-4">
+          <div className="hidden lg:flex items-center gap-4">
             <LocaleToggle />
             <MagneticButton variant="primary" href={ctaHref} className="text-xs px-5 py-2.5">
               {t('cta')}
@@ -110,7 +110,7 @@ export default function Navbar() {
           {/* Mobile: hamburger */}
           <button
             onClick={() => setMobileOpen((v) => !v)}
-            className="md:hidden relative z-[60] w-10 h-10 flex items-center justify-center text-white/70 hover:text-white transition-colors"
+            className="lg:hidden relative z-[60] w-11 h-11 flex items-center justify-center text-white/70 hover:text-white transition-colors"
             aria-label="Toggle menu"
             aria-expanded={mobileOpen}
           >
@@ -152,7 +152,7 @@ export default function Navbar() {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.25 }}
-              className="fixed inset-0 z-40 bg-black/60 backdrop-blur-sm md:hidden"
+              className="fixed inset-0 z-40 bg-black/70 lg:hidden"
               onClick={closeMobile}
             />
 
@@ -163,7 +163,7 @@ export default function Navbar() {
               animate={{ x: 0 }}
               exit={{ x: '100%' }}
               transition={{ type: 'spring', stiffness: 300, damping: 35 }}
-              className="fixed top-0 right-0 bottom-0 z-50 w-[300px] bg-[#05060A] border-l border-white/[0.06] flex flex-col md:hidden"
+              className="fixed top-0 right-0 bottom-0 z-50 w-[300px] max-w-[85vw] bg-[#05060A] border-l border-white/[0.06] flex flex-col lg:hidden"
               aria-label="Mobile navigation"
             >
               {/* Drawer header */}
@@ -180,7 +180,7 @@ export default function Navbar() {
                     onClick: closeMobile,
                     initial: { opacity: 0, x: 20 },
                     animate: { opacity: 1, x: 0 },
-                    transition: { delay: 0.05 + i * 0.07 },
+                    transition: { delay: 0.03 + i * 0.03 },
                     className:
                       'flex items-center py-4 text-lg font-medium text-white/70 hover:text-white border-b border-white/[0.04] transition-colors duration-200 group',
                   }
@@ -202,7 +202,7 @@ export default function Navbar() {
 
               {/* Drawer footer */}
               <div className="px-6 pb-10 flex flex-col gap-4">
-                <LocaleToggle />
+                <LocaleToggle onSwitch={closeMobile} />
                 <MagneticButton
                   variant="primary"
                   href={ctaHref}

@@ -19,14 +19,21 @@ export default function InteractiveParticles() {
     const ctx = canvas.getContext('2d')
     if (!ctx) return
 
+    // Fondo decorativo. Si el usuario pide menos movimiento → no animar. En táctil el "repel"
+    // por mouse no aplica y el bucle O(n²) de conexiones drena batería: menos partículas y sin
+    // líneas en pantallas coarse-pointer.
+    const coarse = window.matchMedia('(pointer: coarse)').matches
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+
     let animId: number
     let W = window.innerWidth
     let H = window.innerHeight
     const mouse = { x: -9999, y: -9999 }
-    const PARTICLE_COUNT = 140
+    const PARTICLE_COUNT = coarse ? 46 : 140
     const REPEL_RADIUS = 130
     const CONNECT_RADIUS = 120
     const REPEL_STRENGTH = 3.5
+    const drawConnections = !coarse
 
     canvas.width = W
     canvas.height = H
@@ -104,20 +111,22 @@ export default function InteractiveParticles() {
           : `rgba(0,229,255,${opacity})`
         ctx.fill()
 
-        // Draw connections
-        for (let j = i + 1; j < PARTICLE_COUNT; j++) {
-          const q = particles[j]
-          const ex = p.x - q.x
-          const ey = p.y - q.y
-          const edist = Math.sqrt(ex * ex + ey * ey)
-          if (edist < CONNECT_RADIUS) {
-            const lineOpacity = (1 - edist / CONNECT_RADIUS) * 0.25
-            ctx.beginPath()
-            ctx.moveTo(p.x, p.y)
-            ctx.lineTo(q.x, q.y)
-            ctx.strokeStyle = `rgba(0,229,255,${lineOpacity})`
-            ctx.lineWidth = 0.6
-            ctx.stroke()
+        // Draw connections (omitido en móvil: O(n²) por frame no vale la batería)
+        if (drawConnections) {
+          for (let j = i + 1; j < PARTICLE_COUNT; j++) {
+            const q = particles[j]
+            const ex = p.x - q.x
+            const ey = p.y - q.y
+            const edist = Math.sqrt(ex * ex + ey * ey)
+            if (edist < CONNECT_RADIUS) {
+              const lineOpacity = (1 - edist / CONNECT_RADIUS) * 0.25
+              ctx.beginPath()
+              ctx.moveTo(p.x, p.y)
+              ctx.lineTo(q.x, q.y)
+              ctx.strokeStyle = `rgba(0,229,255,${lineOpacity})`
+              ctx.lineWidth = 0.6
+              ctx.stroke()
+            }
           }
         }
       }

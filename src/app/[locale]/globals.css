@@ -181,3 +181,19 @@ body {
   from { transform: rotateX(-20deg) rotateY(0deg); }
   to   { transform: rotateX(-20deg) rotateY(360deg); }
 }
+
+/* Accesibilidad: si el usuario pide menos movimiento, neutraliza animaciones CSS
+   decorativas y vuelve instantáneas las transiciones. El pin GSAP de Process y las
+   animaciones scroll-driven se desactivan aparte en su JS (matchMedia). */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

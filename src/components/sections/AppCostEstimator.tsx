@@ -30,7 +30,7 @@ function SegBtn({ active, onClick, children }: { active: boolean; onClick: () =>
       type="button"
       aria-pressed={active}
       onClick={onClick}
-      className="min-h-[44px] rounded-xl px-3 py-2.5 text-sm font-medium transition-all duration-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#2FF5E0]"
+      className="min-h-[44px] rounded-xl px-2 sm:px-3 py-2.5 text-xs sm:text-sm font-medium leading-tight transition-all duration-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#2FF5E0]"
       style={{
         border: active ? '1px solid rgba(47,245,224,0.5)' : '1px solid rgba(120,200,255,0.12)',
         background: active ? 'rgba(47,245,224,0.09)' : 'rgba(255,255,255,0.02)',

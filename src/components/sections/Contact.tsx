@@ -23,7 +23,7 @@ const inputStyles: React.CSSProperties = {
   padding: '12px 16px',
   color: 'white',
   outline: 'none',
-  fontSize: '14px',
+  fontSize: '16px', // 16px evita el auto-zoom de iOS Safari al enfocar el campo (dispara con <16px)
   transition: 'border-color 0.2s, box-shadow 0.2s',
   fontFamily: 'inherit',
 }

@@ -500,5 +500,19 @@
     "title": "Not sure what your app would cost?",
     "subtitle": "Get an honest ballpark in USD in seconds — adjusted to your region. No signup, no strings.",
     "button": "Estimate my app"
+  },
+  "system": {
+    "badge": "Operating system · live",
+    "title": "Your product, monitored in real time.",
+    "subtitle": "Full stack visibility: performance, deployments and system health in a single holographic panel.",
+    "metrics": {
+      "uptime": "// Uptime",
+      "latency": "// API latency",
+      "deploys": "// Deploys / wk",
+      "coverage": "// Test coverage"
+    }
+  },
+  "stackMarquee": {
+    "label": "// BUILT WITH FRONTIER TECHNOLOGY"
   }
 }

@@ -500,5 +500,19 @@
     "title": "¿No sabes cuánto costaría tu app?",
     "subtitle": "Obtén un estimado honesto en USD en segundos — ajustado a tu región. Sin registro, sin compromiso.",
     "button": "Cotizar mi app"
+  },
+  "system": {
+    "badge": "Sistema operativo · en vivo",
+    "title": "Tu producto, monitoreado en tiempo real.",
+    "subtitle": "Visibilidad total del stack: rendimiento, despliegues y salud del sistema en un solo panel holográfico.",
+    "metrics": {
+      "uptime": "// Uptime",
+      "latency": "// Latencia API",
+      "deploys": "// Deploys / sem",
+      "coverage": "// Cobertura tests"
+    }
+  },
+  "stackMarquee": {
+    "label": "// CONSTRUIDO CON TECNOLOGÍA DE FRONTERA"
   }
 }
