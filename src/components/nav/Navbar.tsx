@@ -50,6 +50,15 @@ export default function Navbar() {
     return () => { document.body.style.overflow = '' }
   }, [mobileOpen])
 
+  // Escape cierra el drawer: es lo que se espera de cualquier overlay modal, y en tablet con
+  // teclado era la única salida que no funcionaba (tap en X, backdrop, link y CTA ya cerraban).
+  useEffect(() => {
+    if (!mobileOpen) return
+    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') setMobileOpen(false) }
+    document.addEventListener('keydown', onKey)
+    return () => document.removeEventListener('keydown', onKey)
+  }, [mobileOpen])
+
   const closeMobile = () => setMobileOpen(false)
 
   return (
@@ -107,39 +116,47 @@ export default function Navbar() {
             </MagneticButton>
           </div>
 
-          {/* Mobile: hamburger */}
-          <button
-            onClick={() => setMobileOpen((v) => !v)}
-            className="lg:hidden relative z-[60] w-11 h-11 flex items-center justify-center text-white/70 hover:text-white transition-colors"
-            aria-label="Toggle menu"
-            aria-expanded={mobileOpen}
-          >
-            <AnimatePresence mode="wait" initial={false}>
-              {mobileOpen ? (
-                <motion.span
-                  key="close"
-                  initial={{ rotate: -90, opacity: 0 }}
-                  animate={{ rotate: 0, opacity: 1 }}
-                  exit={{ rotate: 90, opacity: 0 }}
-                  transition={{ duration: 0.2 }}
-                >
-                  <X size={22} />
-                </motion.span>
-              ) : (
-                <motion.span
-                  key="menu"
-                  initial={{ rotate: 90, opacity: 0 }}
-                  animate={{ rotate: 0, opacity: 1 }}
-                  exit={{ rotate: -90, opacity: 0 }}
-                  transition={{ duration: 0.2 }}
-                >
-                  <Menu size={22} />
-                </motion.span>
-              )}
-            </AnimatePresence>
-          </button>
+          {/* Mobile: hueco reservado para el botón hamburguesa, que vive fuera del header
+              (ver abajo) para poder pintarse encima del drawer. */}
+          <div className="lg:hidden w-11 h-11" aria-hidden />
         </div>
       </motion.header>
+
+      {/* Botón hamburguesa/X. FUERA del <header> a propósito: el header es `fixed z-50`, o sea
+          un stacking context, y cualquier z-index de sus hijos queda encapsulado dentro. El
+          drawer (z-50, posterior en el DOM) ganaba el empate y tapaba la X → tocar la X no
+          cerraba nada. Como hermano posterior con z-[70], la X siempre recibe el tap. */}
+      <button
+        onClick={() => setMobileOpen((v) => !v)}
+        className="lg:hidden fixed top-0 right-6 z-[70] w-11 h-11 flex items-center justify-center text-white/70 hover:text-white transition-colors"
+        style={{ marginTop: '10px' }}
+        aria-label="Toggle menu"
+        aria-expanded={mobileOpen}
+      >
+        <AnimatePresence mode="wait" initial={false}>
+          {mobileOpen ? (
+            <motion.span
+              key="close"
+              initial={{ rotate: -90, opacity: 0 }}
+              animate={{ rotate: 0, opacity: 1 }}
+              exit={{ rotate: 90, opacity: 0 }}
+              transition={{ duration: 0.2 }}
+            >
+              <X size={22} />
+            </motion.span>
+          ) : (
+            <motion.span
+              key="menu"
+              initial={{ rotate: 90, opacity: 0 }}
+              animate={{ rotate: 0, opacity: 1 }}
+              exit={{ rotate: -90, opacity: 0 }}
+              transition={{ duration: 0.2 }}
+            >
+              <Menu size={22} />
+            </motion.span>
+          )}
+        </AnimatePresence>
+      </button>
 
       {/* Mobile drawer overlay */}
       <AnimatePresence>
@@ -151,7 +168,7 @@ export default function Navbar() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              transition={{ duration: 0.25 }}
+              transition={{ duration: 0.18 }}
               className="fixed inset-0 z-40 bg-black/70 lg:hidden"
               onClick={closeMobile}
             />
@@ -161,8 +178,10 @@ export default function Navbar() {
               key="drawer"
               initial={{ x: '100%' }}
               animate={{ x: 0 }}
-              exit={{ x: '100%' }}
-              transition={{ type: 'spring', stiffness: 300, damping: 35 }}
+              // Salida por tween, no spring: un spring tiene que "asentarse" y tarda ~1s en
+              // darse por terminado, así que el drawer se quedaba visible mucho después del tap.
+              exit={{ x: '100%', transition: { type: 'tween', duration: 0.2, ease: 'easeIn' } }}
+              transition={{ type: 'spring', stiffness: 420, damping: 40, mass: 0.7 }}
               className="fixed top-0 right-0 bottom-0 z-50 w-[300px] max-w-[85vw] bg-[#05060A] border-l border-white/[0.06] flex flex-col lg:hidden"
               aria-label="Mobile navigation"
             >

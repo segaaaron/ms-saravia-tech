@@ -1,26 +1,32 @@
 'use client'
 import { useLocale } from 'next-intl'
-import { useRouter, usePathname } from '@/i18n/navigation'
+import { usePathname, getPathname } from '@/i18n/navigation'
 import { motion } from 'framer-motion'
 import { Globe } from 'lucide-react'
 
 // Toggle de idioma de un solo botón: muestra el idioma AL QUE se cambia (destino) y alterna.
-// Usa la navegación de next-intl para setear la cookie NEXT_LOCALE y armar la URL correcta
-// (con next/navigation crudo + localeDetection quedaba atascado al volver al idioma por defecto).
+// Arma la URL destino con `getPathname` de next-intl (respeta localePrefix 'as-needed') y navega
+// duro. Ver switchLocale para por qué la cookie y por qué no es un soft-nav.
 export default function LocaleToggle({ onSwitch }: { onSwitch?: () => void } = {}) {
   const currentLocale = useLocale()
-  const router = useRouter()
   const pathname = usePathname() // pathname SIN prefijo de locale (locale-agnóstico)
   const other = currentLocale === 'en' ? 'es' : 'en'
 
   const switchLocale = () => {
-    // Setea la cookie explícito ANTES de navegar: así el middleware (localeDetection) respeta
-    // el cambio incluso al volver al locale por defecto (/), sin rebotar por Accept-Language.
+    // La cookie manda sobre localeDetection en el middleware: sin ella, volver al locale por
+    // defecto (/) rebota a /es por Accept-Language.
     document.cookie = `NEXT_LOCALE=${other};path=/;max-age=31536000;samesite=lax`
-    // router.replace es soft-nav: el Navbar NO se remonta, así que el drawer mobile queda
-    // abierto (mobileOpen sigue true) tapando todo. Cerrarlo explícito antes de navegar.
     onSwitch?.()
-    router.replace(pathname, { locale: other })
+    // Nav DURA, no router.replace. En una visita que entró por el redirect / -> /es, el Router
+    // Cache del App Router guarda "/" resuelto a /es; un soft-nav a "/" reusa esa entrada y
+    // vuelve a español. Solo se ve en prod (en dev el prefetch cache tiene staleTime 0).
+    // Se arrastran search Y hash: la nav del sitio son anclas (/#services, /#contact), así que
+    // sin el hash quien cambia de idioma leyendo una sección salta al tope de la página.
+    window.location.assign(
+      getPathname({ href: pathname, locale: other }) +
+        window.location.search +
+        window.location.hash
+    )
   }
 
   return (
