@@ -132,9 +132,14 @@ body {
    en opacity:0 dentro del HTML servido y solo aparece cuando hidratan ~254 kB de JS: en un
    móvil lento eso es un hero en blanco durante segundos y un LCP malísimo. Una animación CSS
    arranca al parsear, sin esperar JS, y da el mismo stagger. */
+/* El texto arranca VISIBLE y solo se desliza. La versión anterior también animaba la opacidad
+   de 0 a 1, y eso costaba casi un segundo de LCP: el navegador no cuenta un elemento hasta que
+   se ve, así que el h1 —el candidato a LCP— no puntuaba hasta terminar su fade. Medido en móvil
+   con CPU 4x + Slow 4G: 1716 ms con fade, 760 ms sin él, con el CSS listo a los 514 ms.
+   El deslizamiento sigue dando la entrada; el fade era lo único que retrasaba, y no se nota. */
 @keyframes hero-rise {
-  from { opacity: 0; transform: translateY(40px); }
-  to   { opacity: 1; transform: none; }
+  from { transform: translateY(40px); }
+  to   { transform: none; }
 }
 .hero-rise {
   animation: hero-rise 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94) backwards;
