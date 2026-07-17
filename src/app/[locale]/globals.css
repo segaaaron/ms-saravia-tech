@@ -28,7 +28,14 @@ body {
   font-family: var(--font-inter), system-ui, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  overflow-x: hidden;
+  /* Red de seguridad: recorta lo que se sale a lo ancho a propósito (el marquee de stack, los
+     glows decorativos con -right-*) para que nunca haya scroll horizontal de página.
+     `clip` y no `hidden`, igual que demos.css: por spec, si un eje no es `visible` el otro pasa
+     a `auto`, así que `hidden` dejaba el body en `hidden auto` y lo volvía scroll-container.
+     `clip` recorta sin crear scroll-container. (Esto NO era lo que rompía los `position:sticky`
+     —eso era el `overflow-hidden` de cada <section>, ver AppCostEstimator— pero `hidden` acá
+     tampoco aportaba nada y el efecto secundario es real.) */
+  overflow-x: clip;
 }
 
 ::selection {
@@ -120,6 +127,32 @@ body {
 }
 
 .float { animation: float 6s ease-in-out infinite; }
+
+/* Entrada del hero SIN framer-motion. Con `initial="hidden"` de framer el copy del hero queda
+   en opacity:0 dentro del HTML servido y solo aparece cuando hidratan ~254 kB de JS: en un
+   móvil lento eso es un hero en blanco durante segundos y un LCP malísimo. Una animación CSS
+   arranca al parsear, sin esperar JS, y da el mismo stagger. */
+@keyframes hero-rise {
+  from { opacity: 0; transform: translateY(40px); }
+  to   { opacity: 1; transform: none; }
+}
+.hero-rise {
+  animation: hero-rise 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94) backwards;
+}
+.hero-rise-1 { animation-delay: 0.10s; }
+.hero-rise-2 { animation-delay: 0.22s; }
+.hero-rise-3 { animation-delay: 0.34s; }
+.hero-rise-4 { animation-delay: 0.46s; }
+
+/* En pantallas táctiles el blur enorme + animación infinita del aurora satura el compositor
+   y arrastra scroll y drawer. Sin animación y con menos radio queda igual de bien y sale gratis
+   por frame. */
+@media (pointer: coarse) {
+  .aurora-blob {
+    animation: none !important;
+    filter: blur(60px) !important;
+  }
+}
 .animate-shimmer { animation: shimmer 2s ease-in-out infinite; }
 .animate-glow-pulse { animation: glow-pulse 3s ease-in-out infinite; }
 .animate-aurora { animation: aurora 8s ease infinite; }
@@ -194,6 +227,12 @@ body {
   *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
+    /* También el delay: `.hero-rise` usa `animation-delay` (0.10s–0.46s) con fill-mode
+       `backwards`, o sea que DURANTE el delay se aplica el estado inicial (opacity: 0). Sin
+       neutralizarlo, quien pide menos movimiento veía el hero —incluido el h1, que es el
+       elemento LCP— invisible hasta 460 ms y luego aparecer de golpe: justo el síntoma que la
+       animación CSS venía a resolver, y encima retrasando su LCP. */
+    animation-delay: -1ms !important;
     transition-duration: 0.01ms !important;
   }
 }

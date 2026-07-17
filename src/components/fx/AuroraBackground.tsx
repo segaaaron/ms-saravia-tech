@@ -15,23 +15,27 @@ export default function AuroraBackground({ className }: Props) {
       {/* Grid overlay */}
       <div className="absolute inset-0 grid-bg opacity-100" />
 
-      {/* Aurora blobs */}
+      {/* Aurora blobs. El `blur-[120px]` sobre un blob de 600px es de lo más caro que puede
+          pedirle una página al GPU, y animarlo `infinite` fuerza repintado permanente — en
+          móvil eso deja el compositor saturado y hace janky el scroll y el drawer. En táctil
+          (`aurora-blob`, ver globals.css) se congela la animación y se baja el radio de blur;
+          el degradado radial ya da el mismo look sin coste por frame. */}
       <div
-        className="absolute -top-40 -left-40 w-[600px] h-[600px] rounded-full opacity-[0.15] blur-[120px]"
+        className="aurora-blob absolute -top-40 -left-40 w-[600px] h-[600px] rounded-full opacity-[0.15] blur-[120px]"
         style={{
           background: 'radial-gradient(circle, #00E5FF 0%, transparent 70%)',
           animation: 'float 8s ease-in-out infinite',
         }}
       />
       <div
-        className="absolute top-1/3 -right-40 w-[500px] h-[500px] rounded-full opacity-[0.12] blur-[100px]"
+        className="aurora-blob absolute top-1/3 -right-40 w-[500px] h-[500px] rounded-full opacity-[0.12] blur-[100px]"
         style={{
           background: 'radial-gradient(circle, #7C3AED 0%, transparent 70%)',
           animation: 'float 10s ease-in-out infinite reverse',
         }}
       />
       <div
-        className="absolute bottom-0 left-1/3 w-[400px] h-[400px] rounded-full opacity-[0.10] blur-[80px]"
+        className="aurora-blob absolute bottom-0 left-1/3 w-[400px] h-[400px] rounded-full opacity-[0.10] blur-[80px]"
         style={{
           background: 'radial-gradient(circle, #FF2BD6 0%, transparent 70%)',
           animation: 'float 12s ease-in-out infinite 2s',

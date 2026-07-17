@@ -10,7 +10,7 @@ import {
 import GradientText from '@/components/ui/GradientText'
 import SectionLabel from '@/components/ui/SectionLabel'
 import CtaButton from '@/components/ui/CtaButton'
-import { fadeInUp, staggerContainer } from '@/lib/motion'
+import { fadeInUp } from '@/lib/motion'
 import {
   estimate, formatUsd,
   CATEGORIES, PLATFORMS, TIERS, DESIGNS, COMPLIANCES, FEATURES,
@@ -84,7 +84,11 @@ export default function AppCostEstimator({
   const range = `${formatUsd(result.low)} – ${formatUsd(result.high)}`
 
   return (
-    <section id="estimate" className="relative pt-6 pb-24 overflow-hidden">
+    // overflow-x-clip, no overflow-hidden: `hidden` convierte a esta sección en el
+    // scroll-container del panel `lg:sticky` de abajo, y un contenedor que no scrollea nunca
+    // deja que el sticky se fije — el panel de resultados scrolleaba 1:1 en vez de acompañar.
+    // `clip` recorta igual los glows decorativos sin crear scroll-container.
+    <section id="estimate" className="relative pt-6 pb-24 overflow-x-clip">
       <div className="absolute inset-0 grid-bg opacity-30 pointer-events-none" />
       <div
         className="absolute inset-0 pointer-events-none"
@@ -92,24 +96,21 @@ export default function AppCostEstimator({
       />
 
       <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Header */}
-        <motion.div
-          variants={staggerContainer}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: '-100px' }}
-          className="text-center mb-14 space-y-4"
-        >
-          <motion.div variants={fadeInUp}>
+        {/* Header. Entrada por CSS (.hero-rise), no por framer: esto es el encabezado de la
+            página, siempre above-the-fold, y con `initial="hidden"` el h1 salía en opacity:0
+            dentro del HTML servido. El LCP quedaba a la espera de que hidratara el JS —
+            3072 ms en móvil throttled, contra ~700 ms del resto de la página. */}
+        <div className="text-center mb-14 space-y-4">
+          <div className="hero-rise hero-rise-1">
             <SectionLabel color="cyan">{t('label')}</SectionLabel>
-          </motion.div>
-          <motion.h1 variants={fadeInUp} className="text-4xl sm:text-5xl font-display font-bold tracking-tight">
+          </div>
+          <h1 className="hero-rise hero-rise-2 text-4xl sm:text-5xl font-display font-bold tracking-tight">
             <GradientText gradient="primary">{t('title')}</GradientText>
-          </motion.h1>
-          <motion.p variants={fadeInUp} className="text-white/60 text-lg max-w-2xl mx-auto">
+          </h1>
+          <p className="hero-rise hero-rise-3 text-white/60 text-lg max-w-2xl mx-auto">
             {t('subtitle')}
-          </motion.p>
-        </motion.div>
+          </p>
+        </div>
 
         <motion.div
           variants={fadeInUp}

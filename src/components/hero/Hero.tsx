@@ -6,7 +6,6 @@ import GradientText from '@/components/ui/GradientText'
 import AuroraBackground from '@/components/fx/AuroraBackground'
 import Spotlight from './Spotlight'
 import ReactorVisual from './ReactorVisual'
-import { fadeInUp, staggerContainer } from '@/lib/motion'
 
 export default function Hero() {
   const t = useTranslations('hero')
@@ -22,35 +21,12 @@ export default function Hero() {
       <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
         <div className="grid grid-cols-1 lg:grid-cols-[1.35fr_1fr] gap-12 lg:gap-8 items-center">
 
-          {/* LEFT: Copy */}
-          <motion.div
-            variants={staggerContainer}
-            initial="hidden"
-            animate="visible"
-            className="space-y-8 lg:pr-4"
-          >
-            {/* Badge */}
-            <motion.div variants={fadeInUp}>
-              <span
-                className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full text-xs font-semibold tracking-widest uppercase"
-                style={{
-                  border: '1px solid rgba(0,229,255,0.3)',
-                  background: 'rgba(0,229,255,0.06)',
-                  color: 'rgba(0,229,255,0.85)',
-                }}
-              >
-                <span
-                  className="w-1.5 h-1.5 rounded-full animate-pulse"
-                  style={{ background: '#00E5FF', boxShadow: '0 0 6px #00E5FF' }}
-                />
-                {t('badge')}
-              </span>
-            </motion.div>
-
+          {/* LEFT: Copy. La entrada va por CSS (.hero-rise), no por framer: es contenido
+              above-the-fold y con `initial="hidden"` se quedaba invisible hasta hidratar. */}
+          <div className="space-y-8 lg:pr-4">
             {/* Headline */}
-            <motion.h1
-              variants={fadeInUp}
-              className="font-display font-bold leading-[1.05] tracking-tight text-white"
+            <h1
+              className="hero-rise hero-rise-1 font-display font-bold leading-[1.05] tracking-tight text-white"
               style={{ fontSize: 'clamp(2.4rem, 4.4vw, 4.6rem)' }}
             >
               <span className="block">{t('headline_1')}</span>
@@ -60,31 +36,29 @@ export default function Hero() {
                 </GradientText>
               </span>
               <span className="block lg:whitespace-nowrap">{t('headline_2')}</span>
-            </motion.h1>
+            </h1>
 
             {/* Lead */}
-            <motion.p
-              variants={fadeInUp}
-              className="text-white/55 leading-relaxed max-w-xl"
+            <p
+              className="hero-rise hero-rise-2 text-white/55 leading-relaxed max-w-xl"
               style={{ fontSize: 'clamp(1rem, 1.3vw, 1.1rem)' }}
             >
               {t('lead')}
-            </motion.p>
+            </p>
 
             {/* CTAs */}
-            <motion.div variants={fadeInUp} className="flex flex-wrap gap-4">
+            <div className="hero-rise hero-rise-3 flex flex-wrap gap-4">
               <MagneticButton variant="primary" href="#contact">
                 {t('cta_primary')}
               </MagneticButton>
               <MagneticButton variant="ghost" href="#services">
                 {t('cta_secondary')} <span style={{ color: '#2FF5E0', fontFamily: 'monospace' }}>→</span>
               </MagneticButton>
-            </motion.div>
+            </div>
 
             {/* Stats */}
-            <motion.div
-              variants={fadeInUp}
-              className="flex flex-wrap gap-10 pt-6"
+            <div
+              className="hero-rise hero-rise-4 flex flex-wrap gap-10 pt-6"
               style={{ borderTop: '1px solid rgba(255,255,255,0.06)' }}
             >
               {([
@@ -103,8 +77,8 @@ export default function Hero() {
                   </div>
                 </div>
               ))}
-            </motion.div>
-          </motion.div>
+            </div>
+          </div>
 
           {/* RIGHT: Reactor visual */}
           <motion.div
