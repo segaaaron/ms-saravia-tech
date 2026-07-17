@@ -28,21 +28,30 @@ export default function Process() {
   // GSAP se importa DENTRO del efecto, no arriba del archivo. Es la única sección que lo usa y
   // es la novena de la home: importándolo estático, los ~118 kB de gsap + ScrollTrigger viajaban
   // en el bundle inicial de TODA la landing, aunque el visitante no bajara nunca hasta acá.
-  // Con el import dinámico, el HTML de los pasos se sigue sirviendo igual (SEO intacto: esto solo
-  // mueve CUÁNDO baja la librería de animación, no el contenido) y gsap solo se descarga si el
-  // pin de verdad va a correr: ≥768px, sin reduced-motion y con la sección cerca del viewport.
+  // El HTML de los pasos se sigue sirviendo igual (SEO intacto: esto solo mueve CUÁNDO baja la
+  // librería de animación, no el contenido).
+  //
+  // El QUÉ hace el pin no cambió: lo decide `gsap.matchMedia()`, igual que antes. Eso importa —
+  // matchMedia de GSAP escucha el resize y monta/desmonta la animación al cruzar el breakpoint
+  // solo. Una versión previa lo reemplazó por un `window.matchMedia().matches` de una sola vez y
+  // rompía al redimensionar: de móvil a escritorio el pin no arrancaba nunca, y de escritorio a
+  // móvil quedaba pegado recortando las cards. Rotar un teléfono cruza ese límite (390px vertical
+  // vs 844px horizontal), así que no era un caso raro.
+  //
+  // El único gate propio es CUÁNDO se pide la librería: un listener de ancho (para no bajarla en
+  // teléfonos que nunca la van a usar) más un IntersectionObserver (para no bajarla si el
+  // visitante no llega hasta acá).
   useEffect(() => {
     const el = sectionRef.current
     if (!el) return
-    // El pin + scroll horizontal SOLO en ≥768px Y con movimiento permitido. En móvil el pin con
-    // 100vh se rompe con la barra dinámica y recorta las cards; con prefers-reduced-motion el
-    // scroll-hijack es desorientador → en ambos casos los pasos van en stack vertical (sin GSAP).
-    if (!window.matchMedia('(min-width: 768px) and (prefers-reduced-motion: no-preference)').matches) return
 
     let cancelado = false
     let limpiar: (() => void) | undefined
+    let cargando = false
 
     const cargar = async () => {
+      if (cargando || cancelado) return
+      cargando = true
       const [{ default: gsap }, { ScrollTrigger }] = await Promise.all([
         import('gsap'),
         import('gsap/ScrollTrigger'),
@@ -51,34 +60,54 @@ export default function Process() {
       gsap.registerPlugin(ScrollTrigger)
 
       const ctx = gsap.context(() => {
-        const totalWidth = stepsRef.current!.scrollWidth
-        const viewportWidth = containerRef.current!.offsetWidth
-        const scrollDistance = totalWidth - viewportWidth
+        // El pin + scroll horizontal SOLO en ≥768px Y con movimiento permitido. En móvil el pin
+        // con 100vh se rompe con la barra dinámica y recorta las cards; con prefers-reduced-motion
+        // el scroll-hijack es desorientador → en ambos casos los pasos van en stack vertical.
+        // matchMedia de GSAP revierte solo al salir de la condición.
+        const mm = gsap.matchMedia()
+        mm.add('(min-width: 768px) and (prefers-reduced-motion: no-preference)', () => {
+          if (!sectionRef.current || !stepsRef.current || !containerRef.current) return
 
-        const tl = gsap.timeline({
-          scrollTrigger: {
-            trigger: sectionRef.current!,
-            start: 'top top',
-            end: `+=${scrollDistance + 200}`,
-            pin: true,
-            scrub: 1,
-            anticipatePin: 1,
-            invalidateOnRefresh: true,
-          },
+          const totalWidth = stepsRef.current.scrollWidth
+          const viewportWidth = containerRef.current.offsetWidth
+          const scrollDistance = totalWidth - viewportWidth
+
+          const tl = gsap.timeline({
+            scrollTrigger: {
+              trigger: sectionRef.current,
+              start: 'top top',
+              end: `+=${scrollDistance + 200}`,
+              pin: true,
+              scrub: 1,
+              anticipatePin: 1,
+              invalidateOnRefresh: true,
+            },
+          })
+          tl.to(stepsRef.current, { x: -scrollDistance, ease: 'none' })
         })
-        tl.to(stepsRef.current!, { x: -scrollDistance, ease: 'none' })
       }, sectionRef)
       limpiar = () => ctx.revert()
     }
 
-    // Solo se pide gsap al acercarse la sección: si el visitante no llega hasta acá, nunca baja.
+    // Se pide gsap cuando la sección se acerca Y la ventana es lo bastante ancha. El listener de
+    // `change` cubre el resize/rotación: si el visitante empieza angosto y agranda, se pide ahí.
+    const anchoOk = window.matchMedia('(min-width: 768px)')
+    let cerca = false
+    const intentar = () => { if (cerca && anchoOk.matches) cargar() }
+
     const io = new IntersectionObserver(
-      (entries) => { if (entries.some((e) => e.isIntersecting)) { io.disconnect(); cargar() } },
+      (entries) => { if (entries.some((e) => e.isIntersecting)) { cerca = true; io.disconnect(); intentar() } },
       { rootMargin: '800px' }
     )
     io.observe(el)
+    anchoOk.addEventListener('change', intentar)
 
-    return () => { cancelado = true; io.disconnect(); limpiar?.() }
+    return () => {
+      cancelado = true
+      io.disconnect()
+      anchoOk.removeEventListener('change', intentar)
+      limpiar?.()
+    }
   }, [])
 
   return (
