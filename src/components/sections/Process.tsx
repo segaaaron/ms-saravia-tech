@@ -1,15 +1,10 @@
 'use client'
-import { useRef } from 'react'
+import { useEffect, useRef } from 'react'
 import { motion, useReducedMotion } from 'framer-motion'
 import { useTranslations } from 'next-intl'
-import { useGSAP } from '@gsap/react'
-import gsap from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import GradientText from '@/components/ui/GradientText'
 import SectionLabel from '@/components/ui/SectionLabel'
 import { fadeInUp, staggerContainer } from '@/lib/motion'
-
-gsap.registerPlugin(ScrollTrigger)
 
 const STEP_COLORS = [
   { num: 'from-cyan-400 to-blue-500', accent: 'border-cyan-400/30 bg-cyan-400/5', dot: 'bg-cyan-400', glow: 'rgba(0,229,255,0.4)' },
@@ -30,35 +25,61 @@ export default function Process() {
   const stepsRef = useRef<HTMLDivElement>(null)
   const containerRef = useRef<HTMLDivElement>(null)
 
-  useGSAP(() => {
+  // GSAP se importa DENTRO del efecto, no arriba del archivo. Es la única sección que lo usa y
+  // es la novena de la home: importándolo estático, los ~118 kB de gsap + ScrollTrigger viajaban
+  // en el bundle inicial de TODA la landing, aunque el visitante no bajara nunca hasta acá.
+  // Con el import dinámico, el HTML de los pasos se sigue sirviendo igual (SEO intacto: esto solo
+  // mueve CUÁNDO baja la librería de animación, no el contenido) y gsap solo se descarga si el
+  // pin de verdad va a correr: ≥768px, sin reduced-motion y con la sección cerca del viewport.
+  useEffect(() => {
+    const el = sectionRef.current
+    if (!el) return
     // El pin + scroll horizontal SOLO en ≥768px Y con movimiento permitido. En móvil el pin con
     // 100vh se rompe con la barra dinámica y recorta las cards; con prefers-reduced-motion el
     // scroll-hijack es desorientador → en ambos casos los pasos van en stack vertical (sin GSAP).
-    const mm = gsap.matchMedia()
-    mm.add('(min-width: 768px) and (prefers-reduced-motion: no-preference)', () => {
-      if (!sectionRef.current || !stepsRef.current || !containerRef.current) return
+    if (!window.matchMedia('(min-width: 768px) and (prefers-reduced-motion: no-preference)').matches) return
 
-      const totalWidth = stepsRef.current.scrollWidth
-      const viewportWidth = containerRef.current.offsetWidth
-      const scrollDistance = totalWidth - viewportWidth
+    let cancelado = false
+    let limpiar: (() => void) | undefined
 
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: 'top top',
-          end: `+=${scrollDistance + 200}`,
-          pin: true,
-          scrub: 1,
-          anticipatePin: 1,
-          invalidateOnRefresh: true,
-        },
-      })
+    const cargar = async () => {
+      const [{ default: gsap }, { ScrollTrigger }] = await Promise.all([
+        import('gsap'),
+        import('gsap/ScrollTrigger'),
+      ])
+      if (cancelado || !sectionRef.current || !stepsRef.current || !containerRef.current) return
+      gsap.registerPlugin(ScrollTrigger)
 
-      tl.to(stepsRef.current, { x: -scrollDistance, ease: 'none' })
-    })
+      const ctx = gsap.context(() => {
+        const totalWidth = stepsRef.current!.scrollWidth
+        const viewportWidth = containerRef.current!.offsetWidth
+        const scrollDistance = totalWidth - viewportWidth
 
-    return () => mm.revert()
-  }, { scope: sectionRef })
+        const tl = gsap.timeline({
+          scrollTrigger: {
+            trigger: sectionRef.current!,
+            start: 'top top',
+            end: `+=${scrollDistance + 200}`,
+            pin: true,
+            scrub: 1,
+            anticipatePin: 1,
+            invalidateOnRefresh: true,
+          },
+        })
+        tl.to(stepsRef.current!, { x: -scrollDistance, ease: 'none' })
+      }, sectionRef)
+      limpiar = () => ctx.revert()
+    }
+
+    // Solo se pide gsap al acercarse la sección: si el visitante no llega hasta acá, nunca baja.
+    const io = new IntersectionObserver(
+      (entries) => { if (entries.some((e) => e.isIntersecting)) { io.disconnect(); cargar() } },
+      { rootMargin: '800px' }
+    )
+    io.observe(el)
+
+    return () => { cancelado = true; io.disconnect(); limpiar?.() }
+  }, [])
 
   return (
     <section
