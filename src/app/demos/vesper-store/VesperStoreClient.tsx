@@ -18,6 +18,8 @@ type OrderItem = { n: string; i: string; q: number }
 type Order = { id: string; date: string; status: string; items: OrderItem[]; total: number }
 type Address = { id: string; label: string; name: string; line: string; city: string; country: string; phone: string; def: boolean }
 
+import { optimized } from '../unsplash'
+
 const INITIAL_CART: CartItem[] = [
   { key: 'p3-42-0', id: 'p3', name: 'Sneaker Aero Knit', price: 420, img: 'photo-1600185365483-26d7a4cc7519', size: '42', color: 'Blanco', colorHex: '#f2f0ec', qty: 1 },
   { key: 'p5-M-0', id: 'p5', name: 'Camisa Merino Zero', price: 240, img: 'photo-1602810318383-e386cc2a3ccf', size: 'M', color: 'Blanco', colorHex: '#f2f0ec', qty: 2 },
@@ -69,7 +71,7 @@ const INITIAL_CATALOG: Product[] = [
     sizes: [{ label: '38mm', stock: 3 }, { label: '42mm', stock: 5 }] },
 ]
 
-const img = (id: string) => 'https://images.unsplash.com/' + id + '?w=900&q=80'
+const img = (id: string, w = 828) => optimized(`https://images.unsplash.com/${id}`, w)
 
 // Non-text review metadata (avatar/photos/name). Text lives in CONTENT[lang].reviews.
 const REVIEW_META = [
@@ -912,7 +914,7 @@ export default function VesperStoreClient({ lang: initialLang }: { lang: DemoLan
       {/* ANNOUNCEMENT */}
       <div style={{ background: '#171717', color: '#fff', display: 'flex', alignItems: 'center', gap: 16, padding: '0 18px 0 0', fontSize: 12.5, letterSpacing: '.02em' }}>
         <div style={{ flex: 1, overflow: 'hidden', padding: '9px 0' }}><div style={{ display: 'flex', width: 'max-content', animation: 'annScroll 30s linear infinite' }}><span style={{ display: 'flex', gap: 40, paddingRight: 40, whiteSpace: 'nowrap' }}>{ann}</span><span style={{ display: 'flex', gap: 40, paddingRight: 40, whiteSpace: 'nowrap' }}>{ann}</span></div></div>
-        <div style={{ flexShrink: 0, display: 'flex', alignItems: 'center', gap: 9, background: '#c0392b', padding: '7px 14px', borderRadius: 30, fontWeight: 600 }}><span style={{ width: 6, height: 6, borderRadius: '50%', background: 'var(--surface)', animation: 'pulseDot 1.4s infinite' }} />{c.flashOffer} <span style={{ fontVariantNumeric: 'tabular-nums', letterSpacing: '.05em' }}>{countdown()}</span></div>
+        <div style={{ flexShrink: 0, display: 'flex', alignItems: 'center', gap: 9, background: '#c0392b', padding: '7px 14px', borderRadius: 30, fontWeight: 600 }}><span style={{ width: 6, height: 6, borderRadius: '50%', background: 'var(--surface)', animation: 'pulseDot 1.4s infinite' }} />{c.flashOffer} <span className="vs-clock" style={{ fontVariantNumeric: 'tabular-nums', letterSpacing: '.05em' }}>{countdown()}</span></div>
       </div>
 
       {/* HEADER */}
@@ -929,16 +931,34 @@ export default function VesperStoreClient({ lang: initialLang }: { lang: DemoLan
                 {navCats.map((n, i) => (
                   <button key={i} onClick={() => { n.onClick(); setMenuOpen(false) }} style={{ fontSize: 14, fontWeight: n.weight as unknown as number, color: n.color, background: 'none', border: 'none', textAlign: 'left', padding: '12px 14px', borderRadius: 10, cursor: 'pointer' }}>{n.label}</button>
                 ))}
+                {/* Idioma / tema / moneda / cuenta viven acá en móvil: en el header apilaban una
+                    fila propia y lo dejaban de 4 filas. Ocultarlos sin más habría quitado del
+                    demo justo lo que muestra (bilingüe, claro/oscuro), así que se mudan al menú
+                    —como en cualquier tienda real—. En escritorio siguen en el header. */}
+                <div className="vs-menu-extra" style={{ display: 'none', borderTop: '1px solid var(--line)', marginTop: 6, paddingTop: 8, gap: 2, flexDirection: 'column' }}>
+                  <button onClick={() => { toggleLang(); setMenuOpen(false) }} style={{ fontSize: 14, color: 'var(--text)', background: 'none', border: 'none', textAlign: 'left', padding: '12px 14px', borderRadius: 10, cursor: 'pointer' }}>{c.ariaLang}</button>
+                  <button onClick={() => { toggleTheme(); setMenuOpen(false) }} style={{ fontSize: 14, color: 'var(--text)', background: 'none', border: 'none', textAlign: 'left', padding: '12px 14px', borderRadius: 10, cursor: 'pointer' }}>{themeLabel}</button>
+                  <label style={{ fontSize: 14, color: 'var(--text)', padding: '12px 14px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 10 }}>
+                    <select aria-label="Moneda" defaultValue="USD" onChange={onCurrency} style={{ width: '100%', background: 'none', border: '1px solid var(--line)', borderRadius: 8, color: 'var(--text)', fontFamily: 'inherit', fontSize: 14, padding: '10px 8px', minHeight: 44 }}>
+                      <option value="USD">$ USD</option>
+                      <option value="EUR">€ EUR</option>
+                      <option value="MXN">MX$ MXN</option>
+                    </select>
+                  </label>
+                  <button onClick={() => { openAccount(); setMenuOpen(false) }} style={{ fontSize: 14, color: 'var(--text)', background: 'none', border: 'none', textAlign: 'left', padding: '12px 14px', borderRadius: 10, cursor: 'pointer' }}>{userName}</button>
+                </div>
               </div>
             )}
           </div>
-          <a href="#top" style={{ fontFamily: "'Bodoni Moda',serif", fontSize: 23, letterSpacing: '.34em', color: 'var(--text)', textDecoration: 'none', paddingLeft: '.34em', flexShrink: 0 }}>VESPER</a>
-          <div style={{ flex: 1, display: 'flex', alignItems: 'center', gap: 10, maxWidth: 520, background: 'var(--surface3)', border: '1px solid var(--line)', borderRadius: 40, padding: '11px 18px' }}>
+          <a href="#top" className="vs-logo" style={{ fontFamily: "'Bodoni Moda',serif", fontSize: 23, letterSpacing: '.34em', color: 'var(--text)', textDecoration: 'none', paddingLeft: '.34em', flexShrink: 0 }}>VESPER</a>
+          {/* El padding vertical va en el <input>, no en el contenedor: en el contenedor sería
+              zona muerta que no enfoca al tocar. */}
+          <div className="vs-search" style={{ flex: 1, display: 'flex', alignItems: 'center', gap: 10, maxWidth: 520, background: 'var(--surface3)', border: '1px solid var(--line)', borderRadius: 40, padding: '0 18px' }}>
             <span style={{ color: 'var(--muted2)', fontSize: 15 }}>⌕</span>
-            <input value={query} onChange={onSearch} placeholder={c.searchPh} style={{ flex: 1, border: 'none', background: 'transparent', outline: 'none', fontFamily: "'DM Sans',sans-serif", fontSize: 14, color: 'var(--text)' }} />
+            <input value={query} onChange={onSearch} placeholder={c.searchPh} style={{ flex: 1, alignSelf: 'stretch', padding: '11px 0', minHeight: 44, border: 'none', background: 'transparent', outline: 'none', fontFamily: "'DM Sans',sans-serif", fontSize: 14, color: 'var(--text)' }} />
             {q.length > 0 && <button onClick={clearSearch} style={{ background: 'none', border: 'none', color: 'var(--muted2)', cursor: 'pointer', fontSize: 15, padding: '0 2px' }}>✕</button>}
           </div>
-          <div className="dnav" style={{ display: 'flex', alignItems: 'center', gap: 6, flexShrink: 0 }}>
+          <div className="vs-actions" style={{ display: 'flex', alignItems: 'center', gap: 6, flexShrink: 0 }}>
             <button onClick={toggleLang} aria-label={c.ariaLang} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', minWidth: 44, background: 'none', border: '1px solid var(--line)', cursor: 'pointer', color: 'var(--text)', padding: '8px 14px', borderRadius: 30, fontFamily: "'DM Sans',sans-serif", fontSize: 12.5, fontWeight: 700, letterSpacing: '.03em', textAlign: 'center' }}>{langLabel}</button>
             <button onClick={toggleTheme} aria-label={c.ariaTheme} style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 7, minWidth: 80, background: 'none', border: '1px solid var(--line)', cursor: 'pointer', color: 'var(--text)', padding: '8px 14px', borderRadius: 30, fontFamily: "'DM Sans',sans-serif", fontSize: 12.5, fontWeight: 700, letterSpacing: '.03em', textAlign: 'center' }}>
               {theme === 'dark'
@@ -952,8 +972,8 @@ export default function VesperStoreClient({ lang: initialLang }: { lang: DemoLan
               <option value="MXN">MX$ MXN</option>
             </select>
             <button onClick={openAccount} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text)', padding: '7px 10px 7px 8px', borderRadius: 30, fontSize: 13.5, display: 'flex', alignItems: 'center', gap: 8 }}>{user ? <span style={{ width: 27, height: 27, borderRadius: '50%', background: 'linear-gradient(135deg,#c9a05f,#7a5f30)', color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 11, fontWeight: 700, letterSpacing: '.03em' }}>{userInitials}</span> : <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="8" r="3.4" /><path d="M5 20c0-3.6 3.1-5.6 7-5.6s7 2 7 5.6" /></svg>}<span>{accountLabel}</span></button>
-            <button onClick={toggleCart} style={{ position: 'relative', display: 'flex', alignItems: 'center', gap: 9, background: '#171717', border: 'none', color: '#fff', padding: '11px 20px', borderRadius: 40, cursor: 'pointer', fontFamily: "'DM Sans',sans-serif", fontSize: 13.5, fontWeight: 500 }}>
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"><circle cx="9.5" cy="20" r="1.2" /><circle cx="18" cy="20" r="1.2" /><path d="M2.5 3.5H5l2.3 11.6a1.4 1.4 0 0 0 1.4 1.1h8.8a1.4 1.4 0 0 0 1.4-1.1L21.5 8H6" /></svg>{c.cart}
+            <button onClick={toggleCart} aria-label={c.cart} style={{ position: 'relative', display: 'flex', alignItems: 'center', gap: 9, background: '#171717', border: 'none', color: '#fff', padding: '11px 20px', borderRadius: 40, cursor: 'pointer', fontFamily: "'DM Sans',sans-serif", fontSize: 13.5, fontWeight: 500 }}>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round"><circle cx="9.5" cy="20" r="1.2" /><circle cx="18" cy="20" r="1.2" /><path d="M2.5 3.5H5l2.3 11.6a1.4 1.4 0 0 0 1.4 1.1h8.8a1.4 1.4 0 0 0 1.4-1.1L21.5 8H6" /></svg><span className="vs-cart-label">{c.cart}</span>
               {count > 0 && <span style={{ minWidth: 20, height: 20, padding: '0 5px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', background: 'var(--surface)', color: 'var(--text)', borderRadius: 20, fontSize: 11, fontWeight: 700, animation: 'badgePop .35s ease' }}>{count}</span>}
             </button>
           </div>
@@ -990,16 +1010,27 @@ export default function VesperStoreClient({ lang: initialLang }: { lang: DemoLan
                   <p style={{ fontSize: 'clamp(15px,1.5vw,17px)', lineHeight: 1.6, color: 'rgba(255,255,255,.78)', margin: '20px 0 30px', maxWidth: 440, fontWeight: 400 }}>{s.sub}</p>
                   <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', alignItems: 'center' }}>
                     <button onClick={s.ctaAction} style={{ background: 'var(--surface)', color: 'var(--text)', padding: '15px 30px', borderRadius: 40, border: 'none', cursor: 'pointer', fontFamily: "'DM Sans',sans-serif", fontSize: 14, fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: 9 }}>{s.cta} <span style={{ fontSize: 16 }}>→</span></button>
-                    {s.hasTimer && <div style={{ display: 'inline-flex', alignItems: 'center', gap: 9, background: 'rgba(0,0,0,.32)', backdropFilter: 'blur(8px)', border: '1px solid rgba(255,255,255,.2)', padding: '11px 16px', borderRadius: 40 }}><span style={{ fontSize: 12, color: 'rgba(255,255,255,.75)' }}>{c.endsIn}</span><span style={{ fontFamily: "'DM Sans',sans-serif", fontSize: 15, fontWeight: 700, letterSpacing: '.04em', color: '#fff', fontVariantNumeric: 'tabular-nums' }}>{s.countdown}</span></div>}
+                    {s.hasTimer && <div style={{ display: 'inline-flex', alignItems: 'center', gap: 9, background: 'rgba(0,0,0,.32)', backdropFilter: 'blur(8px)', border: '1px solid rgba(255,255,255,.2)', padding: '11px 16px', borderRadius: 40 }}><span style={{ fontSize: 12, color: 'rgba(255,255,255,.75)' }}>{c.endsIn}</span><span className="vs-clock" style={{ fontFamily: "'DM Sans',sans-serif", fontSize: 15, fontWeight: 700, letterSpacing: '.04em', color: '#fff', fontVariantNumeric: 'tabular-nums' }}>{s.countdown}</span></div>}
                     {s.note && <span style={{ fontSize: 13, color: 'rgba(255,255,255,.6)' }}>{s.note}</span>}
                   </div>
                 </div>
               </div>
             </div>
           ))}
-          <div style={{ position: 'absolute', zIndex: 6, left: 'clamp(34px,5vw,68px)', bottom: 26, display: 'flex', gap: 12, alignItems: 'center' }}>
+          {/* La barrita sigue midiendo 4px; el <button> la envuelve en 44px de alto con relleno
+              transparente para que el área táctil cumpla WCAG 2.5.5 sin alterar el diseño. */}
+          <div style={{ position: 'absolute', zIndex: 6, left: 'clamp(34px,5vw,68px)', bottom: 26, display: 'flex', gap: 6, alignItems: 'center' }}>
             {dots.map((dt, i) => (
-              <button key={i} onClick={dt.onClick} style={{ position: 'relative', height: 4, width: dt.w, borderRadius: 4, background: 'rgba(255,255,255,.28)', border: 'none', padding: 0, cursor: 'pointer', overflow: 'hidden', transition: 'width .4s' }}><span style={{ position: 'absolute', left: 0, top: 0, bottom: 0, width: dt.fill, background: 'var(--surface)', borderRadius: 4, transition: 'width .1s linear' }} /></button>
+              <button
+                key={i}
+                onClick={dt.onClick}
+                aria-label={`${i + 1}`}
+                style={{ height: 44, padding: '0 3px', border: 'none', background: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center' }}
+              >
+                <span style={{ position: 'relative', display: 'block', height: 4, width: dt.w, borderRadius: 4, background: 'rgba(255,255,255,.28)', overflow: 'hidden', transition: 'width .4s' }}>
+                  <span style={{ position: 'absolute', left: 0, top: 0, bottom: 0, width: dt.fill, background: 'var(--surface)', borderRadius: 4, transition: 'width .1s linear' }} />
+                </span>
+              </button>
             ))}
           </div>
           <div style={{ position: 'absolute', zIndex: 6, right: 'clamp(34px,5vw,68px)', bottom: 24, fontFamily: "'DM Sans',sans-serif", fontSize: 12.5, color: 'rgba(255,255,255,.7)', letterSpacing: '.08em' }}>{String(slide + 1).padStart(2, '0')} <span style={{ opacity: .5 }}>/ {String(SLIDE_META.length).padStart(2, '0')}</span></div>

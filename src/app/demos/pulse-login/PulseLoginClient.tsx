@@ -293,6 +293,11 @@ export default function PulseLoginClient({ lang }: { lang: DemoLang }) {
         .pulse-scope a:hover{color:#2f49b8}
         .pulse-input{border:1px solid #e2e5e9}
         .pulse-input:focus-within{border-color:#3b5bdb}
+        /* El padding vertical lo pone el <input>, no el contenedor: si lo pusiera el div, esos
+           12px de arriba y abajo serían zona muerta que no enfoca al tocar (el campo se ve de
+           45px pero solo respondían los 21px del medio). */
+        .pulse-input{padding:0 14px !important}
+        .pulse-input > input{align-self:stretch;padding:12px 0;min-height:44px}
         .pulse-submit:hover{background:#2f49b8 !important}
         .pulse-soc:hover{background:#f7f8fa !important}
         @media (max-width:820px){

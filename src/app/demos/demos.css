@@ -190,8 +190,14 @@ body {
 
 /* Navegación superior: la lista de links horizontal recorta en móvil.
    Por defecto envuelve en varias filas centradas; los controles tipo
-   píldora/segmento (.dnav-scroll) mantienen la fila con scroll horizontal. */
-@media (max-width: 720px) {
+   píldora/segmento (.dnav-scroll) mantienen la fila con scroll horizontal.
+
+   Corte en 1100px, no 720: en tablets en vertical la nav de escritorio completa —logo + 5
+   secciones + login + CTA— no entra, y en brasa desbordaba 267px provocando scroll horizontal
+   en toda la página. Ese rango necesita el hamburguesa igual que un teléfono.
+   El límite es 1099 y no 1023 porque la nav de brasa mide ~1035px: a exactamente 1024px
+   (iPad Pro 12.9" en vertical, un tamaño real) volvía a desbordar 11px. */
+@media (max-width: 1099px) {
   .dnav {
     flex-wrap: wrap !important;
     justify-content: center !important;
@@ -216,13 +222,51 @@ body {
   }
 }
 
-/* Carrusel de platos (brasa): los slides son `position:absolute inset:0`, así que
-   la altura la fija el contenedor. En móvil apila imagen sobre texto y agranda la
-   caja para que el texto no se recorte; las flechas se anclan sobre la imagen. */
+/* VESPER STORE — header de tienda en móvil.
+   El .dnav genérico envolvía sus 4 bloques (hamburguesa+logo, buscador, idioma/tema/moneda/
+   cuenta, carrito) en 4 filas centradas: ~200px de alto antes de ver un solo producto, y el
+   carrito huérfano en su propia fila. Se reordena al patrón de cualquier tienda real:
+     fila 1  ·  hamburguesa | VESPER | carrito
+     fila 2  ·  buscador a todo el ancho
+   Idioma/tema/moneda/cuenta se mudan al desplegable (.vs-menu-extra) en vez de desaparecer. */
 @media (max-width: 720px) {
-  .brasa-carousel {
-    min-height: 660px !important;
+  .vs-search {
+    order: 3;
+    flex-basis: 100% !important;
+    max-width: none !important;
   }
+  /* Empuja el carrito al extremo derecho de la fila 1, frente al logo. */
+  .vs-actions {
+    margin-left: auto;
+  }
+  /* En la fila 1 queda solo el carrito (último hijo); el resto ya está en el menú. */
+  .vs-actions > *:not(:last-child) {
+    display: none !important;
+  }
+  .vs-menu-extra {
+    display: flex !important;
+  }
+  /* El logo con letter-spacing .34em mide ~250px: entre hamburguesa y carrito no entraba y el
+     carrito caía a una fila propia. Achicado entra todo en una sola fila. */
+  .vs-logo {
+    font-size: 17px !important;
+    letter-spacing: 0.2em !important;
+  }
+  /* Carrito: solo icono + contador (el <button> lleva aria-label con el texto).
+     min-height 44 porque sin la etiqueta el boton bajaba a 42px, por debajo del minimo tactil. */
+  .vs-cart-label {
+    display: none !important;
+  }
+  .vs-actions > button:last-child {
+    min-height: 44px;
+  }
+}
+
+/* Carrusel de platos (brasa): el slide activo va en flujo y los inactivos absolutos encima, así
+   que el contenedor se auto-ajusta al contenido (ver BrasaClient). En móvil apila imagen sobre
+   texto; las flechas se anclan sobre la imagen. Sin min-height fijo a propósito: el de 660px
+   recortaba el precio y el CTA cuando el texto envolvía más (hasta 110px perdidos en iPhone SE). */
+@media (max-width: 720px) {
   .brasa-slide {
     grid-template-columns: 1fr !important;
     grid-template-rows: 180px auto !important;
@@ -290,4 +334,16 @@ body {
   textarea {
     font-size: 16px !important;
   }
+}
+
+/* Contadores HH:MM:SS de vesper-store. `font-variant-numeric: tabular-nums` está puesto pero NO
+   funciona: la DM Sans que se sirve no trae la feature `tnum`, así que cada dígito mide distinto.
+   Medido: "08:42:11" = 51.78px y "08:42:09" = 59.34px — mismos 8 caracteres. El contador cambiaba
+   de ancho CADA SEGUNDO, empujaba el hero (471px -> 443px de alto) y disparaba el CLS a 0.332,
+   3x el umbral. Fijar el ancho no depende de features de la fuente y corta el reflow de raíz.
+   `tabular-nums` se deja igual: si algún día se sirve una fuente con tnum, alinea mejor. */
+.vs-clock {
+  display: inline-block;
+  min-width: 9ch;
+  text-align: center;
 }

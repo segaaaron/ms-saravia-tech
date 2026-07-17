@@ -31,13 +31,16 @@ interface ResTable { zone: string; id: string; seats: number }
 /* ---------------- helpers ---------------- */
 // Precios base están en bolivianos (Bs). Fuera de Bolivia se muestran en USD (conversión
 // solo al formatear; la matemática interna del carrito/cuenta sigue en Bs).
+import { optimized } from '../unsplash'
+import { useLazyBg } from '../useLazyBg'
+
 const BS_PER_USD = 6.9
 const usdFromBs = (bs: number) => Math.round(bs / BS_PER_USD)
 const moneyFmt = (n: number, locale: string, currency: 'BOB' | 'USD') =>
   currency === 'USD'
     ? '$' + usdFromBs(n).toLocaleString('en-US')
     : 'Bs ' + Math.round(n).toLocaleString(locale)
-const img = (id: string, w = 600) => `https://images.unsplash.com/${id}?w=${w}&q=80&auto=format&fit=crop`
+const img = (id: string, w = 828) => optimized(`https://images.unsplash.com/${id}`, w)
 
 const nowTime = () => {
   const d = new Date()
@@ -340,7 +343,7 @@ const dishImg: Record<string, string> = {
 
 // Fotos REALES del local (subidas por el cliente) en /showcase/img/menu/*.webp.
 // Cada plato/sopa con archivo usa la local; el resto cae a Unsplash (dishImg).
-const localMenuImg = (slug: string) => `/showcase/img/menu/${slug}.webp`
+const localMenuImg = (slug: string, w = 828) => optimized(`/showcase/img/menu/${slug}.webp`, w)
 const localDish: Record<string, string> = {
   'Anticucho de corazón': 'anticucho', 'Sopa de maní': 'sopa-mani', 'Chairo paceño': 'chairo', 'Humintas al horno': 'humintas',
   'Chuleta de cerdo a la BBQ': 'chuleta-cerdo', 'Brazuelo de cerdo': 'brazuelo-cerdo', 'Parrillada mixta': 'parrillada', 'Chorizo criollo': 'chorizo',
@@ -348,7 +351,7 @@ const localDish: Record<string, string> = {
   'Chicharrón de cerdo': 'chicharron-cerdo', 'Chicharrón de pollo': 'chicharron-pollo', 'Fricasé cochabambino': 'fricase',
 }
 const dishImage = (name: string, w = 600) =>
-  localDish[name] ? localMenuImg(localDish[name]) : img(dishImg[name] || dishDefault, w)
+  localDish[name] ? localMenuImg(localDish[name], w) : img(dishImg[name] || dishDefault, w)
 // Segundo del almuerzo semanal: local si existe (por slug de heroSlug), si no Unsplash.
 const weeklyMainLocal: Record<string, string> = { chicharron: 'chicharron-cerdo', silpancho: 'silpancho', pique: 'pique', fricase: 'fricase' }
 const weeklyMainImg = (slug: string) =>
@@ -742,6 +745,14 @@ export default function BrasaClient({ lang, currency = 'BOB' }: { lang: DemoLang
   const [menuCat, setMenuCat] = useState('parrilla')
   const [barCat, setBarCat] = useState('cocteles')
   const [carIdx, setCarIdx] = useState(0)
+  // Slides cuya foto ya se puede bajar. El carrusel enseña UNA a la vez, pero los 5 fondos
+  // estaban en el DOM desde el inicio y sus 302 kB salían junto con el hero, robándole ancho de
+  // banda: el hero de 93 kB tardaba 3.2 s en vez de 0.5 s. Se empieza con la visible y se van
+  // sumando al avanzar (ver efecto abajo: siempre se precarga la siguiente).
+  const [carLoaded, setCarLoaded] = useState<number[]>([0])
+  // El carrusel vive bajo el pliegue: hasta que no se acerca, ni su primera foto se pide.
+  // Sin esto, silpancho.webp salia a los 476 ms y le robaba ancho de banda a la imagen del LCP.
+  const [carRef, carVisible] = useLazyBg<HTMLDivElement>()
 
   const [tip, setTip] = useState(10)
   const [qrOpen, setQrOpen] = useState(false)
@@ -906,6 +917,15 @@ export default function BrasaClient({ lang, currency = 'BOB' }: { lang: DemoLang
   const resetRes = () => { setResStep(1); setResTable(null); setResName(''); setResPhone(''); setResEmail(''); setResNote(''); setQTime('') }
 
   /* -------- carrusel / menú / cuenta -------- */
+  // Habilita la foto de la slide actual y precarga la siguiente, así al avanzar ya está lista y
+  // no se ve un hueco. Nunca quita ninguna: una vez bajada, se queda en cache.
+  useEffect(() => {
+    const next = (carIdx + 1) % carData.length
+    setCarLoaded((prev) =>
+      prev.includes(carIdx) && prev.includes(next) ? prev : [...new Set([...prev, carIdx, next])]
+    )
+  }, [carIdx])
+
   const carGo = (i: number) => { const n = carData.length; setCarIdx(((i % n) + n) % n) }
   const carNext = () => carGo(carIdx + 1)
   const carPrev = () => carGo(carIdx - 1)
@@ -986,7 +1006,8 @@ export default function BrasaClient({ lang, currency = 'BOB' }: { lang: DemoLang
 
   const menuCatIdx = menuCatDefs.findIndex(([k]) => k === menuCat)
   const menuCatLabel = menuCatIdx >= 0 ? c.menuCats[menuCatIdx] : c.carta.alaCarta
-  const carSlides = carData.map((d, i) => ({ name: c.car[i].name, price: money(d.price), meta: c.car[i].meta, story: c.car[i].story, img: localDish[d.name] ? localMenuImg(localDish[d.name]) : img(carImgId[d.name] || dishDefault, 900), ing: c.car[i].ing, op: i === carIdx ? '1' : '0', pe: i === carIdx ? 'auto' : 'none', z: i === carIdx ? 2 : 1 }))
+  // `img: ''` en las slides aún no habilitadas -> sin URL en el DOM, sin petición. Ver carLoaded.
+  const carSlides = carData.map((d, i) => ({ name: c.car[i].name, price: money(d.price), meta: c.car[i].meta, story: c.car[i].story, img: carVisible && carLoaded.includes(i) ? (localDish[d.name] ? localMenuImg(localDish[d.name]) : img(carImgId[d.name] || dishDefault, 828)) : '', ing: c.car[i].ing, op: i === carIdx ? '1' : '0', pe: i === carIdx ? 'auto' : 'none', z: i === carIdx ? 2 : 1 }))
   const carDots = carData.map((d, i) => ({ onClick: () => carGo(i), bg: i === carIdx ? 'var(--ember)' : 'var(--line2)', w: i === carIdx ? '26px' : '9px' }))
   const menuCats = menuCatDefs.map(([k], i) => { const on = menuCat === k; return { label: c.menuCats[i], onClick: () => setMenuCat(k), ...active(on) } })
   const menuItems = (menuData[menuCat] || []).map((m, i) => {
@@ -1022,7 +1043,12 @@ export default function BrasaClient({ lang, currency = 'BOB' }: { lang: DemoLang
   const showEmptyCart = !orderDone && cart.length === 0
   const showActiveCart = !orderDone && cart.length > 0
   const mesaPlaceholder = myTable || c.cart.mesaPh
-  const heroImg = img('photo-1517248135467-4c7edcad34c4', 1400)
+  // Imagen del LCP. Local, NO unsplash: es la misma foto (auto-hospedada), pero optimizar una
+  // remota con el cache frio cuesta ~350 ms de servidor contra ~35 ms de una local — o sea que el
+  // primer visitante tras cada deploy se comia +315 ms y brasa se pasaba de 2500 ms. Medirlo con
+  // el cache caliente lo ocultaba.
+  // 828 y no mas: es un fondo oscuro detras de texto, y a 828 cubre una pantalla de 390px a 2x.
+  const heroImg = optimized('/showcase/img/parrilla.webp', 828)
   const almuerzoWeekPrice = money(45)
 
   /* estilos reutilizados */
@@ -1290,6 +1316,11 @@ export default function BrasaClient({ lang, currency = 'BOB' }: { lang: DemoLang
       {view === 'inicio' && (
         <div key="v-home">
           {/* HERO */}
+          {/* Preload de la imagen del LCP. Un `background-image` no se descubre hasta que el
+              navegador parsea el CSS, así que arrancaba recién a los 460 ms y encima peleaba con
+              los chunks de JS. React 19 sube este <link> al <head>, y fetchPriority alto la pone
+              por delante del bundle. */}
+          <link rel="preload" as="image" href={heroImg} fetchPriority="high" />
           <section style={{ position: 'relative', height: 'min(86vh,760px)', overflow: 'hidden', display: 'flex', alignItems: 'flex-end' }}>
             <div style={{ position: 'absolute', inset: 0, background: `url(${heroImg}) center/cover`, animation: 'brasaKenburns 18s ease-in-out infinite alternate' }} />
             <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(180deg,rgba(20,14,8,.35) 0%,rgba(20,14,8,.2) 40%,rgba(20,14,8,.82) 100%)' }} />
@@ -1342,10 +1373,16 @@ export default function BrasaClient({ lang, currency = 'BOB' }: { lang: DemoLang
             </div>
             {/* CARRUSEL DE PLATOS */}
             <div onMouseEnter={() => { carHover.current = true }} onMouseLeave={() => { carHover.current = false }} style={{ position: 'relative' }}>
-              <div className="brasa-carousel" style={{ position: 'relative', borderRadius: 24, overflow: 'hidden', border: '1px solid var(--line)', minHeight: 460, background: 'var(--surface)', boxShadow: '0 30px 60px -36px rgba(0,0,0,.4)' }}>
+              <div ref={carRef} className="brasa-carousel" style={{ position: 'relative', borderRadius: 24, overflow: 'hidden', border: '1px solid var(--line)', minHeight: 460, background: 'var(--surface)', boxShadow: '0 30px 60px -36px rgba(0,0,0,.4)' }}>
                 {carSlides.map((d, i) => (
-                  <div key={i} className="brasa-slide" style={{ position: 'absolute', inset: 0, opacity: Number(d.op), pointerEvents: d.pe as CSSProperties['pointerEvents'], zIndex: d.z, transition: 'opacity .6s ease', display: 'grid', gridTemplateColumns: '1.05fr .95fr' }}>
-                    <div className="brasa-slide-img" style={{ width: '100%', height: '100%', minHeight: 460, background: `url(${d.img}) center/cover` }} />
+                  // El slide activo va EN FLUJO (position:relative) y los demás absolutos encima:
+                  // así el contenedor toma la altura del contenido real en vez de depender de un
+                  // min-height fijo. Con todos absolutos, el `min-height:660px` de móvil se
+                  // quedaba corto y recortaba el precio y el CTA "Reservar mesa".
+                  <div key={i} className="brasa-slide" style={{ position: Number(d.op) === 1 ? 'relative' : 'absolute', inset: 0, opacity: Number(d.op), pointerEvents: d.pe as CSSProperties['pointerEvents'], zIndex: d.z, transition: 'opacity .6s ease', display: 'grid', gridTemplateColumns: '1.05fr .95fr' }}>
+                    {/* Sin URL -> solo el color de fondo, sin petición. `url()` vacío dispararía
+                        una petición a la página misma. */}
+                    <div className="brasa-slide-img" style={{ width: '100%', height: '100%', minHeight: 460, background: d.img ? `url(${d.img}) center/cover` : 'var(--surface2)' }} />
                     <div className="brasa-slide-txt" style={{ padding: '44px 42px', display: 'flex', flexDirection: 'column', justifyContent: 'center', background: 'var(--surface)' }}>
                       <div style={{ fontSize: 11.5, textTransform: 'uppercase', letterSpacing: '.16em', color: 'var(--ember)', marginBottom: 12 }}>{d.meta}</div>
                       <h3 className="serif" style={{ fontSize: 'clamp(30px,3.6vw,44px)', margin: '0 0 12px', fontWeight: 600, lineHeight: 1.05 }}>{d.name}</h3>
@@ -1361,8 +1398,19 @@ export default function BrasaClient({ lang, currency = 'BOB' }: { lang: DemoLang
                 <button onClick={carPrev} style={{ position: 'absolute', left: 16, top: '50%', transform: 'translateY(-50%)', zIndex: 6, width: 44, height: 44, borderRadius: '50%', border: 'none', background: 'var(--glass)', backdropFilter: 'blur(8px)', color: 'var(--ink)', cursor: 'pointer', fontSize: 20, lineHeight: 1, boxShadow: '0 6px 18px -6px rgba(0,0,0,.35)' }}>‹</button>
                 <button onClick={carNext} style={{ position: 'absolute', right: 16, top: '50%', transform: 'translateY(-50%)', zIndex: 6, width: 44, height: 44, borderRadius: '50%', border: 'none', background: 'var(--glass)', backdropFilter: 'blur(8px)', color: 'var(--ink)', cursor: 'pointer', fontSize: 20, lineHeight: 1, boxShadow: '0 6px 18px -6px rgba(0,0,0,.35)' }}>›</button>
               </div>
-              <div style={{ display: 'flex', gap: 7, justifyContent: 'center', marginTop: 16 }}>
-                {carDots.map((t, i) => <button key={i} onClick={t.onClick} style={{ height: 9, width: t.w, borderRadius: 20, border: 'none', background: t.bg, cursor: 'pointer', transition: 'all .3s', padding: 0 }} />)}
+              {/* El punto sigue midiendo 9px, pero el <button> ocupa 44px de alto con relleno
+                  transparente: el área táctil cumple WCAG 2.5.5 sin cambiar el diseño. */}
+              <div style={{ display: 'flex', justifyContent: 'center', marginTop: 16 }}>
+                {carDots.map((t, i) => (
+                  <button
+                    key={i}
+                    onClick={t.onClick}
+                    aria-label={`${i + 1}`}
+                    style={{ height: 44, padding: '0 8px', border: 'none', background: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center' }}
+                  >
+                    <span style={{ display: 'block', height: 9, width: t.w, borderRadius: 20, background: t.bg, transition: 'all .3s' }} />
+                  </button>
+                ))}
               </div>
             </div>
           </section>
