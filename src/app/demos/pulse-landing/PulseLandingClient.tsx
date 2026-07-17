@@ -11,6 +11,8 @@ import type { DemoLang } from '../lang'
    ============================================================ */
 
 /* ---- lucide icons como SVG inline (sin dependencias) ---- */
+import { optimized } from '../unsplash'
+
 const ICON_PATHS: Record<string, string> = {
   activity: '<path d="M22 12h-4l-3 9L9 3l-3 9H2"/>',
   'arrow-right': '<path d="M5 12h14"/><path d="m12 5 7 7-7 7"/>',
@@ -65,7 +67,7 @@ function StarIcon() {
 }
 
 /* ---- assets locales ---- */
-const IMG = (p: string) => `/showcase/${p}`
+const IMG = (p: string, w = 828) => optimized(`/showcase/${p}`, w)
 
 /* ---- data estática (no textual) ---- */
 const LOGOS = ['IronHouse', 'FitZone', 'La Fábrica', 'Peak Club', 'Titan']

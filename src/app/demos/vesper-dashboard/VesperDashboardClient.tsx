@@ -36,6 +36,8 @@ interface PagerData {
 }
 
 /* ---- SVG icon builders ---- */
+import { optimized } from '../unsplash'
+
 const P = (d: string, k: number) => <path key={k} d={d} />
 const C = (cx: number, cy: number, r: number, k: number) => <circle key={k} cx={cx} cy={cy} r={r} />
 const L = (x1: number, y1: number, x2: number, y2: number, k: number) => <line key={k} x1={x1} y1={y1} x2={x2} y2={y2} />
@@ -80,7 +82,7 @@ function ic(name: string, size = 17): ReactNode {
 const fmt = (n: number) => '$' + Math.round(n).toLocaleString('en-US')
 const fmtK = (n: number) => (n >= 1000 ? '$' + (n / 1000).toFixed(n >= 10000 ? 0 : 1) + 'k' : '$' + n)
 const fmtMx = (n: number) => '$' + Math.round(n).toLocaleString('es-MX')
-const img = (id: string) => 'https://images.unsplash.com/' + id + '?w=300&q=80'
+const img = (id: string, w = 384) => optimized(`https://images.unsplash.com/${id}`, w)
 const initialsOf = (name: string) => {
   const p = name.trim().split(/\s+/)
   return (p[0][0] + (p[1] ? p[1][0] : '')).toUpperCase()

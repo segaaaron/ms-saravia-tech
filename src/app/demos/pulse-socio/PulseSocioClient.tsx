@@ -10,7 +10,9 @@ import type { DemoLang } from '../lang'
    viven en /showcase/uploads (public).
    ============================================================ */
 
-const slot = (p: string) => `/showcase/${p}`
+import { optimized } from '../unsplash'
+
+const slot = (p: string, w = 828) => optimized(`/showcase/${p}`, w)
 
 /* ---- iconos (lucide) reproducidos como SVG inline ---- */
 const ICONS: Record<string, ReactNode> = {

@@ -10,6 +10,8 @@ import type { DemoLang } from '../lang'
    ============================================================ */
 
 // opacity con calc/clamp → CSS acepta string, React tipa number
+import { uns, local } from '../unsplash'
+
 const op = (v: string) => v as unknown as CSSProperties['opacity']
 
 // Datos estructurales (no traducibles): índice, retraso, imágenes, nombres.
@@ -25,9 +27,9 @@ const AREA_META = [
 ]
 
 const ATTORNEY_META = [
-  { name: 'Alejandro Román', img: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?w=800&q=80', delay: undefined as string | undefined },
-  { name: 'Katherine Ashford', img: 'https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?w=800&q=80', delay: '120' },
-  { name: 'Diego Fuentes', img: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=800&q=80', delay: '240' },
+  { name: 'Alejandro Román', img: uns('1560250097-0b93528c311a', 640), delay: undefined as string | undefined },
+  { name: 'Katherine Ashford', img: uns('1573497019940-1c28c88b4f3e', 640), delay: '120' },
+  { name: 'Diego Fuentes', img: uns('1507003211169-0a1dd7228f2d', 640), delay: '240' },
 ]
 
 const PROCESS_META = [
@@ -454,16 +456,16 @@ export default function RomanClient({ lang }: { lang: DemoLang }) {
       <section id="introTrack" style={{ position: 'relative', height: '280svh', background: '#0c0f14', zIndex: 5 }}>
         <div ref={stageEl} style={{ position: 'sticky', top: 0, height: '100svh', overflow: 'hidden' }}>
           {/* EXTERIOR: al abrirse las puertas se "sale a la calle" y se ven los edificios. */}
-          <div style={{ position: 'absolute', inset: 0, overflow: 'hidden' }}><div style={{ position: 'absolute', inset: '-8%', background: 'url(https://images.unsplash.com/photo-1449824913935-59a10b8d2000?w=1900&q=80) center/cover', animation: 'kenBurns 26s ease-in-out infinite alternate' }} /></div>
+          <div style={{ position: 'absolute', inset: 0, overflow: 'hidden' }}><div style={{ position: 'absolute', inset: '-8%', background: `url(${uns('1449824913935-59a10b8d2000', 1080)}) center/cover`, animation: 'kenBurns 26s ease-in-out infinite alternate' }} /></div>
           {/* Gradiente ligero: revela los edificios (antes .66→.9 los tapaba en negro) y aún da legibilidad al texto abajo. */}
           <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(180deg, rgba(8,11,16,.34) 0%, rgba(8,11,16,.24) 45%, rgba(8,11,16,.86) 100%)' }} />
 
           <div style={{ position: 'absolute', inset: 0, transform: 'scale(calc(1 + var(--intro,0) * 0.55))' }}>
             <div style={{ position: 'absolute', left: 0, top: 0, width: '51%', height: '100%', overflow: 'hidden', transform: 'translateX(calc(clamp(0, calc((var(--intro,0) - 0.48) / 0.5), 1) * -103%))', willChange: 'transform' }}>
-              <div style={{ position: 'absolute', left: 0, top: 0, width: '196%', height: '100%', background: 'url(/showcase/img/corte-corredor.webp) center/cover' }} />
+              <div style={{ position: 'absolute', left: 0, top: 0, width: '196%', height: '100%', background: `url(${local('/showcase/img/corte-corredor.webp', 1080)}) center/cover` }} />
             </div>
             <div style={{ position: 'absolute', right: 0, top: 0, width: '51%', height: '100%', overflow: 'hidden', transform: 'translateX(calc(clamp(0, calc((var(--intro,0) - 0.48) / 0.5), 1) * 103%))', willChange: 'transform' }}>
-              <div style={{ position: 'absolute', right: 0, top: 0, width: '196%', height: '100%', background: 'url(/showcase/img/corte-corredor.webp) center/cover' }} />
+              <div style={{ position: 'absolute', right: 0, top: 0, width: '196%', height: '100%', background: `url(${local('/showcase/img/corte-corredor.webp', 1080)}) center/cover` }} />
             </div>
             <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', background: 'radial-gradient(circle at 50% 46%, rgba(255,247,225,0) 12%, rgba(12,15,20,.32) 60%, rgba(12,15,20,.82) 100%)', opacity: op('clamp(0, calc((0.5 - var(--intro,0)) / 0.5), 1)') }} />
           </div>
@@ -564,7 +566,7 @@ export default function RomanClient({ lang }: { lang: DemoLang }) {
             </div>
           </div>
           <div data-reveal data-delay="120" style={{ position: 'relative' }}>
-            <div style={{ aspectRatio: '4/5', overflow: 'hidden', background: '#dcd6ca' }}><div style={{ width: '100%', height: '100%', background: 'url(/showcase/img/despacho.webp) center/cover', transform: 'translateY(calc(var(--sy,0) * -0.03px)) scale(1.06)' }} /></div>
+            <div style={{ aspectRatio: '4/5', overflow: 'hidden', background: '#dcd6ca' }}><div style={{ width: '100%', height: '100%', background: `url(${local('/showcase/img/despacho.webp', 828)}) center/cover`, transform: 'translateY(calc(var(--sy,0) * -0.03px)) scale(1.06)' }} /></div>
             <div style={{ position: 'absolute', left: -30, bottom: -30, background: '#0c0f14', color: '#ece7dd', padding: '26px 30px', maxWidth: 250 }}>
               <div style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 22, color: '#c2a15a', marginBottom: 6 }}>{c.firmBadgeTitle}</div>
               <div style={{ fontSize: 13, lineHeight: 1.6, color: 'rgba(236,231,221,.7)', fontWeight: 300 }}>{c.firmBadgeDesc}</div>
@@ -599,7 +601,7 @@ export default function RomanClient({ lang }: { lang: DemoLang }) {
 
       {/* ===================== CASOS Y RESULTADOS ===================== */}
       <section id="casos" style={{ position: 'relative', padding: '150px 40px', overflow: 'hidden', background: '#0c0f14' }}>
-        <div style={{ position: 'absolute', inset: 0, transform: 'translateY(calc(var(--sy,0) * 0.04px))' }}><div style={{ position: 'absolute', inset: '-8%', background: 'url(/showcase/img/biblioteca.webp) center/cover', opacity: 0.22 }} /></div>
+        <div style={{ position: 'absolute', inset: 0, transform: 'translateY(calc(var(--sy,0) * 0.04px))' }}><div style={{ position: 'absolute', inset: '-8%', background: `url(${local('/showcase/img/biblioteca.webp', 1080)}) center/cover`, opacity: 0.22 }} /></div>
         <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(180deg,#0c0f14,rgba(12,15,20,.85),#0c0f14)' }} />
         <div style={{ position: 'relative', maxWidth: 1200, margin: '0 auto' }}>
           <div style={{ textAlign: 'center', maxWidth: 640, margin: '0 auto 70px' }} data-reveal>

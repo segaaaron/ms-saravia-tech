@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useMemo, useRef, useState, type CSSProperties } from 'react'
-import ConsultorioScene from './Scene'
+import dynamic from 'next/dynamic'
 import type { DemoLang } from '../lang'
 
 /* ============================================================
@@ -10,13 +10,23 @@ import type { DemoLang } from '../lang'
    Assets locales viven en /showcase/img (public).
    ============================================================ */
 
+import { optimized } from '../unsplash'
+import { LazyBg, useLazyBg } from '../useLazyBg'
+
 const ACCENT = '#c2a274'
 const DOCTOR_NAME = 'Dra. Valentina Rivas'
 const WA_NUMBER = '+52 55 9876 5432'
 const WA_DIGITS = WA_NUMBER.replace(/\D/g, '') || '5215598765432'
 const IMMERSION = 1500
 
-const uns = (id: string, w = 700) => `https://images.unsplash.com/photo-${id}?w=${w}&q=80`
+// Escena WebGL decorativa (three + @react-three/fiber + drei), y vive bajo el pliegue.
+// Importada estática se llevaba el First Load a 365 kB y RETRASABA EL LCP 1.7 s: la imagen del
+// hero llegaba a los 2075 ms pero no pintaba hasta los 3832 ms, esperando a que bajara y
+// ejecutara el bundle (último chunk a los 3412 ms). Con `ssr: false` sale del camino crítico —
+// no aporta nada al HTML servido porque es WebGL puro.
+const ConsultorioScene = dynamic(() => import('./Scene'), { ssr: false })
+
+const uns = (id: string, w = 828) => optimized(`https://images.unsplash.com/photo-${id}`, w)
 const SERVICE_IMG = [
   uns('1512290923902-8a9f81dc236c'),
   uns('1570172619644-dfd03ed5d881'),
@@ -33,13 +43,16 @@ const SERVICE_META = [
   { n: '05', dur: '30 min' },
   { n: '06', dur: '60 min' },
 ]
+// `local` apunta a /showcase/img y se pinta DEBAJO de la de unsplash como fallback. Solo listar
+// archivos que existan de verdad: cada nombre inexistente es un 404 en cada carga (los g-*.jpg
+// nunca se subieron). Sin `local` la capa de fallback se omite.
 const GALLERY_IMG = [
-  { unsplash: '1595476108010-b4d1f102b1b1?w=1000&q=80', local: 'g-recepcion.jpg', span: true },
-  { unsplash: '1600334089648-b0d9d3028eb2?w=800&q=80', local: 'g-cabina.jpg' },
-  { unsplash: '1487412947147-5cebf100ffc2?w=800&q=80', local: 'g-resultado.jpg' },
-  { unsplash: '1616394584738-fc6e612e71b9?w=800&q=80', local: 'g-sala.jpg' },
-  { unsplash: '1598440947619-2c35fc9aa908?w=800&q=80', local: 'g-equipo.jpg' },
-]
+  { unsplash: '1595476108010-b4d1f102b1b1', local: 'recepcion.webp', span: true },
+  { unsplash: '1600334089648-b0d9d3028eb2' },
+  { unsplash: '1487412947147-5cebf100ffc2' },
+  { unsplash: '1616394584738-fc6e612e71b9' },
+  { unsplash: '1598440947619-2c35fc9aa908' },
+] as { unsplash: string; local?: string; span?: boolean }[]
 
 const MAPS_SEARCH = 'https://www.google.com/maps/search/?api=1&query=Paseo+de+las+Palmas+340,+Lomas+de+Chapultepec,+CDMX'
 
@@ -268,6 +281,7 @@ export default function AuraClient({ lang }: { lang: DemoLang }) {
   const stageEl = useRef<HTMLDivElement>(null)
 
   const [faqOpen, setFaqOpen] = useState(-1)
+  const [sceneRef, sceneVisible] = useLazyBg<HTMLDivElement>()
   const [menuOpen, setMenuOpen] = useState(false)
   const [monthOffset, setMonthOffset] = useState(0)
   const [selDate, setSelDate] = useState<string | null>(null)
@@ -460,7 +474,7 @@ export default function AuraClient({ lang }: { lang: DemoLang }) {
       <section ref={heroEl} style={{ position: 'relative', height: '340svh', background: '#080b0f' }}>
         <div ref={stageEl} style={{ position: 'sticky', top: 0, height: '100svh', overflow: 'hidden', background: '#0e1116' }}>
           <div style={{ position: 'absolute', inset: 0, overflow: 'hidden' }}>
-            <div style={{ position: 'absolute', inset: '-3%', background: 'url(/showcase/img/recepcion.webp) center/cover', transform: 'scale(calc(1.02 + var(--door,0) * 0.14))' }} />
+            <div style={{ position: 'absolute', inset: '-3%', background: `url(${optimized('/showcase/img/recepcion.webp', 828)}) center/cover`, transform: 'scale(calc(1.02 + var(--door,0) * 0.14))' }} />
             <div style={{ position: 'absolute', left: '50%', top: '9%', transform: 'translateX(-50%)', textAlign: 'center', opacity: 'clamp(0, calc((var(--door,0) - 0.5) / 0.4), 1)' as unknown as number }}>
               <div style={{ fontFamily: "'Marcellus',serif", fontSize: 'clamp(30px,4.2vw,58px)', letterSpacing: '.36em', color: '#ac8b4c', paddingLeft: '.36em', lineHeight: 1, textShadow: '0 2px 22px rgba(255,244,214,.55)' }}>AURA</div>
               <div style={{ marginTop: 9, fontSize: 'clamp(9px,1vw,12px)', letterSpacing: '.42em', color: '#ac8b4c', textTransform: 'uppercase' }}>{c.tagline}</div>
@@ -471,12 +485,12 @@ export default function AuraClient({ lang }: { lang: DemoLang }) {
 
           <div style={{ position: 'absolute', inset: 0 }}>
             <div style={{ position: 'absolute', left: 0, top: 0, width: '50.4%', height: '100%', overflow: 'hidden', transform: 'translateX(calc(var(--door,0) * -103%))', willChange: 'transform', boxShadow: '3px 0 34px rgba(0,0,0,.4)' }}>
-              <div style={{ position: 'absolute', top: 0, left: 0, width: '198.4%', height: '100%', background: 'url(/showcase/img/puerta.webp) center/cover' }}>
+              <div style={{ position: 'absolute', top: 0, left: 0, width: '198.4%', height: '100%', background: `url(${optimized('/showcase/img/puerta.webp', 828)}) center/cover` }}>
                 <DoorText tagline={c.tagline} />
               </div>
             </div>
             <div style={{ position: 'absolute', right: 0, top: 0, width: '50.4%', height: '100%', overflow: 'hidden', transform: 'translateX(calc(var(--door,0) * 103%))', willChange: 'transform', boxShadow: '-3px 0 34px rgba(0,0,0,.4)' }}>
-              <div style={{ position: 'absolute', top: 0, right: 0, width: '198.4%', height: '100%', background: 'url(/showcase/img/puerta.webp) center/cover' }}>
+              <div style={{ position: 'absolute', top: 0, right: 0, width: '198.4%', height: '100%', background: `url(${optimized('/showcase/img/puerta.webp', 828)}) center/cover` }}>
                 <DoorText tagline={c.tagline} />
               </div>
             </div>
@@ -516,8 +530,11 @@ export default function AuraClient({ lang }: { lang: DemoLang }) {
             </div>
           </div>
           <div style={{ position: 'relative', height: 440, background: 'transparent', overflow: 'hidden' }}>
-            <div style={{ position: 'absolute', inset: 0 }}>
-              <ConsultorioScene />
+            {/* Montada solo al acercarse: `dynamic` la saca del bundle inicial, pero React monta
+                el componente al hidratar igual, así que el chunk de three.js (~250 kB) salía de
+                inmediato y competía con el LCP. Con el gate, no se pide hasta que hace falta. */}
+            <div ref={sceneRef} style={{ position: 'absolute', inset: 0 }}>
+              {sceneVisible && <ConsultorioScene />}
             </div>
           </div>
         </div>
@@ -534,7 +551,7 @@ export default function AuraClient({ lang }: { lang: DemoLang }) {
             {c.services.map((s, i) => (
               <div key={i} data-reveal style={{ background: '#fbf9f4', border: '1px solid rgba(20,25,30,.08)', borderRadius: 16, overflow: 'hidden', display: 'flex', flexDirection: 'column', transition: 'transform .5s cubic-bezier(.16,1,.3,1),box-shadow .5s cubic-bezier(.16,1,.3,1)' }}>
                 <div style={{ position: 'relative', height: 210, overflow: 'hidden', background: 'linear-gradient(135deg,#e7dfce,#d8c3a0)' }}>
-                  <div style={{ position: 'absolute', inset: 0, backgroundImage: `url("${SERVICE_IMG[i]}")`, backgroundSize: 'cover', backgroundPosition: 'center' }} />
+                  <LazyBg src={SERVICE_IMG[i]} style={{ position: 'absolute', inset: 0, backgroundSize: 'cover', backgroundPosition: 'center' }} />
                   <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(180deg,rgba(14,19,26,0) 52%,rgba(14,19,26,.42))' }} />
                   <span style={{ position: 'absolute', top: 15, left: 15, fontFamily: "'Marcellus',serif", fontSize: 13, letterSpacing: '.14em', color: '#fff', background: 'rgba(20,15,8,.42)', padding: '5px 12px', borderRadius: 100, backdropFilter: 'blur(4px)' }}>{SERVICE_META[i].n}</span>
                   <span style={{ position: 'absolute', bottom: 13, right: 16, fontSize: 11, letterSpacing: '.05em', color: '#fff', opacity: .92 }}>{SERVICE_META[i].dur}</span>
@@ -556,9 +573,9 @@ export default function AuraClient({ lang }: { lang: DemoLang }) {
       {/* DOCTORA */}
       <section id="doctora" style={{ background: '#0e131a', padding: '110px 34px', color: '#f6f2ec' }}>
         <div className="dcol-2" style={{ maxWidth: 1180, margin: '0 auto', display: 'grid', gridTemplateColumns: '0.85fr 1.15fr', gap: 64, alignItems: 'center' }}>
-          <div data-reveal style={{ aspectRatio: '4/5', borderRadius: 8, border: '1px solid rgba(194,162,116,.25)', position: 'relative', overflow: 'hidden', display: 'flex', alignItems: 'flex-end', justifyContent: 'flex-start', padding: 22, background: '#1a2028 url(/showcase/img/portrait.webp) center/cover' }}>
+          <div data-reveal style={{ aspectRatio: '4/5', borderRadius: 8, border: '1px solid rgba(194,162,116,.25)', position: 'relative', overflow: 'hidden', display: 'flex', alignItems: 'flex-end', justifyContent: 'flex-start', padding: 22, background: `#1a2028 url(${optimized('/showcase/img/portrait.webp', 640)}) center/cover` }}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=800&q=80" alt={c.portraitAlt} style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }} />
+            <img src={uns('1559839734-2b71ea197ec2', 640)} alt={c.portraitAlt} style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }} />
             <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(180deg, rgba(14,19,26,0) 45%, rgba(14,19,26,.55))' }} />
             <span style={{ position: 'relative', fontFamily: 'ui-monospace,monospace', fontSize: 11, letterSpacing: '.06em', color: '#fff', background: 'rgba(20,15,8,.4)', padding: '5px 11px', borderRadius: 100, backdropFilter: 'blur(4px)' }}>{DOCTOR_NAME}</span>
             <div style={{ position: 'absolute', top: 20, right: 20, width: 46, height: 46, border: `1px solid ${ACCENT}`, borderRadius: '50%', animation: 'auraSpin 14s linear infinite' }} />
@@ -584,9 +601,13 @@ export default function AuraClient({ lang }: { lang: DemoLang }) {
           </div>
           <div data-reveal className="dcards-4" style={{ display: 'grid', gridTemplateColumns: 'repeat(4,1fr)', gridAutoRows: 200, gap: 14 }}>
             {GALLERY_IMG.map((g, i) => (
-              <div key={i} style={{ gridColumn: g.span ? 'span 2' : undefined, gridRow: g.span ? 'span 2' : undefined, borderRadius: 8, background: `url(https://images.unsplash.com/photo-${g.unsplash}) center/cover, #e7dfce url(/showcase/img/${g.local}) center/cover`, border: '1px solid rgba(20,25,30,.08)', position: 'relative', overflow: 'hidden', display: 'flex', alignItems: 'flex-end', padding: g.span ? 18 : 16 }}>
+              <LazyBg
+                key={i}
+                src={[uns(g.unsplash, g.span ? 828 : 640), ...(g.local ? [optimized(`/showcase/img/${g.local}`, 828)] : [])]}
+                style={{ gridColumn: g.span ? 'span 2' : undefined, gridRow: g.span ? 'span 2' : undefined, borderRadius: 8, backgroundColor: '#e7dfce', backgroundSize: 'cover', backgroundPosition: 'center', border: '1px solid rgba(20,25,30,.08)', position: 'relative', overflow: 'hidden', display: 'flex', alignItems: 'flex-end', padding: g.span ? 18 : 16 }}
+              >
                 <span style={label}>{c.gallery[i]}</span>
-              </div>
+              </LazyBg>
             ))}
           </div>
         </div>

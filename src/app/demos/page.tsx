@@ -16,6 +16,8 @@ type Demo = {
   i18n: Record<DemoLang, CardCopy>
 }
 
+import { uns, local } from './unsplash'
+
 const DEMOS: Demo[] = [
   {
     slug: 'aura',
@@ -122,17 +124,19 @@ const ORDER = [
 const ORDERED_DEMOS = ORDER.map((slug) => DEMOS.find((d) => d.slug === slug)!).filter(Boolean)
 
 // Imagen de fondo representativa por demo (assets locales /showcase + 1 unsplash del propio demo).
+// Todas pasan por el optimizador (ver ../unsplash): los originales son de 1600px y el índice
+// bajaba ~990 kB en 9 miniaturas que se pintan a ~350px de ancho.
 const THUMBS: Record<string, string> = {
-  aura: '/showcase/img/recepcion.webp',
-  brasa: '/showcase/img/menu/pique.webp',
-  'brasa-panel': '/showcase/img/menu/silpancho.webp',
-  'vesper-dashboard': '/showcase/img/shot-panel.webp',
-  'pulse-landing': '/showcase/uploads/gym_3_web.webp',
-  'pulse-dashboard': '/showcase/uploads/gym_4_web.webp',
-  'pulse-login': '/showcase/uploads/gym_5_web.webp',
-  'pulse-socio': '/showcase/uploads/training_1_web.webp',
-  'roman-ashford': '/showcase/img/despacho.webp',
-  'vesper-store': 'https://images.unsplash.com/photo-1600185365483-26d7a4cc7519?w=800&q=80',
+  aura: local('/showcase/img/recepcion.webp', 640),
+  brasa: local('/showcase/img/menu/pique.webp', 640),
+  'brasa-panel': local('/showcase/img/menu/silpancho.webp', 640),
+  'vesper-dashboard': local('/showcase/img/shot-panel.webp', 640),
+  'pulse-landing': local('/showcase/uploads/gym_3_web.webp', 640),
+  'pulse-dashboard': local('/showcase/uploads/gym_4_web.webp', 640),
+  'pulse-login': local('/showcase/uploads/gym_5_web.webp', 640),
+  'pulse-socio': local('/showcase/uploads/training_1_web.webp', 640),
+  'roman-ashford': local('/showcase/img/despacho.webp', 640),
+  'vesper-store': uns('1600185365483-26d7a4cc7519', 640),
 }
 
 const COPY = {
