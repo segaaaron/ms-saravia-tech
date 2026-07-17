@@ -12,6 +12,7 @@ import type { DemoLang } from '../lang'
 
 /* ---- lucide icons como SVG inline (sin dependencias) ---- */
 import { optimized } from '../unsplash'
+import { LazyBg } from '../useLazyBg'
 
 const ICON_PATHS: Record<string, string> = {
   activity: '<path d="M22 12h-4l-3 9L9 3l-3 9H2"/>',
@@ -527,7 +528,7 @@ export default function PulseLandingClient({ lang }: { lang: DemoLang }) {
         <div className="dcards-6" style={{ display: 'grid', gridTemplateColumns: 'repeat(6,1fr)', gridAutoRows: 170, gap: 14 }}>
           {GALLERY_META.map((g, i) => (
             <div key={g.slotId} style={{ gridColumn: `span ${g.span}`, position: 'relative', borderRadius: 16, overflow: 'hidden', border: '1px solid #e6e8ec' }}>
-              <div style={{ width: '100%', height: '100%', display: 'block', backgroundImage: `url("${IMG(g.photo)}")`, backgroundSize: 'cover', backgroundPosition: 'center' }} />
+              <LazyBg src={IMG(g.photo)} style={{ width: '100%', height: '100%', display: 'block', backgroundSize: 'cover', backgroundPosition: 'center' }} />
               <div style={{ position: 'absolute', left: 16, bottom: 14, color: '#fff', fontWeight: 700, fontSize: 15, textShadow: '0 2px 8px rgba(0,0,0,.55)', pointerEvents: 'none' }}>{c.gallery[i]}</div>
             </div>
           ))}

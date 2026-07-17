@@ -1,6 +1,7 @@
 'use client'
 
 import { useRef, useState } from 'react'
+import { useLazyBg } from './useLazyBg'
 import Link from 'next/link'
 
 export type GalleryCardData = {
@@ -20,6 +21,7 @@ export type GalleryCardData = {
 // según la posición del cursor y una veladura (glare) recorre la superficie.
 export default function GalleryCard({ data }: { data: GalleryCardData }) {
   const ref = useRef<HTMLElement>(null)
+  const [setThumbNode, thumbVisible] = useLazyBg<HTMLDivElement>()
   const [t, setT] = useState({ rx: 0, ry: 0, mx: 50, my: 50, active: false })
   const MAX = 8
 
@@ -64,12 +66,21 @@ export default function GalleryCard({ data }: { data: GalleryCardData }) {
         }}
       >
         <div
+          ref={setThumbNode}
           aria-hidden
           style={{
             height: 150,
             // Imagen clara: overlay solo en el tercio inferior (legibilidad del badge),
             // resto transparente. Tinte de marca muy sutil para no opacar la foto.
-            backgroundImage: `linear-gradient(180deg, rgba(6,8,16,0) 42%, rgba(10,17,28,0.62) 100%), radial-gradient(70% 120% at 30% 0%, ${data.accent}1f, transparent 70%), radial-gradient(60% 100% at 90% 100%, ${data.accent2}14, transparent 65%), url('${data.thumb}')`,
+            // La foto (ultima capa) solo se pide al acercarse: un background-image no tiene
+            // loading="lazy" y las 10 miniaturas salian juntas, compitiendo con el LCP. Los
+            // gradientes se pintan siempre, asi que no queda un hueco mientras carga.
+            backgroundImage: [
+              'linear-gradient(180deg, rgba(6,8,16,0) 42%, rgba(10,17,28,0.62) 100%)',
+              `radial-gradient(70% 120% at 30% 0%, ${data.accent}1f, transparent 70%)`,
+              `radial-gradient(60% 100% at 90% 100%, ${data.accent2}14, transparent 65%)`,
+              ...(thumbVisible ? [`url('${data.thumb}')`] : []),
+            ].join(', '),
             backgroundSize: 'cover, cover, cover, cover',
             backgroundPosition: 'center',
             borderBottom: `1px solid ${data.accent}22`,

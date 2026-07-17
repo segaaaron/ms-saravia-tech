@@ -11,6 +11,7 @@ import type { DemoLang } from '../lang'
 
 // opacity con calc/clamp → CSS acepta string, React tipa number
 import { uns, local } from '../unsplash'
+import { LazyBg } from '../useLazyBg'
 
 const op = (v: string) => v as unknown as CSSProperties['opacity']
 
@@ -566,7 +567,7 @@ export default function RomanClient({ lang }: { lang: DemoLang }) {
             </div>
           </div>
           <div data-reveal data-delay="120" style={{ position: 'relative' }}>
-            <div style={{ aspectRatio: '4/5', overflow: 'hidden', background: '#dcd6ca' }}><div style={{ width: '100%', height: '100%', background: `url(${local('/showcase/img/despacho.webp', 828)}) center/cover`, transform: 'translateY(calc(var(--sy,0) * -0.03px)) scale(1.06)' }} /></div>
+            <div style={{ aspectRatio: '4/5', overflow: 'hidden', background: '#dcd6ca' }}><LazyBg src={local('/showcase/img/despacho.webp', 828)} style={{ width: '100%', height: '100%', backgroundColor: '#dcd6ca', backgroundSize: 'cover', backgroundPosition: 'center', transform: 'translateY(calc(var(--sy,0) * -0.03px)) scale(1.06)' }} /></div>
             <div style={{ position: 'absolute', left: -30, bottom: -30, background: '#0c0f14', color: '#ece7dd', padding: '26px 30px', maxWidth: 250 }}>
               <div style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 22, color: '#c2a15a', marginBottom: 6 }}>{c.firmBadgeTitle}</div>
               <div style={{ fontSize: 13, lineHeight: 1.6, color: 'rgba(236,231,221,.7)', fontWeight: 300 }}>{c.firmBadgeDesc}</div>
@@ -601,7 +602,7 @@ export default function RomanClient({ lang }: { lang: DemoLang }) {
 
       {/* ===================== CASOS Y RESULTADOS ===================== */}
       <section id="casos" style={{ position: 'relative', padding: '150px 40px', overflow: 'hidden', background: '#0c0f14' }}>
-        <div style={{ position: 'absolute', inset: 0, transform: 'translateY(calc(var(--sy,0) * 0.04px))' }}><div style={{ position: 'absolute', inset: '-8%', background: `url(${local('/showcase/img/biblioteca.webp', 1080)}) center/cover`, opacity: 0.22 }} /></div>
+        <div style={{ position: 'absolute', inset: 0, transform: 'translateY(calc(var(--sy,0) * 0.04px))' }}><LazyBg src={local('/showcase/img/biblioteca.webp', 1080)} style={{ position: 'absolute', inset: '-8%', backgroundSize: 'cover', backgroundPosition: 'center', opacity: 0.22 }} /></div>
         <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(180deg,#0c0f14,rgba(12,15,20,.85),#0c0f14)' }} />
         <div style={{ position: 'relative', maxWidth: 1200, margin: '0 auto' }}>
           <div style={{ textAlign: 'center', maxWidth: 640, margin: '0 auto 70px' }} data-reveal>
@@ -634,7 +635,7 @@ export default function RomanClient({ lang }: { lang: DemoLang }) {
           <div className="dcards-3" style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 28 }}>
             {ATTORNEY_META.map((at, i) => (
               <div key={at.name} data-reveal data-delay={at.delay}>
-                <div style={{ aspectRatio: '3/4', overflow: 'hidden', background: '#dcd6ca', marginBottom: 20 }}><div className="ra-att" style={{ width: '100%', height: '100%', background: `url(${at.img}) center/cover`, filter: 'grayscale(.35)', transition: 'filter .5s, transform .8s' }} /></div>
+                <div style={{ aspectRatio: '3/4', overflow: 'hidden', background: '#dcd6ca', marginBottom: 20 }}><LazyBg className="ra-att" src={at.img} style={{ width: '100%', height: '100%', backgroundColor: '#dcd6ca', backgroundSize: 'cover', backgroundPosition: 'center', filter: 'grayscale(.35)', transition: 'filter .5s, transform .8s' }} /></div>
                 <h3 style={{ fontFamily: "'Cormorant Garamond',serif", fontSize: 27, margin: '0 0 4px', fontWeight: 500 }}>{at.name}</h3>
                 <div style={{ fontSize: 12, letterSpacing: '.14em', color: '#a07f47', textTransform: 'uppercase', marginBottom: 12 }}>{c.attorneys[i].role}</div>
                 <p style={{ fontSize: 14, lineHeight: 1.65, color: '#5a5e64', fontWeight: 300, margin: 0 }}>{c.attorneys[i].d}</p>

@@ -11,6 +11,7 @@ import type { DemoLang } from '../lang'
    ============================================================ */
 
 import { optimized } from '../unsplash'
+import { LazyBg } from '../useLazyBg'
 
 const slot = (p: string, w = 828) => optimized(`/showcase/${p}`, w)
 
@@ -104,9 +105,11 @@ function Icon({ name, size = 16, style }: { name: string; size?: number; style?:
   )
 }
 
-/* ---- image-slot resuelto a imagen real (cover) ---- */
+/* ---- image-slot resuelto a imagen real (cover) ----
+   Difiere la foto hasta acercarse al viewport: un background-image no tiene loading="lazy" y
+   todas salian juntas al cargar, robandole ancho de banda a la imagen del LCP. */
 function Slot({ src, style }: { src: string; style: CSSProperties }) {
-  return <div style={{ backgroundImage: `url(${slot(src)})`, backgroundSize: 'cover', backgroundPosition: 'center', ...style }} />
+  return <LazyBg src={slot(src)} style={{ backgroundSize: 'cover', backgroundPosition: 'center', ...style }} />
 }
 
 type ClassItem = { name: string; coach: string; time: string; cap: number; taken: number; booked: boolean; waitlisted?: boolean }
