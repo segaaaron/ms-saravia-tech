@@ -151,7 +151,9 @@ export default function Contact() {
   }
 
   return (
-    <section id="contact" className="relative py-24 overflow-hidden">
+    // overflow-x-clip, no overflow-hidden — ver AppCostEstimator: `hidden` haría de esta
+    // sección el scroll-container del panel `lg:sticky` y le impediría fijarse.
+    <section id="contact" className="relative py-24 overflow-x-clip">
       <div className="absolute inset-0 grid-bg opacity-30 pointer-events-none" />
       <div
         className="absolute inset-0 pointer-events-none"
