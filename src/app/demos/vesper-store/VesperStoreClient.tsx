@@ -476,7 +476,6 @@ export default function VesperStoreClient({ lang: initialLang }: { lang: DemoLan
   const clearFilters = () => { setFSize([]); setFColor([]); setPriceMax(1300); setAvailOnly(false); setQuery('') }
   const openFavs = () => { setFavsOpen(true); setCartOpen(false); setAccount(null) }
   const closeFavs = () => setFavsOpen(false)
-  const goOffers = () => setCatRaw('ofertas')
   const onSort = (e: ChangeEvent<HTMLSelectElement>) => setSort(e.target.value)
   const toggleCart = () => setCartOpen((v) => !v)
   const closeAll = () => setCartOpen(false)
