@@ -320,6 +320,173 @@ body {
   }
 }
 
+/* BRASA panel — cabecera del dashboard en móvil/tablet.
+   En escritorio la fila entra holgada; al angostar, el título serif de 27px + subtítulo +
+   indicador "En vivo" + botón "↻ Actualizar" se amontonaban en una sola fila, envolvían feo
+   y desbordaban. Se compacta en el mismo corte del drawer (900px): menos padding, título más
+   chico, subtítulo a una línea con elipsis; el hueco flexible y el spacer se retiran para que
+   el título ocupe el ancho libre. */
+@media (max-width: 900px) {
+  .dpanel-head {
+    gap: 12px !important;
+    padding: 13px 16px !important;
+  }
+  /* El bloque título+subtítulo toma el ancho libre y puede encoger (elipsis del subtítulo). */
+  .dpanel-titlewrap {
+    flex: 1;
+    min-width: 0;
+  }
+  .dpanel-title {
+    font-size: 19px !important;
+  }
+  .dpanel-sub {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  /* El spacer sobra: el título ya crece con flex. */
+  .dpanel-spacer {
+    display: none !important;
+  }
+  .dpanel-body {
+    padding: 18px 16px 48px !important;
+  }
+}
+
+/* Teléfono: "En vivo" queda como punto (sin texto) y "Actualizar" como icono ↻ redondo,
+   ambos con destino táctil de 40px. Libera el ancho que robaban al título. */
+@media (max-width: 560px) {
+  .dpanel-title {
+    font-size: 17px !important;
+  }
+  .dpanel-live-txt {
+    display: none !important;
+  }
+  .dpanel-refresh {
+    width: 40px;
+    min-height: 40px;
+    padding: 0 !important;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0 !important;
+  }
+  .dpanel-refresh::before {
+    content: "\21bb"; /* ↻ */
+    font-size: 17px;
+  }
+}
+
+/* VESPER dashboard — tablas de datos (pedidos, productos, inventario, clientes, pagos, descuentos)
+   en móvil. Tienen 6-7 columnas; el min-width genérico de 640px de `.dtable-wrap` era muy
+   estrecho y las columnas flexibles (nombre de cliente/producto) se aplastaban a unos pocos px
+   —solo se veía el avatar—. Se les da un ancho mínimo mayor: cada columna recupera su espacio y
+   la tabla se desplaza en horizontal (patrón estándar de panel admin en móvil). */
+@media (max-width: 760px) {
+  .vesper-root .dtable-wrap > * {
+    min-width: 800px;
+  }
+}
+
+/* VESPER dashboard — cabecera en móvil. El selector de rango (7d/30d/3m) + el toggle claro/oscuro
+   (158px) no caben junto al breadcrumb: el rango se aplastaba a 15px (inusable) y el breadcrumb a
+   2px (una rayita "|"). El rango es contextual al gráfico —que ya muestra el periodo— así que se
+   oculta en el teléfono; con menos padding/gap el breadcrumb recupera su espacio. */
+@media (max-width: 600px) {
+  .vd-head {
+    padding: 0 16px !important;
+    gap: 10px !important;
+  }
+  .vd-range {
+    display: none !important;
+  }
+  .vd-crumb {
+    flex: 1;
+    min-width: 0;
+  }
+}
+
+/* PULSE dashboard — cabecera en móvil. Con 34px de padding lateral + el botón "Log check-in"
+   sin `nowrap` ni `flex-shrink`, en el teléfono la fecha partía en 2 líneas y el botón en 3
+   ("Log / + check- / in"). Se compacta: menos padding, la fecha (secundaria) se oculta, el
+   título recorta con elipsis y el CTA se mantiene en una línea. */
+@media (max-width: 600px) {
+  .pd-head {
+    padding: 13px 16px !important;
+    gap: 12px !important;
+  }
+  .pd-head-date {
+    display: none !important;
+  }
+  .pd-head-title {
+    font-size: 19px !important;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .pd-cta {
+    flex-shrink: 0;
+    white-space: nowrap;
+    padding: 10px 13px !important;
+  }
+}
+
+/* BRASA panel — carta/menú en móvil. La fila de escritorio tiene 4 columnas heterogéneas
+   (nombre · categoría · precio · acciones); el colapso genérico a `1fr auto` las repartía en
+   un patrón roto: nombre arriba-izq, categoría flotando a la derecha, precio tirado abajo-izq
+   lejos del nombre y los botones amontonados. Aquí cada plato es una tarjeta legible:
+     nombre ───────────── precio     (misma línea, precio a la derecha)
+     categoría · estación             (subtítulo atenuado)
+     [estado] [limitar] [agotar]      (acciones en su propia fila, envuelven)  */
+@media (max-width: 640px) {
+  .brasa-menu > div {
+    display: grid !important;
+    grid-template-columns: 1fr auto !important;
+    grid-template-areas: 'name price' 'cat cat' 'act act' !important;
+    gap: 3px 12px !important;
+    padding: 16px 18px !important;
+    align-items: baseline !important;
+  }
+  /* Cabecera de columnas: no aporta en la tarjeta. */
+  .brasa-menu > div:first-child {
+    display: none !important;
+  }
+  .brasa-menu > div > :nth-child(1) {
+    grid-area: name;
+    font-size: 15px !important;
+    line-height: 1.3;
+  }
+  .brasa-menu > div > :nth-child(2) {
+    grid-area: cat;
+    font-size: 12px !important;
+  }
+  .brasa-menu > div > :nth-child(3) {
+    grid-area: price;
+    text-align: right;
+    font-size: 15px !important;
+    white-space: nowrap;
+  }
+  .brasa-menu > div > :nth-child(4) {
+    grid-area: act;
+    margin-top: 9px !important;
+  }
+}
+
+/* BRASA panel — tiras de indicadores (KPIs, contadores de estación, arqueo, finanzas).
+   En escritorio son `auto-fit`/5-col holgados; al colapsar a 1 columna en el teléfono se
+   convertían en tarjetas gigantes casi vacías apiladas — el dashboard perdía todo orden.
+   En móvil van a 2 por fila: compactos y legibles como un panel de verdad. */
+@media (max-width: 600px) {
+  .dstat {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 10px !important;
+  }
+  /* El número grande del resumen (38px) no entra en media columna: se reduce. */
+  .dkpi-num {
+    font-size: 28px !important;
+  }
+}
+
 /* El botón hamburguesa se oculta en desktop (el nav inline lo reemplaza). */
 .dnav-only {
   display: none;

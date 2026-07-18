@@ -1068,12 +1068,12 @@ export default function VesperDashboardClient({ lang }: { lang: DemoLang }) {
       {/* ============ MAIN ============ */}
       <main style={{ display: 'flex', flexDirection: 'column', minWidth: 0 }}>
         {/* TOPBAR */}
-        <header style={{ position: 'sticky', top: 0, zIndex: 20, background: 'var(--surface)', borderBottom: '1px solid var(--line)', padding: '0 30px', height: 62, display: 'flex', alignItems: 'center', gap: 16 }}>
+        <header className="vd-head" style={{ position: 'sticky', top: 0, zIndex: 20, background: 'var(--surface)', borderBottom: '1px solid var(--line)', padding: '0 30px', height: 62, display: 'flex', alignItems: 'center', gap: 16 }}>
           <button className="dshell-hamb" onClick={() => setNavOpen(true)} aria-label="Menu" aria-expanded={navOpen} style={{ width: 38, height: 38, borderRadius: 9, border: '1px solid var(--line)', background: 'var(--surface2)', color: 'var(--text)', cursor: 'pointer', alignItems: 'center', justifyContent: 'center', fontSize: 18, flexShrink: 0 }}><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round"><line x1="4" y1="7" x2="20" y2="7" /><line x1="4" y1="12" x2="20" y2="12" /><line x1="4" y1="17" x2="20" y2="17" /></svg></button>
-          <div style={{ minWidth: 0 }}><div style={{ fontSize: 15, fontWeight: 600, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{crumb}</div></div>
+          <div className="vd-crumb" style={{ minWidth: 0 }}><div style={{ fontSize: 15, fontWeight: 600, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{crumb}</div></div>
           <div style={{ flex: 1 }} />
           {showRange && (
-            <div style={{ display: 'flex', background: 'var(--surface3)', border: '1px solid var(--line)', borderRadius: 9, overflow: 'hidden' }}>
+            <div className="vd-range" style={{ display: 'flex', background: 'var(--surface3)', border: '1px solid var(--line)', borderRadius: 9, overflow: 'hidden' }}>
               {ranges.map((r, i) => (
                 <button key={i} onClick={r.onClick} style={{ background: r.bg, color: r.color, border: 'none', padding: '7px 13px', cursor: 'pointer', fontSize: 12.5, fontWeight: 500, transition: 'all .18s' }}>{r.label}</button>
               ))}

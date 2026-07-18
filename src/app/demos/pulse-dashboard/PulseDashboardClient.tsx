@@ -853,12 +853,12 @@ export default function PulseDashboardClient({ lang }: { lang: DemoLang }) {
 
       {/* MAIN */}
       <main style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column', maxHeight: '100vh' }}>
-        <header style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 20, padding: '22px 34px 18px', flexShrink: 0, background: '#ffffff', borderBottom: '1px solid #e6e8ec' }}>
+        <header className="pd-head" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 20, padding: '22px 34px 18px', flexShrink: 0, background: '#ffffff', borderBottom: '1px solid #e6e8ec' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: 14, minWidth: 0 }}>
             <button className="dshell-hamb" onClick={() => setNavOpen(true)} aria-label="Menu" aria-expanded={navOpen} style={{ width: 38, height: 38, borderRadius: 10, border: '1px solid #e2e5e9', background: '#fff', color: '#171a1f', cursor: 'pointer', alignItems: 'center', justifyContent: 'center', fontSize: 18, flexShrink: 0 }}><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round"><line x1="4" y1="7" x2="20" y2="7" /><line x1="4" y1="12" x2="20" y2="12" /><line x1="4" y1="17" x2="20" y2="17" /></svg></button>
             <div style={{ minWidth: 0 }}>
-              <div style={{ fontSize: 12, letterSpacing: '.02em', color: '#9aa0a8', fontWeight: 600 }}>{dateStr}</div>
-              <h1 style={{ fontSize: 23, fontWeight: 800, marginTop: 2, letterSpacing: '-.02em' }}>{viewTitle}</h1>
+              <div className="pd-head-date" style={{ fontSize: 12, letterSpacing: '.02em', color: '#9aa0a8', fontWeight: 600 }}>{dateStr}</div>
+              <h1 className="pd-head-title" style={{ fontSize: 23, fontWeight: 800, marginTop: 2, letterSpacing: '-.02em' }}>{viewTitle}</h1>
             </div>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 11 }}>
@@ -881,7 +881,7 @@ export default function PulseDashboardClient({ lang }: { lang: DemoLang }) {
                 </div>
               )}
             </div>
-            <button onClick={openKiosk} className="pd-h-blue" style={{ display: 'inline-flex', alignItems: 'center', gap: 7, padding: '11px 17px', border: 'none', borderRadius: 10, background: '#3b5bdb', color: '#fff', fontWeight: 700, fontSize: 14, fontFamily: 'inherit', cursor: 'pointer' }}><Icon name="plus" size={17} /> {ctaLabel}</button>
+            <button onClick={openKiosk} className="pd-h-blue pd-cta" style={{ display: 'inline-flex', alignItems: 'center', gap: 7, padding: '11px 17px', border: 'none', borderRadius: 10, background: '#3b5bdb', color: '#fff', fontWeight: 700, fontSize: 14, fontFamily: 'inherit', cursor: 'pointer' }}><Icon name="plus" size={17} /> {ctaLabel}</button>
           </div>
         </header>
 

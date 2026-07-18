@@ -440,10 +440,6 @@ function syncStatus(o: Order, m: Record<string, number>): string {
   const allDone = st.length > 0 && st.every(s => s === 2); const anyStarted = st.some(s => s >= 1)
   return allDone ? 'listo' : (anyStarted ? 'preparando' : 'nuevo')
 }
-function stationAll2(o: Order, m: Record<string, number>, station: string): boolean {
-  const its = (o.items || []).map((it, i) => ({ bar: (it.cat || 'cocina') === 'bar', s: m[o.code + '#' + i] || 0 })).filter(x => (station === 'bar') === x.bar)
-  return its.length > 0 && its.every(x => x.s === 2)
-}
 interface TimerMeta { label: string; color: string; bg: string; urgent: boolean }
 function elapsedMeta(ts?: number): TimerMeta {
   const min = Math.max(0, Math.floor((Date.now() - (ts || Date.now())) / 60000))
@@ -1057,24 +1053,24 @@ export default function BrasaPanelClient({ lang }: { lang: DemoLang }) {
 
             {/* MAIN */}
             <main style={{ flex: 1, minWidth: 0, display: 'flex', flexDirection: 'column' }}>
-              <header style={{ display: 'flex', alignItems: 'center', gap: '16px', padding: '20px 30px', borderBottom: '1px solid #2a2016', position: 'sticky', top: 0, background: 'rgba(20,15,9,.85)', backdropFilter: 'blur(10px)', zIndex: 10 }}>
+              <header className="dpanel-head" style={{ display: 'flex', alignItems: 'center', gap: '16px', padding: '20px 30px', borderBottom: '1px solid #2a2016', position: 'sticky', top: 0, background: 'rgba(20,15,9,.85)', backdropFilter: 'blur(10px)', zIndex: 10 }}>
                 <button className="dshell-hamb" onClick={() => setNavOpen(true)} aria-label="Menu" aria-expanded={navOpen} style={{ width: 38, height: 38, borderRadius: 10, border: '1px solid #33261a', background: '#211810', color: '#f2e8da', cursor: 'pointer', alignItems: 'center', justifyContent: 'center', fontSize: 18, flexShrink: 0 }}><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round"><line x1="4" y1="7" x2="20" y2="7" /><line x1="4" y1="12" x2="20" y2="12" /><line x1="4" y1="17" x2="20" y2="17" /></svg></button>
-                <div><h1 className="serif" style={{ fontSize: '27px', fontWeight: 600, margin: 0, lineHeight: 1 }}>{v.viewTitle}</h1><div style={{ fontSize: '12px', color: '#8c7a63', marginTop: '3px' }}>{v.viewSubtitle}</div></div>
-                <div style={{ flex: 1 }} />
-                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '12px', color: '#8c7a63' }}><span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#6bbf7a', animation: 'pulse 1.8s infinite' }} />{c.live}</div>
-                <button onClick={v.refresh} style={{ background: '#1e160e', border: '1px solid #33261a', color: '#f2e8da', padding: '9px 15px', borderRadius: '9px', cursor: 'pointer', fontSize: '12.5px', fontWeight: 600 }}>{c.refresh}</button>
+                <div className="dpanel-titlewrap"><h1 className="serif dpanel-title" style={{ fontSize: '27px', fontWeight: 600, margin: 0, lineHeight: 1 }}>{v.viewTitle}</h1><div className="dpanel-sub" style={{ fontSize: '12px', color: '#8c7a63', marginTop: '3px' }}>{v.viewSubtitle}</div></div>
+                <div className="dpanel-spacer" style={{ flex: 1 }} />
+                <div className="dpanel-live" style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '12px', color: '#8c7a63', flexShrink: 0 }}><span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#6bbf7a', animation: 'pulse 1.8s infinite', flexShrink: 0 }} /><span className="dpanel-live-txt">{c.live}</span></div>
+                <button className="dpanel-refresh" onClick={v.refresh} aria-label={c.refresh} style={{ background: '#1e160e', border: '1px solid #33261a', color: '#f2e8da', padding: '9px 15px', borderRadius: '9px', cursor: 'pointer', fontSize: '12.5px', fontWeight: 600, flexShrink: 0 }}>{c.refresh}</button>
               </header>
 
-              <div style={{ flex: 1, overflow: 'auto', padding: '28px 30px 60px' }}>
+              <div className="dpanel-body" style={{ flex: 1, overflow: 'auto', padding: '28px 30px 60px' }}>
 
                 {/* RESUMEN */}
                 {v.isResumen && (
                   <>
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(190px,1fr))', gap: '16px', marginBottom: '26px' }}>
+                    <div className="dstat" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(190px,1fr))', gap: '16px', marginBottom: '26px' }}>
                       {v.kpis.map((k, i) => (
                         <div key={i} style={{ background: 'linear-gradient(160deg,#211810,#1a120b)', border: '1px solid #2f2418', borderRadius: '16px', padding: '20px', animation: 'cardIn .4s ease both' }}>
                           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}><div style={{ fontSize: '11.5px', textTransform: 'uppercase', letterSpacing: '.09em', color: '#8c7a63' }}>{k.label}</div><span style={{ fontSize: '18px' }}>{k.emoji}</span></div>
-                          <div className="serif" style={{ fontSize: '38px', fontWeight: 600, color: '#fff', marginTop: '8px', lineHeight: 1 }}>{k.value}</div>
+                          <div className="serif dkpi-num" style={{ fontSize: '38px', fontWeight: 600, color: '#fff', marginTop: '8px', lineHeight: 1 }}>{k.value}</div>
                           <div style={{ fontSize: '11.5px', color: '#8c7a63', marginTop: '4px' }}>{k.sub}</div>
                         </div>
                       ))}
@@ -1137,7 +1133,7 @@ export default function BrasaPanelClient({ lang }: { lang: DemoLang }) {
                 {/* MONITOR DE OPERACIONES (admin, solo lectura) */}
                 {v.isKanban && (
                   <>
-                    <div className="dcards-5" style={{ display: 'grid', gridTemplateColumns: 'repeat(5,1fr)', gap: '12px', marginBottom: '18px' }}>
+                    <div className="dcards-5 dstat" style={{ display: 'grid', gridTemplateColumns: 'repeat(5,1fr)', gap: '12px', marginBottom: '18px' }}>
                       {v.monKpis.map((k, i) => (
                         <div key={i} style={{ background: '#1a120b', border: '1px solid #2a2016', borderRadius: '14px', padding: '16px 18px' }}>
                           <div style={{ fontSize: '30px', fontWeight: 800, color: k.color, lineHeight: 1 }}>{k.value}</div>
@@ -1432,7 +1428,7 @@ export default function BrasaPanelClient({ lang }: { lang: DemoLang }) {
 
                 {/* MENU */}
                 {v.isMenu && (
-                  <div className="dtable-wrap brasa-tbl" style={{ background: '#1a120b', border: '1px solid #2a2016', borderRadius: '16px', overflow: 'hidden' }}>
+                  <div className="brasa-menu" style={{ background: '#1a120b', border: '1px solid #2a2016', borderRadius: '16px', overflow: 'hidden' }}>
                     <div style={{ display: 'grid', gridTemplateColumns: '1.5fr .8fr .5fr 1.5fr', gap: '12px', padding: '14px 20px', borderBottom: '1px solid #2a2016', fontSize: '11px', textTransform: 'uppercase', letterSpacing: '.08em', color: '#8c7a63' }}><span>{v.menuItemLabel}</span><span>{c.menu.categoria}</span><span>{c.menu.precio}</span><span>{c.menu.disponibilidad}</span></div>
                     {v.menuList.map((m, i) => (
                       <div key={i} style={{ display: 'grid', gridTemplateColumns: '1.5fr .8fr .5fr 1.5fr', gap: '12px', padding: '14px 20px', borderTop: '1px solid #241a10', alignItems: 'center', fontSize: '13.5px' }}>
@@ -1489,7 +1485,7 @@ export default function BrasaPanelClient({ lang }: { lang: DemoLang }) {
                           </div>
                           <button onClick={v.memberDetail.close} style={{ background: 'transparent', border: '1px solid #3a2c1e', color: '#a8977f', width: '34px', height: '34px', borderRadius: '9px', cursor: 'pointer', fontSize: '16px' }}>✕</button>
                         </div>
-                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(150px,1fr))', gap: '12px', marginBottom: '20px' }}>
+                        <div className="dstat" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(150px,1fr))', gap: '12px', marginBottom: '20px' }}>
                           {v.memberDetail.kpis.map((k, i) => (
                             <div key={i} style={{ background: '#160f08', border: '1px solid #2a2016', borderRadius: '13px', padding: '15px 16px' }}>
                               <div style={{ fontSize: '10.5px', textTransform: 'uppercase', letterSpacing: '.05em', color: '#8c7a63' }}>{k.label}</div>
@@ -1611,7 +1607,7 @@ export default function BrasaPanelClient({ lang }: { lang: DemoLang }) {
                 {/* CAJA · ARQUEO */}
                 {v.isCaja && (
                   <>
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(180px,1fr))', gap: '14px', marginBottom: '20px' }}>
+                    <div className="dstat" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(180px,1fr))', gap: '14px', marginBottom: '20px' }}>
                       {v.cajaSummary.map((k, i) => (<div key={i} style={{ background: 'linear-gradient(160deg,#211810,#1a120b)', border: '1px solid #2f2418', borderRadius: '16px', padding: '18px' }}><div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}><span style={{ fontSize: '11px', textTransform: 'uppercase', letterSpacing: '.07em', color: '#8c7a63' }}>{k.label}</span><span style={{ fontSize: '16px' }}>{k.emoji}</span></div><div className="serif" style={{ fontSize: '30px', fontWeight: 600, color: '#fff', marginTop: '6px' }}>{k.value}</div></div>))}
                     </div>
                     <div className="dcards-2" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '18px', alignItems: 'start' }}>
@@ -1671,7 +1667,7 @@ export default function BrasaPanelClient({ lang }: { lang: DemoLang }) {
                 {/* FINANZAS */}
                 {v.isFinanzas && (
                   <>
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(210px,1fr))', gap: '14px', marginBottom: '20px' }}>
+                    <div className="dstat" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(210px,1fr))', gap: '14px', marginBottom: '20px' }}>
                       {v.finKpis.map((k, i) => (
                         <div key={i} style={{ background: 'linear-gradient(160deg,#211810,#1a120b)', border: '1px solid #2f2418', borderTop: '3px solid ' + k.color, borderRadius: '16px', padding: '18px' }}>
                           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}><span style={{ fontSize: '11px', textTransform: 'uppercase', letterSpacing: '.07em', color: '#8c7a63' }}>{k.label}</span><span style={{ fontSize: '16px' }}>{k.emoji}</span></div>
@@ -1738,7 +1734,7 @@ export default function BrasaPanelClient({ lang }: { lang: DemoLang }) {
                 {v.isRend && (
                   <>
                     {v.rendEmpty && <div style={{ background: '#1a120b', border: '1px dashed #33261a', borderRadius: '16px', padding: '50px', textAlign: 'center', color: '#8c7a63', marginBottom: '18px' }}><div style={{ fontSize: '30px', marginBottom: '8px' }}>📈</div><div style={{ fontSize: '14px', color: '#c9b79c' }}>{c.rend.empty1}</div><div style={{ fontSize: '12.5px', marginTop: '4px' }}>{c.rend.empty2}</div></div>}
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(220px,1fr))', gap: '16px', marginBottom: '20px' }}>
+                    <div className="dstat" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit,minmax(220px,1fr))', gap: '16px', marginBottom: '20px' }}>
                       {v.rendStations.map((s, i) => (
                         <div key={i} style={{ background: '#1a120b', border: '1px solid #2a2016', borderTop: '3px solid ' + s.color, borderRadius: '14px', padding: '18px' }}>
                           <div style={{ fontSize: '14px', fontWeight: 700, color: '#f2e8da', marginBottom: '12px' }}>{s.emoji} {s.label}</div>
