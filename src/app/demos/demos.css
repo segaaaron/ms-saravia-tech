@@ -222,6 +222,41 @@ body {
   }
 }
 
+/* BRASA cliente — header en móvil. El .dnav genérico (wrap + center) partía la barra en
+   dos filas centradas: fila1 hamburguesa+logo+tema, fila2 carrito+cuenta+"Reservar mesa".
+   Se reordena al patrón de cualquier app real: UNA fila —hamburguesa + logo a la izquierda,
+   acciones a la derecha—. El CTA "Reservar mesa" ya vive en el desplegable (sección Reservar),
+   así que se oculta del header para no amontonar. En teléfonos muy angostos también sale el
+   toggle de tema (secundario) para que carrito + cuenta respiren. */
+@media (max-width: 720px) {
+  .brasa-hd {
+    flex-wrap: nowrap !important;
+    justify-content: flex-start !important;
+    gap: 10px !important;
+    padding: 0 14px !important;
+  }
+  /* Logo más compacto: el letter-spacing .26em lo hacía ~130px y empujaba las acciones. */
+  .brasa-hd .serif {
+    font-size: 20px !important;
+    letter-spacing: 0.16em !important;
+    padding-left: 0.16em !important;
+  }
+  /* Empuja el grupo de acciones al extremo derecho. */
+  .brasa-hd-cart {
+    margin-left: auto !important;
+  }
+  /* CTA redundante en móvil (está en el drawer + en el hero). */
+  .brasa-hd-reserve {
+    display: none !important;
+  }
+}
+@media (max-width: 430px) {
+  /* Tema es secundario; se cede su ancho a carrito + cuenta. */
+  .brasa-hd-theme {
+    display: none !important;
+  }
+}
+
 /* VESPER STORE — header de tienda en móvil.
    El .dnav genérico envolvía sus 4 bloques (hamburguesa+logo, buscador, idioma/tema/moneda/
    cuenta, carrito) en 4 filas centradas: ~200px de alto antes de ver un solo producto, y el
@@ -403,6 +438,38 @@ body {
   .vd-crumb {
     flex: 1;
     min-width: 0;
+  }
+}
+
+/* PULSE dashboard — banda tablet (600–900). La hamburguesa aparece a ≤900 (drawer), pero la
+   cabecera sólo se compactaba a ≤600: en ese rango el título "Panel general" envolvía a 2
+   líneas y el CTA "Registrar check-in" también. Se alinea la compactación al mismo corte del
+   drawer: título a una línea con elipsis y CTA que nunca envuelve ni se encoge. */
+@media (max-width: 900px) {
+  .pd-head {
+    padding: 16px 20px !important;
+  }
+  .pd-head-title {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .pd-cta {
+    flex-shrink: 0;
+    white-space: nowrap;
+  }
+}
+
+/* VESPER dashboard — filtros de pedidos (Todos/Sin pagar/Sin cumplir/Reembolsados). El control
+   segmentado usa `width: max-content` + `overflow: hidden`: en el teléfono las 4 pestañas no
+   entran y "Reembolsados" quedaba cortado sin forma de alcanzarlo. En móvil se vuelve
+   desplazable en horizontal (las pestañas no se encogen) en vez de recortar. */
+@media (max-width: 640px) {
+  .vd-orderfilters {
+    width: 100% !important;
+    max-width: 100%;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch;
   }
 }
 

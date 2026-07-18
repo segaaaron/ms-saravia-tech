@@ -1448,9 +1448,9 @@ export default function VesperDashboardClient({ lang }: { lang: DemoLang }) {
           {/* ==================== PEDIDOS ==================== */}
           {nav === 'Pedidos' && (
             <div key="v-orders" style={{ animation: 'viewIn .45s cubic-bezier(.2,.7,.2,1) both' }}>
-              <div style={{ display: 'flex', background: 'var(--surface)', border: '1px solid var(--line)', borderRadius: 10, overflow: 'hidden', width: 'max-content', marginBottom: 18 }}>
+              <div className="vd-orderfilters" style={{ display: 'flex', background: 'var(--surface)', border: '1px solid var(--line)', borderRadius: 10, overflow: 'hidden', width: 'max-content', marginBottom: 18 }}>
                 {orderFilters.map((f, i) => (
-                  <button key={i} onClick={f.onClick} style={{ background: f.bg, color: f.color, border: 'none', padding: '10px 16px', cursor: 'pointer', fontSize: 12.5, fontWeight: 500, transition: 'all .18s' }}>{f.label}</button>
+                  <button key={i} onClick={f.onClick} style={{ background: f.bg, color: f.color, border: 'none', padding: '10px 16px', cursor: 'pointer', fontSize: 12.5, fontWeight: 500, transition: 'all .18s', whiteSpace: 'nowrap', flex: '0 0 auto' }}>{f.label}</button>
                 ))}
               </div>
               <div className="dtable-wrap" style={{ border: '1px solid var(--line)', borderRadius: 14, background: 'var(--surface)', overflow: 'hidden' }}>

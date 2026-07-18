@@ -356,6 +356,7 @@ interface Order {
   note?: OrderNote | null; readyAt?: number | null; deliveredAt?: number
   acceptedAt?: number | null; acceptedBy?: string; cookId?: string
   canceledAt?: number; canceledBy?: string; closed?: boolean; repeat?: boolean
+  off?: number // demo: minutos "de antigüedad" con que se sembró; se re-ancla en cada carga
 }
 interface Reservation { code: string; customer?: string; date?: string; time?: string; party?: number; table?: string; zone?: string; status?: string }
 interface EventItem { qty: number; name: string; cat?: string; price?: number; guest?: string }
@@ -461,7 +462,7 @@ function defaultView(role: string): string { return role === 'chef' ? 'cocina' :
 function seedStaff(): void { try { if (!localStorage.getItem('brasa_staff')) localStorage.setItem('brasa_staff', JSON.stringify(staffSeed)) } catch { /* noop */ } }
 function seedDemo(): void {
   try {
-    const SEEDV = 'v4'
+    const SEEDV = 'v5'
     // Demo: re-siembra con timestamps frescos si los datos tienen > 8 h, para que
     // los timers de mesa no queden "colgados" mostrando cientos de horas.
     const seedTs = Number(localStorage.getItem('brasa_seed_ts') || 0)
@@ -469,8 +470,8 @@ function seedDemo(): void {
     if (localStorage.getItem('brasa_seed_v') !== SEEDV || stale) {
       const mn = (m: number) => Date.now() - m * 60000
       const hm = (m: number) => { const d = new Date(Date.now() - m * 60000); return ('0' + d.getHours()).slice(-2) + ':' + ('0' + d.getMinutes()).slice(-2) }
-      const O = (m: number, rest: Partial<Order>): Order => ({ time: hm(m), ts: mn(m), ...rest } as Order)
-      localStorage.setItem('brasa_orders', JSON.stringify([
+      const O = (m: number, rest: Partial<Order>): Order => ({ time: hm(m), ts: mn(m), off: m, ...rest } as Order)
+      const seedOrders: Order[] = [
         O(7, { code: 'PD-3001', customer: 'Familia Vargas', guest: 'Camila', mode: 'En mesa', table: 'M3', party: 4, total: 95, status: 'listo', items: [{ name: 'Silpancho cochabambino', qty: 1, cat: 'cocina', price: 60 }, { name: 'Mojito', qty: 1, cat: 'bar', price: 35 }] }),
         O(7, { code: 'PD-3002', customer: 'Familia Vargas', guest: 'Rodrigo', mode: 'En mesa', table: 'M3', party: 4, total: 150, status: 'preparando', items: [{ name: 'Parrillada mixta', qty: 1, cat: 'cocina', price: 120 }, { name: 'Paceña', qty: 1, cat: 'bar', price: 30 }] }),
         O(6, { code: 'PD-3003', customer: 'Familia Vargas', guest: 'Lucía', mode: 'En mesa', table: 'M3', party: 4, total: 95, status: 'preparando', items: [{ name: 'Trucha a la plancha', qty: 1, cat: 'cocina', price: 75, note: 'sin mantequilla' }, { name: 'Limonada de la casa', qty: 1, cat: 'bar', price: 20 }] }),
@@ -481,7 +482,15 @@ function seedDemo(): void {
         O(4, { code: 'PD-3020', customer: 'Sofía Careaga', guest: 'Sofía', mode: 'Delivery', total: 135, status: 'preparando', items: [{ name: 'Chuleta de cerdo a la BBQ', qty: 2, cat: 'cocina', price: 55 }, { name: 'Coca-Cola 2L', qty: 1, cat: 'bar', price: 25 }] }),
         O(5, { code: 'PD-3021', customer: 'Jorge Ríos', guest: 'Jorge', mode: 'Para llevar', total: 78, status: 'nuevo', items: [{ name: 'Pique macho', qty: 1, cat: 'cocina', price: 90 }, { name: 'Chuflay', qty: 1, cat: 'bar', price: 38 }] }),
         O(16, { code: 'PD-3022', customer: 'Marcelo Vaca', guest: 'Marcelo', mode: 'Para llevar', total: 90, status: 'entregado', items: [{ name: 'Pique macho', qty: 1, cat: 'cocina', price: 90 }] }),
-      ]))
+      ]
+      // Preserva pedidos "vivos" (los que un cliente agregó vía el sitio: sin `off` y con
+      // código no-semilla) para no borrarlos al re-sembrar por cambio de versión.
+      let liveKeep: Order[] = []
+      try {
+        const prev = JSON.parse(localStorage.getItem('brasa_orders') || '[]') as Order[]
+        if (Array.isArray(prev)) { const seedCodes = new Set(seedOrders.map(o => o.code)); liveKeep = prev.filter(o => o && typeof o.off !== 'number' && !seedCodes.has(o.code)) }
+      } catch { /* noop */ }
+      localStorage.setItem('brasa_orders', JSON.stringify(liveKeep.concat(seedOrders)))
       try { localStorage.removeItem('brasa_item_stage'); localStorage.removeItem('brasa_serve_modes') } catch { /* noop */ }
       localStorage.setItem('brasa_seed_v', SEEDV)
       localStorage.setItem('brasa_seed_ts', String(Date.now()))
@@ -493,6 +502,30 @@ function seedDemo(): void {
         { code: 'BR-4821', customer: 'Camila Vargas', date: 'Hoy', time: '21:00', party: 4, table: 'M3', zone: 'Salón principal', status: 'confirmada' },
       ]))
     }
+  } catch { /* noop */ }
+}
+
+/* Demo: re-ancla los timestamps de las comandas sembradas (las que llevan `off`) a
+   `ahora − off` en cada carga, para que el tablero SIEMPRE se vea "en vivo" (timers de
+   pocos minutos) por más tiempo que la demo haya estado sin abrirse. Las comandas reales
+   añadidas por el cliente no llevan `off`, así que conservan su hora real. */
+function reanchorSeed(): void {
+  try {
+    const raw = localStorage.getItem('brasa_orders'); if (!raw) return
+    const arr = JSON.parse(raw) as Order[]; if (!Array.isArray(arr)) return
+    const now = Date.now(); let changed = false
+    for (const o of arr) {
+      if (typeof o.off !== 'number') continue
+      const ts = now - o.off * 60000
+      if (o.ts === ts) continue
+      const delta = ts - (o.ts || ts)
+      if (typeof o.readyAt === 'number') o.readyAt += delta
+      if (typeof o.acceptedAt === 'number') o.acceptedAt += delta
+      o.ts = ts
+      const d = new Date(ts); o.time = ('0' + d.getHours()).slice(-2) + ':' + ('0' + d.getMinutes()).slice(-2)
+      changed = true
+    }
+    if (changed) localStorage.setItem('brasa_orders', JSON.stringify(arr))
   } catch { /* noop */ }
 }
 
@@ -637,7 +670,7 @@ export default function BrasaPanelClient({ lang }: { lang: DemoLang }) {
 
   /* ---------- mount / unmount ---------- */
   useEffect(() => {
-    seedStaff(); seedDemo()
+    seedStaff(); seedDemo(); reanchorSeed()
     try { const sm = localStorage.getItem('brasa_serve_modes'); if (sm) setState({ serveModes: JSON.parse(sm) || {} }) } catch { /* noop */ }
     try { const dv = localStorage.getItem('brasa_delivered'); if (dv) setState({ delivered: JSON.parse(dv) || {} }) } catch { /* noop */ }
     loadFin()

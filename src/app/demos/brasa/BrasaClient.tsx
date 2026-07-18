@@ -59,9 +59,27 @@ const mkDate = (i: number) => {
 type Users = Record<string, { name: string; email: string; phone: string; pass: string; res?: MyRes[]; orders?: MyOrder[] }>
 const readUsers = (): Users => { try { return JSON.parse(localStorage.getItem('brasa_users') || '{}') } catch { return {} } }
 const writeUsers = (u: Users) => { try { localStorage.setItem('brasa_users', JSON.stringify(u)) } catch { /* noop */ } }
-const setSession = (email: string) => { try { localStorage.setItem('brasa_session', email) } catch { /* noop */ } }
+const setSession = (email: string) => { try { localStorage.setItem('brasa_session', email); sessionStorage.removeItem('brasa_demo_logout') } catch { /* noop */ } }
 const saveCartLS = (c: CartItem[]) => { try { localStorage.setItem('brasa_cart', JSON.stringify(c)) } catch { /* noop */ } }
 const saveTabLS = (t: TabRound[]) => { try { localStorage.setItem('brasa_tab', JSON.stringify(t)) } catch { /* noop */ } }
+/* Usuario demo "quemado": el SaaS carga ya con sesión iniciada para que se pueda
+   reservar y pedir sin pasar por el registro. Se siembra en brasa_users la primera
+   vez y se deja como sesión activa si no hay ninguna. */
+const DEMO_USER = { name: 'Camila Rojas', email: 'camila@brasa.bo', phone: '70012345', pass: 'demo' }
+const ensureDemoSession = (): string => {
+  try {
+    const existing = localStorage.getItem('brasa_session')
+    if (existing && readUsers()[existing]) return existing
+    // Si el usuario cerró sesión a propósito en esta pestaña, NO lo re-logueamos:
+    // se respeta el estado guest (para poder mostrar login/registro). El flag vive en
+    // sessionStorage → dura hasta cerrar la pestaña; en una visita nueva vuelve el demo.
+    if (sessionStorage.getItem('brasa_demo_logout')) return ''
+    const users = readUsers()
+    if (!users[DEMO_USER.email]) { users[DEMO_USER.email] = { ...DEMO_USER, res: [], orders: [] }; writeUsers(users) }
+    localStorage.setItem('brasa_session', DEMO_USER.email)
+    return DEMO_USER.email
+  } catch { return '' }
+}
 const pushGlobal = (key: string, obj: unknown) => {
   try {
     const arr = JSON.parse(localStorage.getItem(key) || '[]')
@@ -787,7 +805,7 @@ export default function BrasaClient({ lang, currency = 'BOB' }: { lang: DemoLang
   /* mount: cargar sesión, carrito, cuenta + autoplay carrusel */
   useEffect(() => {
     try {
-      const em = localStorage.getItem('brasa_session')
+      const em = ensureDemoSession() || localStorage.getItem('brasa_session')
       if (em) { const u = readUsers()[em]; if (u) { setUser({ name: u.name, email: u.email, phone: u.phone || '' }); setMyRes(u.res || []); setMyOrders(u.orders || []) } }
     } catch { /* noop */ }
     try { const c = JSON.parse(localStorage.getItem('brasa_cart') || '[]'); if (Array.isArray(c)) setCart(c) } catch { /* noop */ }
@@ -843,7 +861,7 @@ export default function BrasaClient({ lang, currency = 'BOB' }: { lang: DemoLang
     flash(c.msg.hiAgain(u.name.split(' ')[0]))
   }
   const authSubmit = () => { if (authMode === 'register') doRegister(); else doLogin() }
-  const logout = () => { try { localStorage.removeItem('brasa_session') } catch { /* noop */ } setUser(null); setMyRes([]); setMyOrders([]); setAcctOpen(false); flash(c.msg.loggedOut) }
+  const logout = () => { try { localStorage.removeItem('brasa_session'); sessionStorage.setItem('brasa_demo_logout', '1') } catch { /* noop */ } setUser(null); setMyRes([]); setMyOrders([]); setAcctOpen(false); flash(c.msg.loggedOut) }
   const toggleAcct = () => setAcctOpen((s) => !s)
   const saveRes = (res: MyRes) => {
     if (!user) return
@@ -1087,7 +1105,7 @@ export default function BrasaClient({ lang, currency = 'BOB' }: { lang: DemoLang
 
       {/* ============ HEADER ============ */}
       <header style={{ position: 'sticky', top: 0, zIndex: 40, background: 'var(--glass)', backdropFilter: 'blur(14px)', WebkitBackdropFilter: 'blur(14px)', borderBottom: '1px solid var(--line)' }}>
-        <div className="dnav" style={{ maxWidth: 1240, margin: '0 auto', padding: '0 26px', height: 70, display: 'flex', alignItems: 'center', gap: 26 }}>
+        <div className="dnav brasa-hd" style={{ maxWidth: 1240, margin: '0 auto', padding: '0 26px', height: 70, display: 'flex', alignItems: 'center', gap: 26 }}>
           <div onClick={goInicio} style={{ display: 'flex', alignItems: 'center', gap: 11, cursor: 'pointer', flexShrink: 0 }}>
             <span style={{ width: 34, height: 34, borderRadius: 9, background: 'linear-gradient(150deg,var(--ember),#7d2a15)', display: 'flex', alignItems: 'center', justifyContent: 'center', boxShadow: '0 6px 18px -6px var(--ember)', color: '#fff' }}><Icon name="flame" size={19} /></span>
             <span className="serif" style={{ fontSize: 25, fontWeight: 600, letterSpacing: '.26em', paddingLeft: '.26em' }}>BRASA</span>
@@ -1121,8 +1139,8 @@ export default function BrasaClient({ lang, currency = 'BOB' }: { lang: DemoLang
             )}
           </div>
           <div className="dnav-hide" style={{ flex: 1 }} />
-          <button onClick={toggleTheme} title={c.header.themeTitle} aria-label={c.header.themeTitle} {...hover({ background: 'var(--surface)', borderColor: 'var(--line)', color: 'var(--ink)' }, { background: 'var(--surface2)', borderColor: 'var(--ember)', color: 'var(--ember)' })} style={{ width: 42, height: 42, borderRadius: '50%', border: '1px solid var(--line)', background: 'var(--surface)', color: 'var(--ink)', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'background .22s, border-color .22s, color .22s', flexShrink: 0 }}>{theme === 'light' ? <Icon name="moon" size={17} /> : <Icon name="sun" size={17} />}</button>
-          <button onClick={openCart} title={c.header.cartTitle} aria-label={c.header.cartTitle} {...hover({ background: 'var(--surface)', borderColor: 'var(--line)', color: 'var(--ink)' }, { background: 'var(--surface2)', borderColor: 'var(--ember)', color: 'var(--ember)' })} style={{ position: 'relative', width: 42, height: 42, borderRadius: '50%', border: '1px solid var(--line)', background: 'var(--surface)', color: 'var(--ink)', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'background .22s, border-color .22s, color .22s', flexShrink: 0 }}>
+          <button onClick={toggleTheme} title={c.header.themeTitle} aria-label={c.header.themeTitle} className="brasa-hd-theme" {...hover({ background: 'var(--surface)', borderColor: 'var(--line)', color: 'var(--ink)' }, { background: 'var(--surface2)', borderColor: 'var(--ember)', color: 'var(--ember)' })} style={{ width: 42, height: 42, borderRadius: '50%', border: '1px solid var(--line)', background: 'var(--surface)', color: 'var(--ink)', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'background .22s, border-color .22s, color .22s', flexShrink: 0 }}>{theme === 'light' ? <Icon name="moon" size={17} /> : <Icon name="sun" size={17} />}</button>
+          <button onClick={openCart} title={c.header.cartTitle} aria-label={c.header.cartTitle} className="brasa-hd-cart" {...hover({ background: 'var(--surface)', borderColor: 'var(--line)', color: 'var(--ink)' }, { background: 'var(--surface2)', borderColor: 'var(--ember)', color: 'var(--ember)' })} style={{ position: 'relative', width: 42, height: 42, borderRadius: '50%', border: '1px solid var(--line)', background: 'var(--surface)', color: 'var(--ink)', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', transition: 'background .22s, border-color .22s, color .22s', flexShrink: 0 }}>
             <Icon name="bag" size={18} />
             {cartCount > 0 && <span style={{ position: 'absolute', top: -3, right: -3, minWidth: 19, height: 19, padding: '0 4px', borderRadius: 10, background: 'var(--ember)', color: '#fff', fontSize: 11, fontWeight: 700, display: 'flex', alignItems: 'center', justifyContent: 'center', boxSizing: 'border-box', border: '2px solid var(--surface)' }}>{cartCount}</span>}
           </button>
@@ -1163,7 +1181,7 @@ export default function BrasaClient({ lang, currency = 'BOB' }: { lang: DemoLang
               )}
             </div>
           )}
-          <button onClick={goReservar} {...hover({ background: 'var(--ink)', color: 'var(--bg)' }, { background: 'var(--ember)', color: '#fff' })} style={{ background: 'var(--ink)', color: 'var(--bg)', border: 'none', padding: '11px 20px', borderRadius: 40, cursor: 'pointer', fontSize: 13.5, fontWeight: 600, flexShrink: 0 }}>{c.header.reserveTable}</button>
+          <button onClick={goReservar} className="brasa-hd-reserve" {...hover({ background: 'var(--ink)', color: 'var(--bg)' }, { background: 'var(--ember)', color: '#fff' })} style={{ background: 'var(--ink)', color: 'var(--bg)', border: 'none', padding: '11px 20px', borderRadius: 40, cursor: 'pointer', fontSize: 13.5, fontWeight: 600, flexShrink: 0 }}>{c.header.reserveTable}</button>
         </div>
       </header>
 
