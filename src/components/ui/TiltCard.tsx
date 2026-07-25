@@ -26,6 +26,11 @@ export default function TiltCard({
   const [s, setS] = useState({ mx: '50%', my: '50%' })
 
   const onMove = (e: React.PointerEvent<HTMLDivElement>) => {
+    // Solo ratón. `pointermove` también dispara con el dedo, así que al arrastrar sobre la
+    // tarjeta se encadenaban dos setState por evento — un re-render por cada muestra del
+    // gesto, justo mientras el usuario scrollea. Además el tilt quedaba trabado en hover
+    // después de un tap, porque en táctil no hay `pointerleave` que lo resetee.
+    if (e.pointerType !== 'mouse') return
     const r = e.currentTarget.getBoundingClientRect()
     const px = (e.clientX - r.left) / r.width
     const py = (e.clientY - r.top) / r.height

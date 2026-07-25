@@ -1,6 +1,6 @@
 'use client'
-import { useRef, useState } from 'react'
-import { motion } from 'framer-motion'
+import { useRef } from 'react'
+import { motion, useMotionValue, useSpring } from 'framer-motion'
 import { cn } from '@/lib/utils'
 
 type Props = {
@@ -15,20 +15,29 @@ type Props = {
 
 export default function MagneticButton({ children, href, onClick, variant = 'primary', className, type = 'button', disabled }: Props) {
   const ref = useRef<HTMLElement>(null)
-  const [position, setPosition] = useState({ x: 0, y: 0 })
+
+  // Motion values, no useState: antes cada `mousemove` disparaba un setState, o sea un
+  // re-render de React por evento del ratón (~60-120/s) para mover un botón dos píxeles.
+  // Los motion values escriben el transform directo, fuera del ciclo de render.
+  const mx = useMotionValue(0)
+  const my = useMotionValue(0)
+  const x = useSpring(mx, { stiffness: 200, damping: 15 })
+  const y = useSpring(my, { stiffness: 200, damping: 15 })
 
   const handleMouseMove = (e: React.MouseEvent) => {
     const { clientX, clientY } = e
     const { left, top, width, height } = ref.current!.getBoundingClientRect()
-    const x = (clientX - (left + width / 2)) * 0.25
-    const y = (clientY - (top + height / 2)) * 0.25
-    setPosition({ x, y })
+    mx.set((clientX - (left + width / 2)) * 0.25)
+    my.set((clientY - (top + height / 2)) * 0.25)
   }
 
-  const handleMouseLeave = () => setPosition({ x: 0, y: 0 })
+  const handleMouseLeave = () => { mx.set(0); my.set(0) }
 
   const baseClasses = cn(
-    'relative inline-flex items-center gap-2.5 px-7 py-3.5 rounded-[13px] font-semibold text-[15px] tracking-wide cursor-pointer transition-all duration-300 overflow-hidden',
+    // transition-colors, no transition-all: con `all` el CSS interpolaba también el `transform`
+    // que framer reescribe cada frame para el efecto magnético, así que el botón perseguía al
+    // cursor con 300ms de retraso encima del spring.
+    'relative inline-flex items-center gap-2.5 px-7 py-3.5 rounded-[13px] font-semibold text-[15px] tracking-wide cursor-pointer transition-colors duration-300 overflow-hidden',
     variant === 'primary' && 'text-white hover:-translate-y-0.5',
     variant === 'ghost' && 'text-[#EEF3F8] border bg-white/[0.02] hover:border-[#2FF5E0] hover:bg-[rgba(47,245,224,0.06)]',
     disabled && 'opacity-50 cursor-not-allowed',
@@ -56,13 +65,11 @@ export default function MagneticButton({ children, href, onClick, variant = 'pri
   const inner = <span className="relative z-10 inline-flex items-center gap-2.5">{children}</span>
 
   const motionProps = {
-    animate: { x: position.x, y: position.y },
-    transition: { type: 'spring' as const, stiffness: 200, damping: 15 },
     onMouseMove: handleMouseMove,
     onMouseLeave: handleMouseLeave,
     whileTap: { scale: 0.97 },
     className: cn('group', baseClasses),
-    style: primaryStyle ?? ghostStyle,
+    style: { ...(primaryStyle ?? ghostStyle), x, y },
   }
 
   if (href) {

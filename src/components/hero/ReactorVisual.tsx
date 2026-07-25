@@ -1,5 +1,5 @@
 'use client'
-import { motion } from 'framer-motion'
+import { useEffect, useRef, useState } from 'react'
 
 const CYAN   = '#2FF5E0'
 const BLUE   = '#4D7CFF'
@@ -16,8 +16,41 @@ function ring(pct: number) {
 }
 
 export default function ReactorVisual() {
+  const hostRef = useRef<HTMLDivElement>(null)
+  // Antes eran 6 animaciones de framer con `repeat: Infinity`, o sea 6 escrituras de transform
+  // por frame desde JS, para siempre: seguían girando con la pestaña de fondo y con el reactor
+  // scrolleado fuera de pantalla, y cada frame invalidaba el drop-shadow del contenedor.
+  // Ahora son keyframes CSS: las mueve el compositor, no el hilo principal, y basta con
+  // `animation-play-state` para congelarlas cuando nadie las ve. De paso pasan a respetar la
+  // regla global de `prefers-reduced-motion`, cosa que el rotate de framer se saltaba.
+  const [live, setLive] = useState(true)
+
+  useEffect(() => {
+    const host = hostRef.current
+    if (!host) return
+    let onScreen = true
+    const sync = () => setLive(onScreen && document.visibilityState === 'visible')
+
+    const io = new IntersectionObserver(([entry]) => { onScreen = entry.isIntersecting; sync() })
+    io.observe(host)
+    document.addEventListener('visibilitychange', sync)
+    // Sync explícito al montar: el IntersectionObserver NO entrega su primer callback mientras
+    // la pestaña está oculta (no hay pipeline de render), así que si la página carga en segundo
+    // plano `live` se quedaba en su valor inicial y las animaciones arrancaban corriendo.
+    sync()
+    return () => { io.disconnect(); document.removeEventListener('visibilitychange', sync) }
+  }, [])
+
+  const spin = (seconds: number, reverse = false) => ({
+    animation: `spin-slow ${seconds}s linear infinite`,
+    animationDirection: reverse ? ('reverse' as const) : ('normal' as const),
+    animationPlayState: live ? ('running' as const) : ('paused' as const),
+    willChange: 'transform',
+  })
+
   return (
     <div
+      ref={hostRef}
       className="relative select-none pointer-events-none"
       style={{
         width: SIZE, height: SIZE,
@@ -25,54 +58,50 @@ export default function ReactorVisual() {
       }}
     >
       {/* outer dashed ring — reactor.xl::after (inset -8%) */}
-      <motion.div
+      <div
         className="absolute rounded-full"
         style={{
           width: SIZE * 1.16, height: SIZE * 1.16,
           top: -(SIZE * 0.08), left: -(SIZE * 0.08),
           border: '1px dashed rgba(120,200,255,0.2)',
+          ...spin(30),
         }}
-        animate={{ rotate: 360 }}
-        transition={{ duration: 30, repeat: Infinity, ease: 'linear' }}
       />
 
       {/* o1 — top+bottom cyan, 6s */}
-      <motion.div
+      <div
         className="absolute rounded-full"
         style={{
           ...ring(1),
           border: '2px solid transparent',
           borderTopColor: CYAN,
           borderBottomColor: CYAN,
+          ...spin(6),
         }}
-        animate={{ rotate: 360 }}
-        transition={{ duration: 6, repeat: Infinity, ease: 'linear' }}
       />
 
       {/* o2 — left+right blue, 4s reverse, inset 14% */}
-      <motion.div
+      <div
         className="absolute rounded-full"
         style={{
           ...ring(0.72),
           border: '2px solid transparent',
           borderLeftColor: BLUE,
           borderRightColor: BLUE,
+          ...spin(4, true),
         }}
-        animate={{ rotate: -360 }}
-        transition={{ duration: 4, repeat: Infinity, ease: 'linear' }}
       />
 
       {/* o3 — top+left violet, 8s, inset 28% */}
-      <motion.div
+      <div
         className="absolute rounded-full"
         style={{
           ...ring(0.44),
           border: '2px solid transparent',
           borderTopColor: VIOLET,
           borderLeftColor: VIOLET,
+          ...spin(8),
         }}
-        animate={{ rotate: 360 }}
-        transition={{ duration: 8, repeat: Infinity, ease: 'linear' }}
       />
 
       {/* core — grad bg, dark MS text, inset 40% */}
@@ -90,12 +119,7 @@ export default function ReactorVisual() {
       </div>
 
       {/* orbit dot A — cyan, 12s, radius ≈ 180px (edge of o1) */}
-      <motion.div
-        className="absolute rounded-full"
-        style={{ ...ring(1) }}
-        animate={{ rotate: 360 }}
-        transition={{ duration: 12, repeat: Infinity, ease: 'linear' }}
-      >
+      <div className="absolute rounded-full" style={{ ...ring(1), ...spin(12) }}>
         <span
           className="absolute rounded-full"
           style={{
@@ -107,15 +131,10 @@ export default function ReactorVisual() {
             boxShadow: `0 0 12px ${CYAN}`,
           }}
         />
-      </motion.div>
+      </div>
 
       {/* orbit dot B — violet, 18s reverse, radius ≈ 140px (o2 range) */}
-      <motion.div
-        className="absolute rounded-full"
-        style={{ ...ring(1) }}
-        animate={{ rotate: -360 }}
-        transition={{ duration: 18, repeat: Infinity, ease: 'linear' }}
-      >
+      <div className="absolute rounded-full" style={{ ...ring(1), ...spin(18, true) }}>
         <span
           className="absolute rounded-full"
           style={{
@@ -127,7 +146,7 @@ export default function ReactorVisual() {
             boxShadow: `0 0 12px ${VIOLET}`,
           }}
         />
-      </motion.div>
+      </div>
     </div>
   )
 }

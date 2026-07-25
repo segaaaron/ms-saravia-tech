@@ -247,13 +247,17 @@ export default function AppCostEstimator({
                   aria-label={`${t('resultLabel')}: ${range} ${t('resultRange')}`}
                   className="mt-2 font-display text-[32px] sm:text-[38px] font-black leading-[1.05] tabular-nums"
                 >
-                  <AnimatePresence mode="wait">
+                  {/* popLayout, no mode="wait": con "wait" la salida (0.2s) y la entrada (0.2s)
+                      son secuenciales, así que cada vez que movías un slider el precio nuevo
+                      tardaba 0.4s en aparecer y en el medio no había número. popLayout saca el
+                      viejo del flujo y superpone ambos, sin salto de layout ni espera. */}
+                  <AnimatePresence mode="popLayout" initial={false}>
                     <motion.span
                       key={range}
                       initial={{ opacity: 0, y: 6 }}
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: -6 }}
-                      transition={{ duration: 0.2 }}
+                      transition={{ duration: 0.14, ease: 'easeOut' }}
                       className="inline-block"
                     >
                       <GradientText gradient="primary">{range}</GradientText>

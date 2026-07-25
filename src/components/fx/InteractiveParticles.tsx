@@ -59,8 +59,26 @@ export default function InteractiveParticles() {
       canvas.height = H
     }
 
+    // El Navbar avisa cuando abre/cierra el drawer móvil. Mientras está abierto el canvas
+    // queda tapado igual, así que seguir repintándolo a pantalla completa solo le roba
+    // frames a la animación del panel.
+    // También con la pestaña de fondo: el rAF se ralentiza pero no se detiene, y el canvas
+    // seguía calculando y repintando 46 partículas para nadie.
+    let menuOpen = false
+    let paused = false
+    const sync = () => {
+      const next = menuOpen || document.visibilityState !== 'visible'
+      if (next === paused) return
+      paused = next
+      if (paused) cancelAnimationFrame(animId)
+      else animId = requestAnimationFrame(draw)
+    }
+    const onMenu = (e: Event) => { menuOpen = (e as CustomEvent<boolean>).detail; sync() }
+
     window.addEventListener('mousemove', onMouseMove)
     window.addEventListener('resize', onResize)
+    window.addEventListener('mss:menu', onMenu)
+    document.addEventListener('visibilitychange', sync)
 
     const draw = () => {
       ctx.clearRect(0, 0, W, H)
@@ -140,6 +158,8 @@ export default function InteractiveParticles() {
       cancelAnimationFrame(animId)
       window.removeEventListener('mousemove', onMouseMove)
       window.removeEventListener('resize', onResize)
+      window.removeEventListener('mss:menu', onMenu)
+      document.removeEventListener('visibilitychange', sync)
     }
   }, [])
 

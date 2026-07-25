@@ -124,6 +124,9 @@ export default function HoloDashboard() {
   const [sheen, setSheen] = useState({ mx: '50%', my: '50%' })
 
   const handlePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
+    // Ver TiltCard: en táctil `pointermove` provocaba un re-render por muestra del gesto
+    // durante el scroll, y dejaba el tilt trabado en hover tras un tap.
+    if (e.pointerType !== 'mouse') return
     const r = e.currentTarget.getBoundingClientRect()
     const px = (e.clientX - r.left) / r.width
     const py = (e.clientY - r.top) / r.height

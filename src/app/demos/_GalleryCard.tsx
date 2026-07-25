@@ -26,6 +26,11 @@ export default function GalleryCard({ data }: { data: GalleryCardData }) {
   const MAX = 8
 
   const onMove = (e: React.PointerEvent<HTMLElement>) => {
+    // Solo ratón. `pointermove` también dispara con el dedo, así que arrastrar sobre la galería
+    // metía un setState —y por lo tanto un re-render— por cada muestra del gesto, justo mientras
+    // el usuario scrollea. Además en táctil no hay `pointerleave`, así que la card quedaba
+    // trabada en tilt después de un tap.
+    if (e.pointerType !== 'mouse') return
     const el = ref.current
     if (!el) return
     const r = el.getBoundingClientRect()

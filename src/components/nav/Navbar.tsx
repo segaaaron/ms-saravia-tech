@@ -1,5 +1,5 @@
 'use client'
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useLayoutEffect } from 'react'
 import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion'
 import { useTranslations, useLocale } from 'next-intl'
 import Link from 'next/link'
@@ -8,6 +8,10 @@ import LocaleToggle from './LocaleToggle'
 import NavCircuit from './NavCircuit'
 import { cn } from '@/lib/utils'
 import { Menu, X } from 'lucide-react'
+
+// useLayoutEffect avisa por consola si corre en el servidor. El Navbar se renderiza en SSR,
+// así que se elige el hook según el entorno.
+const useIsoLayoutEffect = typeof window !== 'undefined' ? useLayoutEffect : useEffect
 
 const NAV_LINKS = [
   { key: 'services', href: '#services' },
@@ -44,10 +48,20 @@ export default function Navbar() {
     return () => unsub()
   }, [scrollY])
 
-  // Lock body scroll when mobile menu is open
-  useEffect(() => {
+  // Lock body scroll when mobile menu is open.
+  // useLayoutEffect, no useEffect: cambiar `overflow` del body invalida el layout de todo el
+  // documento. En un useEffect eso caía DESPUÉS del primer paint del drawer, así que el reflow
+  // se comía el primer frame de la animación y el panel arrancaba a tirones.
+  useIsoLayoutEffect(() => {
     document.body.style.overflow = mobileOpen ? 'hidden' : ''
     return () => { document.body.style.overflow = '' }
+  }, [mobileOpen])
+
+  // El canvas de partículas repinta a pantalla completa en cada frame. Mientras el drawer
+  // anima compite por el mismo hilo y por el compositor, que es de donde salía buena parte
+  // del tirón en móviles de gama media. Se pausa mientras el menú está abierto.
+  useEffect(() => {
+    window.dispatchEvent(new CustomEvent('mss:menu', { detail: mobileOpen }))
   }, [mobileOpen])
 
   // Escape cierra el drawer: es lo que se espera de cualquier overlay modal, y en tablet con
@@ -65,7 +79,10 @@ export default function Navbar() {
     <>
       <motion.header
         className={cn(
-          'fixed top-0 left-0 right-0 z-50 transition-all duration-500',
+          // transition-colors, no transition-all: con `all` el navegador interpolaba también el
+          // backdrop-filter, o sea medio segundo de blur a pantalla completa recalculado por
+          // frame justo mientras el drawer anima.
+          'fixed top-0 left-0 right-0 z-50 transition-colors duration-300',
           scrolled && 'backdrop-blur-md'
         )}
         style={{
@@ -128,34 +145,38 @@ export default function Navbar() {
           cerraba nada. Como hermano posterior con z-[70], la X siempre recibe el tap. */}
       <button
         onClick={() => setMobileOpen((v) => !v)}
-        className="lg:hidden fixed top-0 right-6 z-[70] w-11 h-11 flex items-center justify-center text-white/70 hover:text-white transition-colors"
-        style={{ marginTop: '10px' }}
+        className="lg:hidden fixed top-0 right-6 z-[70] w-11 h-11 flex items-center justify-center text-white/70 hover:text-white transition-colors touch-manipulation active:scale-90"
+        style={{ marginTop: '10px', WebkitTapHighlightColor: 'transparent' }}
         aria-label="Toggle menu"
         aria-expanded={mobileOpen}
       >
-        <AnimatePresence mode="wait" initial={false}>
-          {mobileOpen ? (
-            <motion.span
-              key="close"
-              initial={{ rotate: -90, opacity: 0 }}
-              animate={{ rotate: 0, opacity: 1 }}
-              exit={{ rotate: 90, opacity: 0 }}
-              transition={{ duration: 0.2 }}
-            >
-              <X size={22} />
-            </motion.span>
-          ) : (
-            <motion.span
-              key="menu"
-              initial={{ rotate: 90, opacity: 0 }}
-              animate={{ rotate: 0, opacity: 1 }}
-              exit={{ rotate: -90, opacity: 0 }}
-              transition={{ duration: 0.2 }}
-            >
-              <Menu size={22} />
-            </motion.span>
-          )}
-        </AnimatePresence>
+        {/* Los dos iconos viven SIEMPRE montados, superpuestos, y solo cruzan opacidad/rotación.
+            Antes era un AnimatePresence con mode="wait": ese modo espera a que termine la salida
+            (0.2s) para recién empezar la entrada (0.2s), o sea 0.4s con el hueco vacío en medio.
+            Ese era el "delay" al tocar la hamburguesa o la X — el botón respondía al instante
+            pero el icono tardaba casi medio segundo en aparecer. */}
+        {/* `initial={false}` en ambos: sin él, framer monta el span con la opacidad que trae del
+            CSS (1) y recién entonces anima hacia el destino, así que en CADA carga de página la X
+            aparecía encima de la hamburguesa y se desvanecía en 150 ms. Con `initial={false}`
+            arrancan directamente en su valor final y solo animan cuando `mobileOpen` cambia. */}
+        <span className="relative block w-[22px] h-[22px]">
+          <motion.span
+            className="absolute inset-0"
+            initial={false}
+            animate={{ rotate: mobileOpen ? 90 : 0, opacity: mobileOpen ? 0 : 1 }}
+            transition={{ duration: 0.15, ease: 'easeOut' }}
+          >
+            <Menu size={22} />
+          </motion.span>
+          <motion.span
+            className="absolute inset-0"
+            initial={false}
+            animate={{ rotate: mobileOpen ? 0 : -90, opacity: mobileOpen ? 1 : 0 }}
+            transition={{ duration: 0.15, ease: 'easeOut' }}
+          >
+            <X size={22} />
+          </motion.span>
+        </span>
       </button>
 
       {/* Mobile drawer overlay */}
@@ -178,10 +199,13 @@ export default function Navbar() {
               key="drawer"
               initial={{ x: '100%' }}
               animate={{ x: 0 }}
-              // Salida por tween, no spring: un spring tiene que "asentarse" y tarda ~1s en
-              // darse por terminado, así que el drawer se quedaba visible mucho después del tap.
-              exit={{ x: '100%', transition: { type: 'tween', duration: 0.2, ease: 'easeIn' } }}
-              transition={{ type: 'spring', stiffness: 420, damping: 40, mass: 0.7 }}
+              // Tween en las dos direcciones, no spring. El spring de entrada estaba
+              // sobreamortiguado (ζ≈1.17): cubría el 90% del recorrido rápido pero arrastraba
+              // una cola larga antes de darse por terminado, y esa cola se leía como lentitud.
+              // Un tween de 0.22s llega y termina, sin cola.
+              exit={{ x: '100%', transition: { type: 'tween', duration: 0.18, ease: 'easeIn' } }}
+              transition={{ type: 'tween', duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
+              style={{ willChange: 'transform' }}
               className="fixed top-0 right-0 bottom-0 z-50 w-[300px] max-w-[85vw] bg-[#05060A] border-l border-white/[0.06] flex flex-col lg:hidden"
               aria-label="Mobile navigation"
             >
@@ -197,9 +221,12 @@ export default function Navbar() {
                 {NAV_LINKS.map((link, i) => {
                   const motionProps = {
                     onClick: closeMobile,
-                    initial: { opacity: 0, x: 20 },
+                    initial: { opacity: 0, x: 16 },
                     animate: { opacity: 1, x: 0 },
-                    transition: { delay: 0.03 + i * 0.03 },
+                    // 7 links a 0.03s de paso = el último entraba a los 0.24s, y encima con el
+                    // spring por defecto de framer encima. El escalonado terminaba después que
+                    // el propio panel. Paso de 0.015s y tween corto: cierra junto con el drawer.
+                    transition: { delay: i * 0.015, duration: 0.16, ease: 'easeOut' as const },
                     className:
                       'flex items-center py-4 text-lg font-medium text-white/70 hover:text-white border-b border-white/[0.04] transition-colors duration-200 group',
                   }
