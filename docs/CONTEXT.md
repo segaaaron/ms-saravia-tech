@@ -15,13 +15,18 @@ contacto. Idiomas: **inglés (default) + español**.
 - **React 19** + TypeScript 5
 - **Tailwind CSS v4** (`@tailwindcss/postcss`)
 - **next-intl 3** — i18n `localePrefix: 'as-needed'` (en sin prefijo, es → `/es`)
-- **framer-motion 12**, **GSAP**, **@studio-freight/lenis** (scroll/animación)
+- **framer-motion 12**, **GSAP** (scroll/animación). GSAP se importa **dinámico** en `Process.tsx`.
+  `@studio-freight/lenis` y `@gsap/react` fueron **desinstalados** (solo los usaba código muerto).
 - **three.js 0.176** + `@react-three/fiber` + `drei` (hero 3D, partículas)
 - **Resend 4** — envío de emails del formulario de contacto
 - **zod 3** — validación del form
 - **sonner** — toasts
-- **Docker** — deploy (ver `Dockerfile`)
-- **Playwright 1.60** instalado (e2e disponible, aún sin suites)
+- **Docker** — `Dockerfile` multi-stage sobre `node:22-alpine` (existe y está trackeado, junto a
+  `.dockerignore`). ⚠️ Usa `npm install`, no pnpm: ignora el `pnpm-lock.yaml` versionado y puede
+  resolver un árbol de dependencias distinto al de local. El deploy real hoy es el VPS standalone.
+- **Gestor de paquetes: `pnpm`** (`pnpm-lock.yaml` versionado; `package-lock.json` en `.gitignore`).
+  NO correr `npm install` / `npm uninstall`: rompe el lockfile y deja `node_modules` en estado mixto.
+- **Sin runner de e2e**: Playwright fue desinstalado (no tenía config ni un solo `.spec.ts`).
 
 ## Formulario de contacto (email-solo, SIN base de datos)
 - `POST /api/contact`: valida con **zod** → **rate-limit in-memory por IP** (5/min) →
@@ -95,12 +100,23 @@ contacto. Idiomas: **inglés (default) + español**.
   server (no `next start`). El sweep SEO del resto de rutas sí sirve con `next start`.
 
 ## Riesgos técnicos conocidos (prioridad real)
-1. **Core Web Vitals**: hero carga three.js + framer + partículas → First Load ~243KB.
+1. **Core Web Vitals**: hero carga framer + GSAP + canvas de partículas → First Load de `/[locale]`
+   **210 kB** (102 kB compartidos), medido en build de producción. Esa es la línea base contra la
+   que comparar regresiones.
    LCP/INP en móvil es el riesgo #1. Partículas ya van con `dynamic()`.
-2. **i18n drift**: claves faltantes/desalineadas entre `en.json` y `es.json` (actual: 256/256, drift 0).
-3. **SEO regression**: canonical/hreflang/JSON-LD/FAQ visible deben mantenerse
+2. **i18n drift**: claves faltantes/desalineadas entre `en.json` y `es.json`. **Drift actual: 0.**
+   El total depende de cómo se cuente, así que declaralo al reportar: **263/263** contando cada
+   array como una clave, **351/351** expandiendo los índices de array. Ambos dan drift 0.
+3. **Animación que nunca se detiene**: framer anima por rAF en el hilo principal y NO para sola al
+   salir de pantalla ni con la pestaña de fondo. Patrones ya corregidos, no reintroducir:
+   `repeat: Infinity` sin pausa (usar keyframes CSS, que además respetan `prefers-reduced-motion`);
+   `AnimatePresence mode="wait"` para swaps (serializa salida+entrada, cuesta el doble);
+   `transition-all` sobre algo que anima por JS; `setState` en `mousemove`/`pointermove`
+   (`pointermove` también dispara con el dedo → re-renders durante el scroll móvil);
+   `setInterval` permanente en los demos (usar `src/app/demos/useVisibleInterval.tsx`).
+4. **SEO regression**: canonical/hreflang/JSON-LD/FAQ visible deben mantenerse
    sincronizados (ver historial: FAQ schema debe tener FAQ visible). Sitemap actual: **52 URLs**.
-4. **Botones**: color sólido índigo `#4F46E5` + texto blanco por **style inline** (el JIT de Tailwind
+5. **Botones**: color sólido índigo `#4F46E5` + texto blanco por **style inline** (el JIT de Tailwind
    no genera fiable las clases de color arbitrarias). No volver a gradiente ni a clase de color.
 
 ## Convenciones

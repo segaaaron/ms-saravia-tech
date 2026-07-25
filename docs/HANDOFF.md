@@ -2,16 +2,18 @@
 
 Repo: `/Users/miguelangelsaraviabelmonte/dev-web/ms-tech-stack-llc-web` · branch `master`
 Prod: `https://www.ms-tech-stack.cloud` (www es el canónico)
-Último commit: `9225d27` · **todo el trabajo de esta sesión está SIN commitear.**
+Último commit: `d7db724` · **todo pusheado a `origin/master`.** Working tree limpio.
+⚠️ Pusheado ≠ desplegado: prod es un VPS con deploy MANUAL. Ver "Deploy" en `CONTEXT.md`.
 
 ## Fuente de verdad
-- `docs/CONTEXT.md` — stack, límites, convenciones. **LEER PRIMERO.**
-  ⚠️ Tiene drift conocido, ver Pendientes #2.
+- `docs/CONTEXT.md` — stack, límites, convenciones. **LEER PRIMERO.** Sincronizado y sin drift.
 - Roadmap del programa de demos (Artifact):
   https://claude.ai/code/artifact/044e267e-ef64-47a9-af6f-235a57cb9938
 
 ## Equipo — ahora son SUBAGENTES, no skills
-Viven en **`.claude/agents/*.md`**, versionados con el repo. Se invocan con la herramienta Agent.
+Viven en **`.claude/agents/*.md`**. Se invocan con la herramienta Agent.
+⚠️ **NO se versionan**: `.claude/` está en `.gitignore` (línea 69), así que no viajan si clonás
+en otra máquina. Para versionarlos haría falta una excepción: `!.claude/agents/`.
 
 | Agente | Rol | `model` | `tools` |
 |---|---|---|---|
@@ -58,7 +60,7 @@ Exports demotados a locales: `posts`, `REGION_RATE`, `servicePages`, `solutionPa
 muertas de `src/lib/motion.ts`.
 `three` / `@react-three/*` **se quedan** — `src/app/demos/aura/Scene.tsx` los usa.
 
-### 3. Skills corregidas
+### 3. Skills corregidas → convertidas en agentes
 Las 3 `mss-*` describían un repo inexistente (Prisma 6, modelo `Lead`, `src/lib/db.ts`, Playwright
 instalado, `Orb3D`, Docker). Corregidas en su lugar. Se les añadieron los patrones de perf
 encontrados acá como reglas nombradas, y a `mss-qa-elite` dos secciones nuevas:
@@ -69,10 +71,13 @@ encontrados acá como reglas nombradas, y a `mss-qa-elite` dos secciones nuevas:
 ## Verificación
 
 - `npx tsc --noEmit` limpio
-- `npm run build` compila, 22 páginas, First Load `/[locale]` **210 kB** (102 kB compartidos)
-- `npx eslint src` → **1 error preexistente** en `demos/vesper-store/VesperStoreClient.tsx:744`
-  (`no-explicit-any`). No lo introdujo esta sesión.
-- i18n: **351/351 claves**, drift 0 · Sitemap: 52 URLs
+- `pnpm build` compila, 22 páginas, First Load `/[locale]` **210 kB** (102 kB compartidos)
+- `npx eslint src` → **exit 0, sin errores** (se arregló el `no-explicit-any` que era el único
+  del repo, tipando `qv` por inferencia con un IIFE)
+- i18n drift 0 · Sitemap: 52 URLs
+- **Auditado por `mss-qa-elite`**: veredicto APTO PROD. Encontró que `useVisibleInterval.tsx`
+  estaba sin trackear (habría roto el build del VPS) y dos bugs reales más; los tres corregidos
+  antes del push.
 - ReactorVisual confirmado en navegador tras migrar de framer a CSS
 
 **NO verificado:** la latencia del menú **medida en móvil real**. Chrome no aceptó el resize a ancho
@@ -100,13 +105,18 @@ build pasa, pero falta confirmarlo en un teléfono o con emulación de dispositi
 ## Pendientes
 
 1. **Probar el menú en móvil real.** Único punto sin evidencia empírica.
-2. **`docs/CONTEXT.md` arrastra drift** — el usuario preguntó si sincronizarlo y quedó sin
-   responder. Desactualizado: `@studio-freight/lenis` (línea 18, desinstalado) · "Playwright 1.60
-   instalado" (línea 24, desinstalado) · "Docker — deploy (ver `Dockerfile`)" (línea 23, **no existe
-   Dockerfile**; el deploy es VPS standalone) · "First Load ~243KB" (línea 98 → 210 kB) ·
-   "i18n 256/256" (línea 100 → 351/351).
-3. **Commit.** El usuario hace deploy manual y no lo pidió. Grupos separables: perf móvil ·
-   código muerto. (Las skills viven fuera del repo.)
+2. ~~`docs/CONTEXT.md` arrastra drift~~ — **HECHO.** Sincronizado: se quitó `@studio-freight/lenis`
+   y `@gsap/react`, se marcó Playwright como desinstalado, se documentó que el gestor es `pnpm`,
+   se corrigió el First Load a 210 kB y las claves i18n (263/263 o 351/351 según convención, drift 0), y se añadió un riesgo nuevo
+   ("Animación que nunca se detiene") con los patrones a no reintroducir.
+   ⚠️ **Corrección de un error mío**: en la sesión afirmé que no existía `Dockerfile`. **Sí existe**
+   y está trackeado junto a `.dockerignore` — mi `ls Dockerfile* docker-compose*` abortó entero
+   porque zsh mata la línea cuando un glob no matchea, y leí el fallo como ausencia. El
+   `Dockerfile` es multi-stage sobre `node:22-alpine`, pero **usa `npm install`**, así que ignora
+   el `pnpm-lock.yaml` versionado y puede resolver un árbol distinto al de local. Vale revisarlo.
+3. ~~Commit~~ — **HECHO.** Tres commits en `master`, pusheados: `0971e20` (perf móvil),
+   `f4ec09e` (código muerto), `d7db724` (perf demos + docs).
+   **FALTA EL DEPLOY AL VPS** — verificado con `curl` que prod aún sirve el build viejo.
 4. **`packageManager` no está declarado en `package.json`.** El repo usa pnpm pero nada lo fuerza —
    por eso esta sesión ejecutó `npm uninstall` por error. Declararlo lo previene.
 5. 🔴 **RESEND_API_KEY apareció en screenshots del usuario** (no en el repo). Se sugirió rotarla
