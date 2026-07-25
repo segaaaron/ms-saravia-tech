@@ -2,6 +2,7 @@
 
 import { useEffect, useReducer, useRef, useState } from 'react'
 import type { DemoLang } from '../lang'
+import { useVisibleInterval } from '../useVisibleInterval'
 
 /* ============================================================
    BRASA — Panel operativo (demo). Port nativo Next.js del
@@ -676,11 +677,15 @@ export default function BrasaPanelClient({ lang }: { lang: DemoLang }) {
     loadFin()
     try { const em = localStorage.getItem('brasa_staff_session'); if (em) { const st = staffOf()[em]; if (st) { setState({ staff: { email: em, ...st }, view: defaultView(st.role) }) } } } catch { /* noop */ }
     load()
-    const poll = setInterval(load, 4000)
-    const tick = setInterval(() => { if (stateRef.current.staff) setState({ now: Date.now() }) }, 1000)
-    return () => { clearInterval(poll); clearInterval(tick) }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  /* Antes estos dos vivían como `setInterval` crudos dentro del useEffect de montaje y no
+     paraban nunca: seguían corriendo con la pestaña en segundo plano. `runOnResume` en ambos
+     porque al volver el panel debe refrescarse YA — un poll pausado deja datos de hasta 4s de
+     antigüedad y el cronómetro de las comandas mostraría la hora vieja hasta 1s. */
+  useVisibleInterval(load, 4000, { runOnResume: true })
+  useVisibleInterval(() => { if (stateRef.current.staff) setState({ now: Date.now() }) }, 1000, { runOnResume: true })
 
   const v = renderVals()
 

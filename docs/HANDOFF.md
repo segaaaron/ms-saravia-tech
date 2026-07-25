@@ -2,71 +2,155 @@
 
 Repo: `/Users/miguelangelsaraviabelmonte/dev-web/ms-tech-stack-llc-web` · branch `master`
 Prod: `https://www.ms-tech-stack.cloud` (www es el canónico)
+Último commit: `9225d27` · **todo el trabajo de esta sesión está SIN commitear.**
 
 ## Fuente de verdad
-- `docs/CONTEXT.md` — stack, límites, backend, convenciones. **LEER PRIMERO.**
-- Roadmap del programa de demos (Artifact): https://claude.ai/code/artifact/044e267e-ef64-47a9-af6f-235a57cb9938
+- `docs/CONTEXT.md` — stack, límites, convenciones. **LEER PRIMERO.**
+  ⚠️ Tiene drift conocido, ver Pendientes #2.
+- Roadmap del programa de demos (Artifact):
+  https://claude.ai/code/artifact/044e267e-ef64-47a9-af6f-235a57cb9938
 
-## Equipo de skills (usar según tarea)
-- `mss-product-owner` — PRDs, roadmap, priorización (no código)
-- `mss-nextjs-senior` — implementar/optimizar (Next 15 App Router, r3f, i18n, CWV)
-- `mss-qa-elite` — auditar/verificar de verdad (build, CWV, a11y, SEO)
-Definiciones en `~/.claude/skills/mss-*/SKILL.md`. Comparten `docs/CONTEXT.md`.
+## Equipo — ahora son SUBAGENTES, no skills
+Viven en **`.claude/agents/*.md`**, versionados con el repo. Se invocan con la herramienta Agent.
+
+| Agente | Rol | `model` | `tools` |
+|---|---|---|---|
+| `mss-qa-elite` | Auditar y verificar de verdad | `opus` | Bash, Read, Grep, Glob, WebFetch |
+| `mss-nextjs-senior` | Implementar / optimizar | `opus` | + Write, Edit |
+| `mss-product-owner` | PRDs, roadmap, priorización | `sonnet` | Read, Grep, Glob, WebFetch (solo lectura) |
+
+Las 3 skills `~/.claude/skills/mss-*` **se borraron** al migrar (una skill no puede declarar
+`model:`; un agente sí). Backup en `~/.claude/skills-backup-mss-20260725/`.
+
+- QA sin `Edit`/`Write` a propósito: un auditor que puede arreglar deja de auditar.
+- PO solo lectura: define el qué/porqué, no toca código.
+- **El effort NO se puede fijar por agente** — solo existe a nivel sesión (`effortLevel` en
+  `settings.json`, hoy `medium`). Para auditorías críticas, subilo a `high` antes de invocar QA.
+- Comparten `docs/CONTEXT.md` como fuente de verdad.
+
+**NO usar** `nextjs-prisma-elite` / `nextjs-qa-elite` (skills globales): apuntan a un stack con
+Prisma que este repo no tiene.
+
 Caveman mode activo (respuestas terse). Copy de demos en **español**.
 
-## Estado hecho + verificado en vivo
-1. **SEO completo** (commits `SEO DONE`, `SITEMAP`): metadata/canonical/hreflang/x-default,
-   JSON-LD (Org+WebSite+ProfessionalService+FAQPage con FAQ visible), robots, sitemap,
-   opengraph-image, apple-icon, manifest, not-found, GA4 (env), GSC verification.
-   - GSC: propiedad `https://www.ms-tech-stack.cloud` **verificada** (etiqueta HTML), sitemap enviado
-     (estado "No se ha podido obtener" era transitorio; el sitemap sirve 200 OK).
-   - Token GSC hardcodeado como default en `src/app/[locale]/layout.tsx` (público, ok).
-2. **Backend de leads (Prisma)**: modelo `Lead` (`prisma/schema.prisma`), singleton `src/lib/db.ts`,
-   `POST /api/contact` persiste lead SIEMPRE + email best-effort (Resend) + escapa HTML.
-   Acepta `source` (default `contact_form`, o `demo_<slug>`). **SQLite en dev** (`prisma/dev.db`),
-   **cambiar a Postgres en prod** (provider + `DATABASE_URL`). Scripts: `pnpm db:migrate/deploy/studio`.
-   `build` corre `prisma generate` antes de `next build`.
-3. **Galería de demos** en `/demos` (noindex, en repo, fuera de `[locale]`, excluida del middleware i18n):
-   - `/demos` — índice/galería
-   - `/demos/consultorio` — "Clínica Lumen": tema CLARO, ADN 3D (r3f), bento servicios, Manrope
-   - `/demos/law-firm` — "Vásquez & Asociados": tema OSCURO oro, balanza 3D, áreas como lista
-     numerada editorial, Fraunces serif
-   - CTA de cada demo → `Lead` con `source=demo_*` (verificado: fila creada en DB).
-   - Helpers compartidos: `src/app/demos/_ui.tsx` (SmoothScroll/Lenis, Reveal, Counter, Magnetic,
-     DemoCTA, DemoBadge). Layout propio `src/app/demos/layout.tsx` (html/body, fuentes, noindex).
-   - 3D lazy (`ssr:false`); First Load ~157KB.
+---
 
-## Cambios SIN commitear (working tree)
-`.env.example`, `.gitignore`, `middleware.ts`, `package.json`, `pnpm-lock.yaml`, `pnpm-workspace.yaml`,
-`src/app/[locale]/layout.tsx`, `page.tsx`, `Contact.tsx`, `components/sections/Footer.tsx`,
-`components/seo/JsonLd.tsx`, `i18n/{en,es}.json`, `api/contact/route.ts`.
-Nuevos sin trackear: `docs/`, `prisma/`, `src/lib/db.ts`, `src/content/{faq,socials,projects}.ts`,
-`src/app/apple-icon.tsx`, `layout.tsx`, `manifest.ts`, `not-found.tsx`,
-`src/components/sections/{Faq,Analytics}.tsx`, `src/app/demos/**`.
-**Nada commiteado de backend/demos aún. El usuario NO ha pedido commit todavía.**
+## Sesión actual (perf móvil + limpieza + skills)
 
-## Última acción de esta sesión
-Ajusté el ADN 3D del consultorio (`src/app/demos/consultorio/Scene.tsx`): STEPS 26→20,
-cámara z 8.5→11 fov 40→38, Float bob reducido — para que la hélice entre completa (se cortaba).
-Antes ya se quitó: caja/glow oscuro, pills "Medicina de precisión" y "4.9 reseñas".
+### 1. Latencia del menú móvil
+El usuario reportó delay al abrir/cerrar. Eran **cinco causas apiladas**. La dominante:
+`AnimatePresence mode="wait"` en el botón hamburguesa serializaba salida (0.2s) y entrada (0.2s)
+del icono → **400 ms** de hueco vacío tras el tap.
 
-## Gotchas importantes
-- **NO mezclar `next build` con `npm run dev`**: corrompe `.next` (ENOENT `_buildManifest.tmp`).
-  Tras cualquier build de prueba: `rm -rf .next .turbo` antes de que el usuario corra `npm run dev`.
-- Comandos que corran prisma/build necesitan `export DATABASE_URL="file:./dev.db"`.
-- ESLint del repo está roto (rushstack patch, pre-existente) — usar `tsc --noEmit` para typecheck.
-  Verificar runtime con `next build` + `next start -p <port>` + `curl`.
-- drei `Environment` (law-firm gold reflections) baja HDR de CDN en el navegador; sin internet
-  renderiza con luces (menos espejado). El usuario sabe; opción de quitarlo si molesta.
-- Pendiente menor: RESEND_API_KEY real apareció en screenshots del usuario (no en repo) —
-  sugerido rotar; decisión del usuario.
+El porqué de cada cambio está en comentarios en español dentro del código. Archivos tocados:
+`nav/Navbar.tsx` (el principal), `hero/ReactorVisual.tsx` (framer `repeat: Infinity` → keyframes
+CSS pausables con IntersectionObserver + visibilitychange), `fx/InteractiveParticles.tsx`,
+`sections/AppCostEstimator.tsx`, `sections/HoloDashboard.tsx`, `ui/MagneticButton.tsx`,
+`ui/TiltCard.tsx`.
 
-## Pendientes / próximos pasos probables
-- Commit de todo (backend + SEO nuevo + demos) cuando el usuario lo pida (excluir `docs/`? preguntó antes).
-- Posibles: enlazar galería `/demos` desde navbar del sitio; QA elite (Lighthouse/a11y real) de los demos;
-  más demos del roadmap (restaurante, gym, e-commerce con inventario/pagos, consultorio app).
-- Migrar DB a Postgres para prod antes de usar leads en real.
-- Confirmar con el usuario si demos van en español (actual) o EN (el roadmap decía EN-first).
+### 2. Código muerto (−538 líneas)
+Herramienta: `npx knip@5`.
+Borrados: `src/app/demos/_ui.tsx` (304 líneas, 8 exports sin importar — el `SmoothScroll`/`Reveal`/
+`Counter`/`Magnetic` que mencionaba el handoff viejo ya no los usaba nadie),
+`src/components/hero/Orb3D.tsx` (183), `src/lib/resend.ts` (2).
+Deps desinstaladas: `@gsap/react`, `@studio-freight/lenis`, `playwright`.
+Exports demotados a locales: `posts`, `REGION_RATE`, `servicePages`, `solutionPages`, y 6 variants
+muertas de `src/lib/motion.ts`.
+`three` / `@react-three/*` **se quedan** — `src/app/demos/aura/Scene.tsx` los usa.
 
-## Suggested skills next session
-`mss-nextjs-senior` (seguir demos), `mss-qa-elite` (auditar), `mss-product-owner` (planificar).
+### 3. Skills corregidas
+Las 3 `mss-*` describían un repo inexistente (Prisma 6, modelo `Lead`, `src/lib/db.ts`, Playwright
+instalado, `Orb3D`, Docker). Corregidas en su lugar. Se les añadieron los patrones de perf
+encontrados acá como reglas nombradas, y a `mss-qa-elite` dos secciones nuevas:
+*"1b. INP y costo permanente de animación"* y *"Trampas de medición"*.
+
+---
+
+## Verificación
+
+- `npx tsc --noEmit` limpio
+- `npm run build` compila, 22 páginas, First Load `/[locale]` **210 kB** (102 kB compartidos)
+- `npx eslint src` → **1 error preexistente** en `demos/vesper-store/VesperStoreClient.tsx:744`
+  (`no-explicit-any`). No lo introdujo esta sesión.
+- i18n: **351/351 claves**, drift 0 · Sitemap: 52 URLs
+- ReactorVisual confirmado en navegador tras migrar de framer a CSS
+
+**NO verificado:** la latencia del menú **medida en móvil real**. Chrome no aceptó el resize a ancho
+móvil y la pestaña quedó en background (timers throttled). El arreglo es analíticamente sólido y el
+build pasa, pero falta confirmarlo en un teléfono o con emulación de dispositivo.
+**Es lo primero de la próxima sesión.**
+
+---
+
+## Estado previo (hecho y verificado en sesiones anteriores)
+
+- **SEO completo**: metadata/canonical/hreflang/x-default, JSON-LD (Org + WebSite +
+  ProfessionalService + FAQPage con FAQ visible), robots, sitemap, opengraph-image, apple-icon,
+  manifest, not-found, GA4 (env), GSC verification.
+  GSC: propiedad `https://www.ms-tech-stack.cloud` **verificada** (etiqueta HTML). Token
+  hardcodeado como default en `src/app/[locale]/layout.tsx` (es público, ok).
+- **Estimador `/estimate` + geo por IP** — validados por QA, aptos PROD. Requieren redeploy.
+- **Galería de demos** en `/demos` (noindex, fuera de `[locale]`, excluida del middleware i18n).
+  Demos actuales: `aura`, `brasa`, `brasa-panel`, `pulse-landing`, `pulse-login`, `pulse-socio`,
+  `pulse-dashboard`, `roman-ashford`, `vesper-store`, `vesper-dashboard`.
+  (Los demos `consultorio` y `law-firm` que citaba el handoff anterior **ya no existen**.)
+
+---
+
+## Pendientes
+
+1. **Probar el menú en móvil real.** Único punto sin evidencia empírica.
+2. **`docs/CONTEXT.md` arrastra drift** — el usuario preguntó si sincronizarlo y quedó sin
+   responder. Desactualizado: `@studio-freight/lenis` (línea 18, desinstalado) · "Playwright 1.60
+   instalado" (línea 24, desinstalado) · "Docker — deploy (ver `Dockerfile`)" (línea 23, **no existe
+   Dockerfile**; el deploy es VPS standalone) · "First Load ~243KB" (línea 98 → 210 kB) ·
+   "i18n 256/256" (línea 100 → 351/351).
+3. **Commit.** El usuario hace deploy manual y no lo pidió. Grupos separables: perf móvil ·
+   código muerto. (Las skills viven fuera del repo.)
+4. **`packageManager` no está declarado en `package.json`.** El repo usa pnpm pero nada lo fuerza —
+   por eso esta sesión ejecutó `npm uninstall` por error. Declararlo lo previene.
+5. 🔴 **RESEND_API_KEY apareció en screenshots del usuario** (no en el repo). Se sugirió rotarla
+   en una sesión anterior; **sigue sin confirmarse**. Decisión del usuario.
+6. **Case studies `/work/[slug]`**: `results` (métricas) y `testimonial` siguen VACÍOS — solo el
+   dueño los provee (van en `caseStudy.items.<slug>` en/es).
+7. **CONTACT_FROM_EMAIL**: dominio verificado en Resend para deliverability.
+
+---
+
+## Gotchas y trampas de medición
+
+- **`pnpm`, nunca `npm`.** `pnpm-lock.yaml` está versionado, `package-lock.json` gitignoreado.
+  Correr `npm uninstall` generó un `package-lock.json` espurio y dejó `node_modules` mixto.
+  Se arregló con `rm package-lock.json && pnpm install`.
+- **NO mezclar `next build` con `dev`**: corrompe `.next` (ENOENT `_buildManifest.tmp`).
+  Tras cualquier build de prueba: `rm -rf .next .turbo` antes de que el usuario corra el dev server.
+- **Deploy standalone**: `next.config.ts` usa `output: 'standalone'`. En el VPS se arranca con
+  `node .next/standalone/server.js`, **nunca `next start`** (las rutas dinámicas como `/estimate`
+  dan 500). Para probar `/estimate` localmente, usar el standalone.
+- **Servidores zombi** sirviendo HTML stale. Antes de cada probe:
+  `pkill -9 -f next-server; pkill -9 -f standalone`, verificar 0 listeners, UNO solo, matar al final.
+- **Regex BSD vs GNU en macOS.** `grep` sin `-E` no soporta `\|`; `sed` no soporta `\?`. Un barrido
+  de código muerto devolvió "96 archivos sin usar" (todos) porque el patrón nunca matcheó — un falso
+  resultado limpio que parecía real. Usar `knip`, y **verificar sus hallazgos**: marca `src/i18n.ts`
+  como no usado, pero `next.config.ts:4` lo referencia **por string**
+  (`createNextIntlPlugin('./src/i18n.ts')`) — borrarlo rompe todo el i18n.
+- **Medir en pestaña de background da basura.** Chrome ralentiza `setTimeout` a 1s y congela `rAF`.
+  Las animaciones de entrada de framer ni corren: los elementos quedan en `opacity: 0` y parecen
+  bugs de render (pasó con el ReactorVisual, se diagnosticó mal por un momento).
+- **`resize_window` puede devolver éxito sin cambiar el viewport.** Verificar `innerWidth` por JS.
+- ESLint del repo **ya funciona** (`npx eslint src`). El gotcha viejo del patch de rushstack quedó
+  resuelto: `next.config.ts` tiene `eslint: { ignoreDuringBuilds: true }` y el lint es un gate aparte.
+
+---
+
+## Contexto del usuario
+
+- Escribe en español; responder en español.
+- Es explícito con el alcance: pidió corregir skills, **no** crear agentes ni skills nuevas.
+  Preguntar antes de crear o borrar archivos fuera de lo pedido.
+- Hace el deploy manualmente. **No commitear sin que lo pida.**
+
+## Skills sugeridas para la próxima sesión
+`mss-qa-elite` (cerrar el punto 1 — ya tiene la sección con estos patrones exactos),
+`mss-nextjs-senior` (ajustar timings si hace falta), `napkin` (se activa sola; las trampas de
+arriba merecen entrar en su sección *"Measurement Traps"*).

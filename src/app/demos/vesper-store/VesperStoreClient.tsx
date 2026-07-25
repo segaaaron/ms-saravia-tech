@@ -2,12 +2,107 @@
 
 import { useEffect, useRef, useState, type CSSProperties, type ChangeEvent, type MouseEvent as ReactMouseEvent } from 'react'
 import type { DemoLang } from '../lang'
+import { useVisibleInterval } from '../useVisibleInterval'
 
 /* ============================================================
    VESPER — Tienda (demo). Port nativo Next.js del diseño
    original .dc.html, misma info y mismo diseño. Bilingüe
    (es/en) según el sitio; el toggle interno EN/ES conmuta.
    ============================================================ */
+
+/* ============================================================
+   Reloj de la oferta flash — componente HOJA, con su propio tick.
+
+   Antes el tick de 1s vivía en el componente raíz (`setTick`, un useState cuyo valor se
+   descartaba y que existía solo para forzar re-render). Medido en build de producción: 1
+   render/segundo del árbol COMPLETO, 6.5 ms de mediana, para siempre, únicamente para repintar
+   este texto. En un móvil de gama media eso es un pico de ~30 ms cada segundo que puede caer
+   encima de un tap y empujar el INP.
+
+   Aislado acá, el tick re-renderiza dos nodos de texto en vez de toda la tienda.
+   ============================================================ */
+function fmtCountdown(endsAt: number): string {
+  if (!endsAt) return '00:00:00'
+  let ms = Math.max(0, endsAt - Date.now())
+  const h = Math.floor(ms / 3600000); ms -= h * 3600000
+  const m = Math.floor(ms / 60000); ms -= m * 60000
+  const s = Math.floor(ms / 1000)
+  const p = (n: number) => String(n).padStart(2, '0')
+  return p(h) + ':' + p(m) + ':' + p(s)
+}
+
+function SaleClock({ endsAt, className, style }: { endsAt: React.RefObject<number>; className?: string; style?: CSSProperties }) {
+  const [text, setText] = useState(() => fmtCountdown(endsAt.current))
+  // El padre fija `saleEndRef` en su efecto de montaje, que corre DESPUÉS de los efectos de los
+  // hijos, así que en el primer render la ref todavía vale 0. Un setTimeout(0) se ejecuta una vez
+  // agotados todos los efectos, así que sincroniza en el mismo tick. No se calcula durante el
+  // render a propósito: `Date.now()` en el servidor y en el cliente difieren y rompería la
+  // hidratación.
+  useEffect(() => {
+    const id = setTimeout(() => setText(fmtCountdown(endsAt.current)), 0)
+    return () => clearTimeout(id)
+  }, [endsAt])
+  // runOnResume: al volver de segundo plano la hora mostrada está vieja; hay que refrescarla ya.
+  useVisibleInterval(() => setText(fmtCountdown(endsAt.current)), 1000, { runOnResume: true })
+  return <span className={className} style={style}>{text}</span>
+}
+
+/* ============================================================
+   Puntos + barra de progreso del carrusel — componente HOJA.
+
+   Este era el costo dominante de la ruta, muy por encima del reloj: el progreso avanzaba con un
+   `setInterval` de 70 ms que llamaba `setProg` en el componente raíz, o sea ~14 re-renders POR
+   SEGUNDO del árbol completo (~6.5 ms cada uno ≈ 9% del hilo principal en desktop, bastante peor
+   en un móvil de gama media). Aislado acá, esos 14 Hz repintan cuatro barritas.
+
+   `pausedRef`/`qvRef`/`cartOpenRef` se pasan como refs y se leen dentro del tick, igual que
+   antes: así el intervalo no se reinicia en cada render del padre.
+   ============================================================ */
+function CarouselDots({ count, active, blocked, onAdvance, onGo }: {
+  count: number
+  active: number
+  blocked: () => boolean
+  onAdvance: () => void
+  onGo: (i: number) => void
+}) {
+  const [prog, setProg] = useState(0)
+  // El progreso vive también en una ref para poder decidir el avance FUERA del updater de
+  // estado. Llamar `onAdvance()` dentro del updater lo volvía impuro: React no garantiza una
+  // sola invocación y bajo StrictMode (activo por defecto en dev) lo ejecuta dos veces, así que
+  // el carrusel saltaba dos slides por ciclo.
+  const progRef = useRef(0)
+  useEffect(() => { progRef.current = 0; setProg(0) }, [active])
+
+  useVisibleInterval(() => {
+    if (blocked()) return
+    const next = progRef.current + (70 / 5400) * 100
+    if (next >= 100) {
+      progRef.current = 0
+      setProg(0)
+      onAdvance()
+    } else {
+      progRef.current = next
+      setProg(next)
+    }
+  }, 70)
+
+  return (
+    <div style={{ position: 'absolute', zIndex: 6, left: 'clamp(34px,5vw,68px)', bottom: 26, display: 'flex', gap: 6, alignItems: 'center' }}>
+      {Array.from({ length: count }, (_, i) => (
+        <button
+          key={i}
+          onClick={() => onGo(i)}
+          aria-label={`${i + 1}`}
+          style={{ height: 44, padding: '0 3px', border: 'none', background: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center' }}
+        >
+          <span style={{ position: 'relative', display: 'block', height: 4, width: i === active ? '40px' : '22px', borderRadius: 4, background: 'rgba(255,255,255,.28)', overflow: 'hidden', transition: 'width .4s' }}>
+            <span style={{ position: 'absolute', left: 0, top: 0, bottom: 0, width: i === active ? prog + '%' : '0%', background: 'var(--surface)', borderRadius: 4, transition: 'width .1s linear' }} />
+          </span>
+        </button>
+      ))}
+    </div>
+  )
+}
 
 type Color = { name: string; hex: string }
 type Size = { label: string; stock: number }
@@ -388,7 +483,6 @@ export default function VesperStoreClient({ lang: initialLang }: { lang: DemoLan
   const [qvQty, setQvQty] = useState(1)
   const [toast, setToast] = useState<string | null>(null)
   const [slide, setSlide] = useState(0)
-  const [prog, setProg] = useState(0)
   const [paused, setPaused] = useState(false)
   const [wish, setWish] = useState<string[]>(['p3'])
   const [cart, setCart] = useState<CartItem[]>(INITIAL_CART)
@@ -415,7 +509,6 @@ export default function VesperStoreClient({ lang: initialLang }: { lang: DemoLan
   const [catalog, setCatalog] = useState<Product[]>(INITIAL_CATALOG)
   const [orders, setOrders] = useState<Order[]>(CONTENT[initialLang].data.initialOrders)
   const [addresses, setAddresses] = useState<Address[]>(CONTENT[initialLang].data.initialAddresses)
-  const [, setTick] = useState(0)
   const [deliveryTs, setDeliveryTs] = useState(0)
 
   const c = CONTENT[lang]
@@ -453,15 +546,6 @@ export default function VesperStoreClient({ lang: initialLang }: { lang: DemoLan
     const rates = { USD: 1, EUR: 0.92, MXN: 17.4 } as const
     const sym = { USD: '$', EUR: '€', MXN: 'MX$' } as const
     return sym[currency] + Math.round(n * rates[currency]).toLocaleString('en-US')
-  }
-  const countdown = () => {
-    if (!saleEndRef.current) return '00:00:00'
-    let ms = Math.max(0, saleEndRef.current - Date.now())
-    const h = Math.floor(ms / 3600000); ms -= h * 3600000
-    const m = Math.floor(ms / 60000); ms -= m * 60000
-    const s = Math.floor(ms / 1000)
-    const p = (n: number) => String(n).padStart(2, '0')
-    return p(h) + ':' + p(m) + ':' + p(s)
   }
 
   // ---------- handlers ----------
@@ -586,7 +670,7 @@ export default function VesperStoreClient({ lang: initialLang }: { lang: DemoLan
 
   const carPause = () => setPaused(true)
   const carResume = () => setPaused(false)
-  const carGo = (i: number) => { setSlide(i); setProg(0) }
+  const carGo = (i: number) => setSlide(i)
 
   const cardTilt = (e: ReactMouseEvent<HTMLElement>) => {
     const el = e.currentTarget
@@ -615,7 +699,6 @@ export default function VesperStoreClient({ lang: initialLang }: { lang: DemoLan
     }
     setDeliveryTs(Date.now() + 2 * 86400000)
     saleEndRef.current = Date.now() + (8 * 3600 + 42 * 60 + 15) * 1000
-    const ti = setInterval(() => setTick((t) => t + 1), 1000)
 
     let cm: ((e: MouseEvent) => void) | undefined
     let cd: ((e: MouseEvent) => void) | undefined
@@ -637,17 +720,8 @@ export default function VesperStoreClient({ lang: initialLang }: { lang: DemoLan
     }
     const stTimeout = setTimeout(() => startStats(), 2600)
 
-    const ci = setInterval(() => {
-      if (pausedRef.current || qvRef.current || cartOpenRef.current) return
-      setProg((prev) => {
-        const p = prev + (70 / 5400) * 100
-        if (p >= 100) { setSlide((s) => (s + 1) % SLIDE_META.length); return 0 }
-        return p
-      })
-    }, 70)
-
     return () => {
-      clearInterval(ti); clearInterval(ci); clearTimeout(stTimeout)
+      clearTimeout(stTimeout)
       if (statsInterval.current) clearInterval(statsInterval.current)
       if (payIntervalRef.current) clearInterval(payIntervalRef.current)
       if (coLoadTimer.current) clearTimeout(coLoadTimer.current)
@@ -741,11 +815,13 @@ export default function VesperStoreClient({ lang: initialLang }: { lang: DemoLan
     .map((p) => ({ name: tname(p.id), priceFmt: fmt(p.price), imgUrl: img(p.img), add: (e?: ReactMouseEvent) => { if (e) e.stopPropagation(); const z = p.sizes.find((z) => z.stock > 0); if (z) pushCart(p, z.label, 0, 1) } }))
 
   const qp = catalog.find((p) => p.id === qvId)
-  let qv: any = null
-  if (qp) {
+  // IIFE en vez de `let qv: any`: el objeto es grande y declarar su tipo a mano sería ruido,
+  // pero construirlo de una sola vez deja que TypeScript lo infiera solo. Así desaparece el
+  // `any` (único error de lint del repo) sin escribir el tipo ni suprimir la regla.
+  const qv = !qp ? null : (() => {
     const t = buildTag(qp)
     const selSize = qp.sizes.find((z) => z.label === qvSize)
-    qv = {
+    return {
       ...qp, name: tname(qp.id), catLabel: tcat(qp.catLabel), tag: ttag(qp.tag), material: tmat(qp.id),
       imgUrl: img(qp.img), priceFmt: fmt(qp.price), wasFmt: qp.was ? fmt(qp.was) : '', hasWas: !!qp.was,
       priceColor: qp.was ? '#c0392b' : '#171717',
@@ -757,7 +833,7 @@ export default function VesperStoreClient({ lang: initialLang }: { lang: DemoLan
       sizeHint: selSize ? (selSize.stock <= 3 ? (c.onlyLeftSizePre + selSize.stock + c.onlyLeftSizeSuf) : '') : (qvSize == null ? c.selectSize : ''),
       sizeHintColor: selSize && selSize.stock <= 3 ? '#c0392b' : '#9a978f',
     }
-  }
+  })()
   const canAdd = !!qp && qvSize != null
 
   const slidesV = SLIDE_META.map((s, i) => {
@@ -765,7 +841,7 @@ export default function VesperStoreClient({ lang: initialLang }: { lang: DemoLan
     const active = i === slide
     return {
       eyebrow: st.eyebrow, title: st.title, sub: st.sub, cta: st.cta, note: st.note, badge: s.badge, dot: s.dot,
-      hasTimer: !!s.timer, countdown: s.timer ? countdown() : '',
+      hasTimer: !!s.timer,
       imgUrl: img(s.img),
       op: active ? 1 : 0, scale: active ? '1' : '1.04', z: active ? 2 : 1, pe: (active ? 'auto' : 'none') as CSSProperties['pointerEvents'],
       contentT: active ? 'translateY(0)' : 'translateY(26px)',
@@ -773,7 +849,6 @@ export default function VesperStoreClient({ lang: initialLang }: { lang: DemoLan
       ctaAction: () => { setCat(s.go); const el = rootRef.current && rootRef.current.querySelector('#shop'); if (el) { const y = el.getBoundingClientRect().top + window.scrollY - 70; window.scrollTo({ top: y, behavior: 'smooth' }) } },
     }
   })
-  const dots = SLIDE_META.map((s, i) => { const active = i === slide; return { w: active ? '40px' : '22px', fill: active ? (prog + '%') : '0%', onClick: () => carGo(i) } })
 
   const allSizes = ['XS', 'S', 'M', 'L', 'XL', '28', '30', '32', '34', '36', '39', '40', '41', '42', '43', '44', '45', 'Única', '38mm', '42mm']
   const usedSizes = allSizes.filter((sz) => catalog.some((p) => p.sizes.some((z) => z.label === sz)))
@@ -913,7 +988,7 @@ export default function VesperStoreClient({ lang: initialLang }: { lang: DemoLan
       {/* ANNOUNCEMENT */}
       <div style={{ background: '#171717', color: '#fff', display: 'flex', alignItems: 'center', gap: 16, padding: '0 18px 0 0', fontSize: 12.5, letterSpacing: '.02em' }}>
         <div style={{ flex: 1, overflow: 'hidden', padding: '9px 0' }}><div style={{ display: 'flex', width: 'max-content', animation: 'annScroll 30s linear infinite' }}><span style={{ display: 'flex', gap: 40, paddingRight: 40, whiteSpace: 'nowrap' }}>{ann}</span><span style={{ display: 'flex', gap: 40, paddingRight: 40, whiteSpace: 'nowrap' }}>{ann}</span></div></div>
-        <div style={{ flexShrink: 0, display: 'flex', alignItems: 'center', gap: 9, background: '#c0392b', padding: '7px 14px', borderRadius: 30, fontWeight: 600 }}><span style={{ width: 6, height: 6, borderRadius: '50%', background: 'var(--surface)', animation: 'pulseDot 1.4s infinite' }} />{c.flashOffer} <span className="vs-clock" style={{ fontVariantNumeric: 'tabular-nums', letterSpacing: '.05em' }}>{countdown()}</span></div>
+        <div style={{ flexShrink: 0, display: 'flex', alignItems: 'center', gap: 9, background: '#c0392b', padding: '7px 14px', borderRadius: 30, fontWeight: 600 }}><span style={{ width: 6, height: 6, borderRadius: '50%', background: 'var(--surface)', animation: 'pulseDot 1.4s infinite' }} />{c.flashOffer} <SaleClock endsAt={saleEndRef} className="vs-clock" style={{ fontVariantNumeric: 'tabular-nums', letterSpacing: '.05em' }} /></div>
       </div>
 
       {/* HEADER */}
@@ -1009,7 +1084,7 @@ export default function VesperStoreClient({ lang: initialLang }: { lang: DemoLan
                   <p style={{ fontSize: 'clamp(15px,1.5vw,17px)', lineHeight: 1.6, color: 'rgba(255,255,255,.78)', margin: '20px 0 30px', maxWidth: 440, fontWeight: 400 }}>{s.sub}</p>
                   <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap', alignItems: 'center' }}>
                     <button onClick={s.ctaAction} style={{ background: 'var(--surface)', color: 'var(--text)', padding: '15px 30px', borderRadius: 40, border: 'none', cursor: 'pointer', fontFamily: "'DM Sans',sans-serif", fontSize: 14, fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: 9 }}>{s.cta} <span style={{ fontSize: 16 }}>→</span></button>
-                    {s.hasTimer && <div style={{ display: 'inline-flex', alignItems: 'center', gap: 9, background: 'rgba(0,0,0,.32)', backdropFilter: 'blur(8px)', border: '1px solid rgba(255,255,255,.2)', padding: '11px 16px', borderRadius: 40 }}><span style={{ fontSize: 12, color: 'rgba(255,255,255,.75)' }}>{c.endsIn}</span><span className="vs-clock" style={{ fontFamily: "'DM Sans',sans-serif", fontSize: 15, fontWeight: 700, letterSpacing: '.04em', color: '#fff', fontVariantNumeric: 'tabular-nums' }}>{s.countdown}</span></div>}
+                    {s.hasTimer && <div style={{ display: 'inline-flex', alignItems: 'center', gap: 9, background: 'rgba(0,0,0,.32)', backdropFilter: 'blur(8px)', border: '1px solid rgba(255,255,255,.2)', padding: '11px 16px', borderRadius: 40 }}><span style={{ fontSize: 12, color: 'rgba(255,255,255,.75)' }}>{c.endsIn}</span><SaleClock endsAt={saleEndRef} className="vs-clock" style={{ fontFamily: "'DM Sans',sans-serif", fontSize: 15, fontWeight: 700, letterSpacing: '.04em', color: '#fff', fontVariantNumeric: 'tabular-nums' }} /></div>}
                     {s.note && <span style={{ fontSize: 13, color: 'rgba(255,255,255,.6)' }}>{s.note}</span>}
                   </div>
                 </div>
@@ -1018,20 +1093,13 @@ export default function VesperStoreClient({ lang: initialLang }: { lang: DemoLan
           ))}
           {/* La barrita sigue midiendo 4px; el <button> la envuelve en 44px de alto con relleno
               transparente para que el área táctil cumpla WCAG 2.5.5 sin alterar el diseño. */}
-          <div style={{ position: 'absolute', zIndex: 6, left: 'clamp(34px,5vw,68px)', bottom: 26, display: 'flex', gap: 6, alignItems: 'center' }}>
-            {dots.map((dt, i) => (
-              <button
-                key={i}
-                onClick={dt.onClick}
-                aria-label={`${i + 1}`}
-                style={{ height: 44, padding: '0 3px', border: 'none', background: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center' }}
-              >
-                <span style={{ position: 'relative', display: 'block', height: 4, width: dt.w, borderRadius: 4, background: 'rgba(255,255,255,.28)', overflow: 'hidden', transition: 'width .4s' }}>
-                  <span style={{ position: 'absolute', left: 0, top: 0, bottom: 0, width: dt.fill, background: 'var(--surface)', borderRadius: 4, transition: 'width .1s linear' }} />
-                </span>
-              </button>
-            ))}
-          </div>
+          <CarouselDots
+            count={SLIDE_META.length}
+            active={slide}
+            blocked={() => pausedRef.current || !!qvRef.current || cartOpenRef.current}
+            onAdvance={() => setSlide((s) => (s + 1) % SLIDE_META.length)}
+            onGo={carGo}
+          />
           <div style={{ position: 'absolute', zIndex: 6, right: 'clamp(34px,5vw,68px)', bottom: 24, fontFamily: "'DM Sans',sans-serif", fontSize: 12.5, color: 'rgba(255,255,255,.7)', letterSpacing: '.08em' }}>{String(slide + 1).padStart(2, '0')} <span style={{ opacity: .5 }}>/ {String(SLIDE_META.length).padStart(2, '0')}</span></div>
         </div>
       </section>

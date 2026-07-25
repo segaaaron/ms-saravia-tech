@@ -9,6 +9,7 @@ import {
   type MouseEvent as ReactMouseEvent,
 } from 'react'
 import type { DemoLang } from '../lang'
+import { useVisibleInterval } from '../useVisibleInterval'
 
 /* ============================================================
    BRASA — Parrilla / cocina cochabambina (demo). Port nativo
@@ -811,14 +812,16 @@ export default function BrasaClient({ lang, currency = 'BOB' }: { lang: DemoLang
     try { const c = JSON.parse(localStorage.getItem('brasa_cart') || '[]'); if (Array.isArray(c)) setCart(c) } catch { /* noop */ }
     try { const t = JSON.parse(localStorage.getItem('brasa_tab') || '[]'); if (Array.isArray(t) && t.length) { setTab(t); setOrderDone(true); setOrderCode(t[t.length - 1].code) } } catch { /* noop */ }
 
-    const timer = setInterval(() => {
-      if (!carHover.current && viewRef.current === 'inicio') setCarIdx((c) => (c + 1) % carData.length)
-    }, 6000)
-    return () => clearInterval(timer)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   useEffect(() => { setMyTable(readMyTable(user)) }, [user])
+
+  /* Carrusel del inicio. SIN `runOnResume`: dispararlo al volver de segundo plano se vería como
+     un salto de slide. Reanuda y espera el intervalo completo, que es lo que espera el ojo. */
+  useVisibleInterval(() => {
+    if (!carHover.current && viewRef.current === 'inicio') setCarIdx((c) => (c + 1) % carData.length)
+  }, 6000)
 
   const flash = (m: string) => { setToast(m); clearTimeout(toastTimer.current); toastTimer.current = setTimeout(() => setToast(null), 2200) }
 
