@@ -26,7 +26,7 @@ export type Post = {
   es: PostContent
 }
 
-export const posts: Post[] = [
+const posts: Post[] = [
   {
     slug: 'app-development-cost-guide',
     date: '2026-07-05',

@@ -14,7 +14,7 @@ export type ServicePage = {
   relatedCaseStudies: string[]
 }
 
-export const servicePages: ServicePage[] = [
+const servicePages: ServicePage[] = [
   {
     slug: 'saas',
     itemIndex: 0,
@@ -55,7 +55,7 @@ export type SolutionPage = {
   demos: string[]
 }
 
-export const solutionPages: SolutionPage[] = [
+const solutionPages: SolutionPage[] = [
   { slug: 'gym-software', service: 'saas', demos: ['pulse-landing', 'pulse-dashboard', 'pulse-socio'] },
   { slug: 'clinic-website', service: 'saas', demos: ['aura'] },
   { slug: 'restaurant-website', service: 'saas', demos: ['brasa', 'brasa-panel'] },

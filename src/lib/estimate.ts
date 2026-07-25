@@ -6,7 +6,7 @@
 export type Region = 'latam' | 'us'
 
 // Tarifa efectiva blended por hora (USD) por región (lado accesible del mercado).
-export const REGION_RATE: Record<Region, number> = {
+const REGION_RATE: Record<Region, number> = {
   latam: 30,
   us: 65,
 }
