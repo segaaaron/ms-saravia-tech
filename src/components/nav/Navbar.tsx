@@ -1,5 +1,5 @@
 'use client'
-import { useState, useEffect, useLayoutEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion'
 import { useTranslations, useLocale } from 'next-intl'
 import Link from 'next/link'
@@ -9,9 +9,18 @@ import NavCircuit from './NavCircuit'
 import { cn } from '@/lib/utils'
 import { Menu, X } from 'lucide-react'
 
-// useLayoutEffect avisa por consola si corre en el servidor. El Navbar se renderiza en SSR,
-// así que se elige el hook según el entorno.
-const useIsoLayoutEffect = typeof window !== 'undefined' ? useLayoutEffect : useEffect
+const SCROLL_KEYS = ['PageDown', 'PageUp', 'ArrowDown', 'ArrowUp', 'Home', 'End', ' ']
+const TOGGLE_SELECTOR = '[data-menu-toggle]'
+// Mismo 1024px que el prefijo `lg:` de Tailwind, que es lo que oculta drawer y hamburguesa.
+const DESKTOP_QUERY = '(min-width: 1024px)'
+// Elementos que pueden recibir foco dentro del drawer. `:not([disabled])` y `tabindex="-1"`
+// fuera, porque un trap que devuelve el foco a un control inerte deja al usuario atascado.
+const FOCUSABLE =
+  'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])'
+// `offsetParent !== null` NO sirve aquí: el spec obliga a devolver null en cualquier elemento
+// `position: fixed`, y tanto la hamburguesa como el drawer lo son. Con ese test el botón se
+// consideraba oculto SIEMPRE (fuera del ciclo de Tab, y el foco no volvía a él al cerrar).
+const isVisible = (el: HTMLElement) => el.getClientRects().length > 0
 
 const NAV_LINKS = [
   { key: 'services', href: '#services' },
@@ -40,6 +49,10 @@ export default function Navbar() {
   const [scrolled, setScrolled] = useState(false)
   const [mobileOpen, setMobileOpen] = useState(false)
 
+  const drawerRef = useRef<HTMLElement | null>(null)
+  const toggleRef = useRef<HTMLButtonElement | null>(null)
+  const openRef = useRef(false)
+
   const { scrollY } = useScroll()
   const borderOpacity = useTransform(scrollY, [0, 60], [0, 1])
 
@@ -48,30 +61,131 @@ export default function Navbar() {
     return () => unsub()
   }, [scrollY])
 
-  // Lock body scroll when mobile menu is open.
-  // useLayoutEffect, no useEffect: cambiar `overflow` del body invalida el layout de todo el
-  // documento. En un useEffect eso caía DESPUÉS del primer paint del drawer, así que el reflow
-  // se comía el primer frame de la animación y el panel arrancaba a tirones.
-  useIsoLayoutEffect(() => {
-    document.body.style.overflow = mobileOpen ? 'hidden' : ''
-    return () => { document.body.style.overflow = '' }
-  }, [mobileOpen])
+  // El scroll de fondo YA NO se bloquea tocando `document.body.style.overflow`. Ese era el
+  // origen real del tirón al cerrar: alternar `overflow` en el body invalida el layout del
+  // documento entero (hero, blurs, canvas), y ese reflow caía justo en el primer frame de la
+  // animación de salida — el panel se quedaba clavado unos 100ms y recién ahí se iba.
+  // Ahora el bloqueo es puramente CSS y local al overlay: el backdrop cubre todo el viewport
+  // con `touch-action: none` (no hay pan posible sobre él) y el drawer usa `overscroll-contain`
+  // (su scroll no encadena al body). Cero mutación de estilos globales → cero reflow al abrir
+  // y al cerrar. Además desaparece el riesgo de que el scroll al ancla (#contact) se pierda
+  // porque el body seguía bloqueado en el momento de la navegación.
 
   // El canvas de partículas repinta a pantalla completa en cada frame. Mientras el drawer
   // anima compite por el mismo hilo y por el compositor, que es de donde salía buena parte
-  // del tirón en móviles de gama media. Se pausa mientras el menú está abierto.
+  // del tirón en móviles de gama media. Se pausa al abrir; se reanuda en `onExitComplete`,
+  // NO al bajar el estado: reanudarlo al instante devolvía el rAF a pantalla completa
+  // encima de los 180ms de la animación de salida.
   useEffect(() => {
-    window.dispatchEvent(new CustomEvent('mss:menu', { detail: mobileOpen }))
+    openRef.current = mobileOpen
+    if (mobileOpen) window.dispatchEvent(new CustomEvent('mss:menu', { detail: true }))
   }, [mobileOpen])
+
+  const resumeBackground = () => {
+    window.dispatchEvent(new CustomEvent('mss:menu', { detail: false }))
+  }
+
+  // Si el Navbar se desmonta con el menú abierto, el canvas se quedaría pausado para siempre.
+  // Solo si estaba abierto: emitirlo siempre es inocuo pero manda un evento por cada desmontaje.
+  useEffect(() => () => {
+    if (openRef.current) window.dispatchEvent(new CustomEvent('mss:menu', { detail: false }))
+  }, [])
 
   // Escape cierra el drawer: es lo que se espera de cualquier overlay modal, y en tablet con
   // teclado era la única salida que no funcionaba (tap en X, backdrop, link y CTA ya cerraban).
+  // Las teclas de scroll (PageDown, flechas, Space, Home/End) se anulan mientras el drawer está
+  // abierto salvo que el foco esté dentro del panel: `touch-action` es SOLO táctil, no cubre ni
+  // rueda ni teclado, así que sin esto el fondo scrolleaba detrás del overlay con PageDown.
   useEffect(() => {
     if (!mobileOpen) return
-    const onKey = (e: KeyboardEvent) => { if (e.key === 'Escape') setMobileOpen(false) }
+    const drawer = () => drawerRef.current
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') { setMobileOpen(false); return }
+      // Focus trap. El drawer es `aria-modal`, o sea que declara inerte todo lo de detrás: si
+      // el Tab siguiera saliendo al documento, un usuario de teclado o lector de pantalla se
+      // quedaría navegando a ciegas por links que visualmente están tapados por el panel.
+      // El ciclo incluye el botón hamburguesa/X, que es hermano del drawer pero se pinta
+      // dentro de su cabecera: para el usuario forma parte del mismo overlay.
+      if (e.key === 'Tab') {
+        const panel = drawer()
+        if (!panel) return
+        const items = [toggleRef.current, ...panel.querySelectorAll<HTMLElement>(FOCUSABLE)]
+          .filter((el): el is HTMLElement => !!el && isVisible(el))
+        if (!items.length) return
+        const first = items[0]
+        const last = items[items.length - 1]
+        const active = document.activeElement as HTMLElement | null
+        // Foco fuera del ciclo (p.ej. sigue en el <body> tras abrir) → entrar por el extremo
+        // que corresponda en vez de dejar que el navegador salte al documento.
+        if (!active || !items.includes(active)) {
+          e.preventDefault()
+          ;(e.shiftKey ? last : first).focus()
+          return
+        }
+        if (e.shiftKey && active === first) { e.preventDefault(); last.focus() }
+        else if (!e.shiftKey && active === last) { e.preventDefault(); first.focus() }
+        return
+      }
+      if (!SCROLL_KEYS.includes(e.key)) return
+      // El botón hamburguesa es HERMANO del drawer, no descendiente: sin esta excepción Space
+      // sobre él quedaba anulado y el control no respondía (WCAG 2.1.1).
+      if (e.target instanceof Element && e.target.closest(TOGGLE_SELECTOR)) return
+      const target = e.target as Node | null
+      if (target && drawer()?.contains(target)) return
+      e.preventDefault()
+    }
+    // Rueda/trackpad: preventDefault necesita un listener NO pasivo, y React registra `onWheel`
+    // como pasivo. De ahí el addEventListener nativo con { passive: false }.
+    const onWheel = (e: WheelEvent) => {
+      const target = e.target as Node | null
+      if (target && drawer()?.contains(target)) return
+      e.preventDefault()
+    }
     document.addEventListener('keydown', onKey)
-    return () => document.removeEventListener('keydown', onKey)
+    document.addEventListener('wheel', onWheel, { passive: false })
+    return () => {
+      document.removeEventListener('keydown', onKey)
+      document.removeEventListener('wheel', onWheel)
+    }
   }, [mobileOpen])
+
+  // Al abrir, el foco entra al panel (que es `tabIndex={-1}`, no un tab stop): así el lector de
+  // pantalla anuncia el diálogo y su etiqueta, y el primer Tab cae dentro del ciclo. Al cerrar,
+  // el foco vuelve a la hamburguesa, que es el control que lo abrió.
+  // La restauración se hace SOLO si el foco seguía dentro del overlay: si el usuario cerró
+  // tocando un link, el foco ya se lo llevó la navegación y robárselo sería peor.
+  const wasOpen = useRef(false)
+  useEffect(() => {
+    if (mobileOpen) {
+      wasOpen.current = true
+      drawerRef.current?.focus({ preventScroll: true })
+      return
+    }
+    // Sin esta guarda, el efecto correría también en el montaje inicial y la carga de CUALQUIER
+    // página robaría el foco hacia la hamburguesa.
+    if (!wasOpen.current) return
+    wasOpen.current = false
+    const active = document.activeElement
+    const inOverlay =
+      !active ||
+      active === document.body ||
+      drawerRef.current?.contains(active) ||
+      toggleRef.current?.contains(active)
+    const toggle = toggleRef.current
+    if (inOverlay && toggle && isVisible(toggle)) toggle.focus({ preventScroll: true })
+  }, [mobileOpen])
+
+  // Cruzar a desktop con el drawer abierto lo dejaba en un limbo: drawer, backdrop y hamburguesa
+  // se ocultan por CSS (`lg:hidden`) pero `mobileOpen` seguía en true, así que los bloqueos de
+  // rueda/teclado y el `touch-action:none` del header seguían activos sin ningún control visible
+  // para cerrarlos. Pasa de verdad al rotar un iPad o redimensionar la ventana.
+  useEffect(() => {
+    const mq = window.matchMedia(DESKTOP_QUERY)
+    const sync = () => { if (mq.matches) setMobileOpen(false) }
+    sync()
+    mq.addEventListener('change', sync)
+    return () => mq.removeEventListener('change', sync)
+  }, [])
 
   const closeMobile = () => setMobileOpen(false)
 
@@ -87,6 +201,11 @@ export default function Navbar() {
         )}
         style={{
           backgroundColor: scrolled ? 'rgba(5,6,10,0.85)' : 'transparent',
+          // El header es z-50 y pinta ENCIMA del backdrop (z-40): un pan que empieza en esta
+          // franja de 64px a ancho completo nunca toca el backdrop y llegaba al scroller del
+          // documento. `touch-action` solo aplica al elemento donde ARRANCA el gesto, así que
+          // el bloqueo hay que replicarlo aquí. Mismo motivo en el botón hamburguesa.
+          touchAction: mobileOpen ? 'none' : undefined,
         }}
       >
         {/* Border bottom that appears on scroll */}
@@ -144,11 +263,19 @@ export default function Navbar() {
           drawer (z-50, posterior en el DOM) ganaba el empate y tapaba la X → tocar la X no
           cerraba nada. Como hermano posterior con z-[70], la X siempre recibe el tap. */}
       <button
+        ref={toggleRef}
         onClick={() => setMobileOpen((v) => !v)}
-        className="lg:hidden fixed top-0 right-6 z-[70] w-11 h-11 flex items-center justify-center text-white/70 hover:text-white transition-colors touch-manipulation active:scale-90"
-        style={{ marginTop: '10px', WebkitTapHighlightColor: 'transparent' }}
-        aria-label="Toggle menu"
+        className="lg:hidden fixed top-0 right-6 z-[70] w-11 h-11 flex items-center justify-center text-white/70 hover:text-white transition-colors active:scale-90"
+        // touch-action por style, no por clase: con el drawer abierto tiene que ser `none`
+        // (el botón es z-[70], está por encima del backdrop, y `manipulation` = `pan-x pan-y`
+        // autorizaba explícitamente el scroll del fondo justo donde queda el dedo tras abrir).
+        style={{ marginTop: '10px', WebkitTapHighlightColor: 'transparent', touchAction: mobileOpen ? 'none' : 'manipulation' }}
+        // La etiqueta era "Toggle menu" fija en inglés incluso en /es, y no decía qué iba a pasar
+        // al pulsar. Ahora está traducida y refleja la acción según el estado.
+        aria-label={mobileOpen ? t('closeMenu') : t('openMenu')}
         aria-expanded={mobileOpen}
+        aria-controls="mobile-drawer"
+        data-menu-toggle
       >
         {/* Los dos iconos viven SIEMPRE montados, superpuestos, y solo cruzan opacidad/rotación.
             Antes era un AnimatePresence con mode="wait": ese modo espera a que termine la salida
@@ -180,16 +307,18 @@ export default function Navbar() {
       </button>
 
       {/* Mobile drawer overlay */}
-      <AnimatePresence>
+      <AnimatePresence onExitComplete={resumeBackground}>
         {mobileOpen && (
           <>
-            {/* Backdrop */}
+            {/* Backdrop. `touch-action: none` es lo que bloquea el scroll de fondo (antes lo hacía
+                `overflow:hidden` en el body, con el reflow de documento completo que eso implica). */}
             <motion.div
               key="backdrop"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              transition={{ duration: 0.18 }}
+              transition={{ duration: 0.15, ease: 'linear' }}
+              style={{ touchAction: 'none', willChange: 'opacity' }}
               className="fixed inset-0 z-40 bg-black/70 lg:hidden"
               onClick={closeMobile}
             />
@@ -203,11 +332,28 @@ export default function Navbar() {
               // sobreamortiguado (ζ≈1.17): cubría el 90% del recorrido rápido pero arrastraba
               // una cola larga antes de darse por terminado, y esa cola se leía como lentitud.
               // Un tween de 0.22s llega y termina, sin cola.
-              exit={{ x: '100%', transition: { type: 'tween', duration: 0.18, ease: 'easeIn' } }}
+              // `easeIn` en la salida era la otra mitad del problema: easeIn arranca casi parado.
+              // El icono cambiaba a hamburguesa al instante y el panel se quedaba quieto ~80ms
+              // antes de moverse — exactamente el "delay" que se veía. Misma curva que la entrada
+              // (easeOutQuint): sale disparado en el primer frame y frena al final.
+              exit={{ x: '100%', transition: { type: 'tween', duration: 0.2, ease: [0.22, 1, 0.36, 1] } }}
               transition={{ type: 'tween', duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
-              style={{ willChange: 'transform' }}
-              className="fixed top-0 right-0 bottom-0 z-50 w-[300px] max-w-[85vw] bg-[#05060A] border-l border-white/[0.06] flex flex-col lg:hidden"
-              aria-label="Mobile navigation"
+              // overscroll-contain: si el contenido no entra en pantallas bajas, el drawer scrollea
+              // solo — sin encadenar al documento de detrás, que es lo que antes obligaba a
+              // bloquear el body.
+              style={{ willChange: 'transform', overscrollBehavior: 'contain', scrollbarWidth: 'none' }}
+              data-mobile-drawer
+              className="fixed top-0 right-0 bottom-0 z-50 w-[300px] max-w-[85vw] bg-[#05060A] border-l border-white/[0.06] flex flex-col overflow-y-auto outline-none [&::-webkit-scrollbar]:w-0 lg:hidden"
+              // Semántica de diálogo modal: `aria-modal` declara inerte todo lo de detrás para
+              // el lector de pantalla (que es lo que el backdrop ya hace visualmente), y el
+              // trap de Tab del efecto de arriba hace cumplir lo mismo con el teclado.
+              // `tabIndex={-1}` para poder enfocar el panel al abrir sin añadir un tab stop.
+              id="mobile-drawer"
+              ref={drawerRef}
+              role="dialog"
+              aria-modal="true"
+              aria-label={t('menu')}
+              tabIndex={-1}
             >
               {/* Drawer header */}
               <div className="flex items-center justify-between px-6 h-16 border-b border-white/[0.06]">

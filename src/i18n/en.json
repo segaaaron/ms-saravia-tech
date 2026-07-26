@@ -7,7 +7,10 @@
     "demos": "Explore the Product",
     "about": "About",
     "contact": "Contact",
-    "cta": "Let's Talk"
+    "cta": "Let's Talk",
+    "menu": "Navigation menu",
+    "openMenu": "Open menu",
+    "closeMenu": "Close menu"
   },
   "showcase": {
     "label": "Live demos",

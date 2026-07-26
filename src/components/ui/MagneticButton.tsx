@@ -65,6 +65,10 @@ export default function MagneticButton({ children, href, onClick, variant = 'pri
   const inner = <span className="relative z-10 inline-flex items-center gap-2.5">{children}</span>
 
   const motionProps = {
+    // onClick también en la variante <a>: antes solo lo recibía el <button>, así que el CTA del
+    // drawer móvil (href="/#contact") navegaba al ancla pero nunca ejecutaba su onClick de
+    // cierre. Al ser una navegación por hash en la misma página, el menú se quedaba abierto.
+    onClick,
     onMouseMove: handleMouseMove,
     onMouseLeave: handleMouseLeave,
     whileTap: { scale: 0.97 },
@@ -81,7 +85,7 @@ export default function MagneticButton({ children, href, onClick, variant = 'pri
   }
 
   return (
-    <motion.button ref={ref as React.Ref<HTMLButtonElement>} type={type} onClick={onClick} disabled={disabled} {...motionProps}>
+    <motion.button ref={ref as React.Ref<HTMLButtonElement>} type={type} disabled={disabled} {...motionProps}>
       {inner}
     </motion.button>
   )
