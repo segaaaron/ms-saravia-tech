@@ -1,6 +1,6 @@
 'use client'
 import { useState, useEffect, useRef } from 'react'
-import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion'
+import { motion, useScroll, useTransform } from 'framer-motion'
 import { useTranslations, useLocale } from 'next-intl'
 import Link from 'next/link'
 import MagneticButton from '@/components/ui/MagneticButton'
@@ -10,6 +10,10 @@ import { cn } from '@/lib/utils'
 import { Menu, X } from 'lucide-react'
 
 const SCROLL_KEYS = ['PageDown', 'PageUp', 'ArrowDown', 'ArrowUp', 'Home', 'End', ' ']
+// Duración del slide del drawer. Vive en JS solo para saber cuándo devolverle el rAF al canvas;
+// la animación en sí la corre CSS (ver el `transition` del <nav>).
+const DRAWER_MS = 200
+const DRAWER_EASE = 'cubic-bezier(0.22, 1, 0.36, 1)'
 const TOGGLE_SELECTOR = '[data-menu-toggle]'
 // Mismo 1024px que el prefijo `lg:` de Tailwind, que es lo que oculta drawer y hamburguesa.
 const DESKTOP_QUERY = '(min-width: 1024px)'
@@ -73,17 +77,25 @@ export default function Navbar() {
 
   // El canvas de partículas repinta a pantalla completa en cada frame. Mientras el drawer
   // anima compite por el mismo hilo y por el compositor, que es de donde salía buena parte
-  // del tirón en móviles de gama media. Se pausa al abrir; se reanuda en `onExitComplete`,
-  // NO al bajar el estado: reanudarlo al instante devolvía el rAF a pantalla completa
-  // encima de los 180ms de la animación de salida.
+  // del tirón en móviles de gama media. Se pausa al abrir; se reanuda cuando TERMINA el slide
+  // de salida, NO al bajar el estado: reanudarlo al instante devolvía el rAF a pantalla
+  // completa encima de los 200ms de la animación de cierre.
   useEffect(() => {
     openRef.current = mobileOpen
-    if (mobileOpen) window.dispatchEvent(new CustomEvent('mss:menu', { detail: true }))
+    if (mobileOpen) {
+      window.dispatchEvent(new CustomEvent('mss:menu', { detail: true }))
+      return
+    }
+    // Al cerrar NO se reanuda al instante: devolverle el rAF a pantalla completa encima de los
+    // 200ms del slide de salida es exactamente lo que hacía que el panel se viera trabado.
+    // Antes esto colgaba de `onExitComplete` de AnimatePresence; ahora que la animación es CSS,
+    // un timer del mismo largo hace lo mismo sin atar el desmontaje a framer.
+    const id = window.setTimeout(
+      () => window.dispatchEvent(new CustomEvent('mss:menu', { detail: false })),
+      DRAWER_MS
+    )
+    return () => window.clearTimeout(id)
   }, [mobileOpen])
-
-  const resumeBackground = () => {
-    window.dispatchEvent(new CustomEvent('mss:menu', { detail: false }))
-  }
 
   // Si el Navbar se desmonta con el menú abierto, el canvas se quedaría pausado para siempre.
   // Solo si estaba abierto: emitirlo siempre es inocuo pero manda un evento por cada desmontaje.
@@ -278,136 +290,138 @@ export default function Navbar() {
         data-menu-toggle
       >
         {/* Los dos iconos viven SIEMPRE montados, superpuestos, y solo cruzan opacidad/rotación.
-            Antes era un AnimatePresence con mode="wait": ese modo espera a que termine la salida
-            (0.2s) para recién empezar la entrada (0.2s), o sea 0.4s con el hueco vacío en medio.
-            Ese era el "delay" al tocar la hamburguesa o la X — el botón respondía al instante
-            pero el icono tardaba casi medio segundo en aparecer. */}
-        {/* `initial={false}` en ambos: sin él, framer monta el span con la opacidad que trae del
-            CSS (1) y recién entonces anima hacia el destino, así que en CADA carga de página la X
-            aparecía encima de la hamburguesa y se desvanecía en 150 ms. Con `initial={false}`
-            arrancan directamente en su valor final y solo animan cuando `mobileOpen` cambia. */}
+            CSS puro, no framer: el cruce arranca en el mismo frame del tap y lo corre el
+            compositor. Con `motion.span` la animación no empezaba hasta el rAF posterior al
+            commit de React y se pintaba desde el main thread, que al cerrar es justo el hilo
+            saturado repintando todo lo que el backdrop tapaba. */}
         <span className="relative block w-[22px] h-[22px]">
-          <motion.span
-            className="absolute inset-0"
-            initial={false}
-            animate={{ rotate: mobileOpen ? 90 : 0, opacity: mobileOpen ? 0 : 1 }}
-            transition={{ duration: 0.15, ease: 'easeOut' }}
+          <span
+            className="absolute inset-0 transition-[opacity,transform] duration-150 ease-out"
+            style={{ opacity: mobileOpen ? 0 : 1, transform: `rotate(${mobileOpen ? 90 : 0}deg)` }}
           >
             <Menu size={22} />
-          </motion.span>
-          <motion.span
-            className="absolute inset-0"
-            initial={false}
-            animate={{ rotate: mobileOpen ? 0 : -90, opacity: mobileOpen ? 1 : 0 }}
-            transition={{ duration: 0.15, ease: 'easeOut' }}
+          </span>
+          <span
+            className="absolute inset-0 transition-[opacity,transform] duration-150 ease-out"
+            style={{ opacity: mobileOpen ? 1 : 0, transform: `rotate(${mobileOpen ? 0 : -90}deg)` }}
           >
             <X size={22} />
-          </motion.span>
+          </span>
         </span>
       </button>
 
-      {/* Mobile drawer overlay */}
-      <AnimatePresence onExitComplete={resumeBackground}>
-        {mobileOpen && (
-          <>
-            {/* Backdrop. `touch-action: none` es lo que bloquea el scroll de fondo (antes lo hacía
-                `overflow:hidden` en el body, con el reflow de documento completo que eso implica). */}
-            <motion.div
-              key="backdrop"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.15, ease: 'linear' }}
-              style={{ touchAction: 'none', willChange: 'opacity' }}
-              className="fixed inset-0 z-40 bg-black/70 lg:hidden"
-              onClick={closeMobile}
-            />
-
-            {/* Drawer */}
-            <motion.nav
-              key="drawer"
-              initial={{ x: '100%' }}
-              animate={{ x: 0 }}
-              // Tween en las dos direcciones, no spring. El spring de entrada estaba
-              // sobreamortiguado (ζ≈1.17): cubría el 90% del recorrido rápido pero arrastraba
-              // una cola larga antes de darse por terminado, y esa cola se leía como lentitud.
-              // Un tween de 0.22s llega y termina, sin cola.
-              // `easeIn` en la salida era la otra mitad del problema: easeIn arranca casi parado.
-              // El icono cambiaba a hamburguesa al instante y el panel se quedaba quieto ~80ms
-              // antes de moverse — exactamente el "delay" que se veía. Misma curva que la entrada
-              // (easeOutQuint): sale disparado en el primer frame y frena al final.
-              exit={{ x: '100%', transition: { type: 'tween', duration: 0.2, ease: [0.22, 1, 0.36, 1] } }}
-              transition={{ type: 'tween', duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
-              // overscroll-contain: si el contenido no entra en pantallas bajas, el drawer scrollea
-              // solo — sin encadenar al documento de detrás, que es lo que antes obligaba a
-              // bloquear el body.
-              style={{ willChange: 'transform', overscrollBehavior: 'contain', scrollbarWidth: 'none' }}
-              data-mobile-drawer
-              className="fixed top-0 right-0 bottom-0 z-50 w-[300px] max-w-[85vw] bg-[#05060A] border-l border-white/[0.06] flex flex-col overflow-y-auto outline-none [&::-webkit-scrollbar]:w-0 lg:hidden"
-              // Semántica de diálogo modal: `aria-modal` declara inerte todo lo de detrás para
-              // el lector de pantalla (que es lo que el backdrop ya hace visualmente), y el
-              // trap de Tab del efecto de arriba hace cumplir lo mismo con el teclado.
-              // `tabIndex={-1}` para poder enfocar el panel al abrir sin añadir un tab stop.
-              id="mobile-drawer"
-              ref={drawerRef}
-              role="dialog"
-              aria-modal="true"
-              aria-label={t('menu')}
-              tabIndex={-1}
-            >
-              {/* Drawer header */}
-              <div className="flex items-center justify-between px-6 h-16 border-b border-white/[0.06]">
-                <span className="font-display font-bold text-xl bg-gradient-to-r from-cyan-400 via-violet-500 to-fuchsia-500 bg-clip-text text-transparent">
-                  MS▲
-                </span>
-              </div>
-
-              {/* Drawer links */}
-              <div className="flex flex-col flex-1 px-6 py-8 gap-1">
-                {NAV_LINKS.map((link, i) => {
-                  const motionProps = {
-                    onClick: closeMobile,
-                    initial: { opacity: 0, x: 16 },
-                    animate: { opacity: 1, x: 0 },
-                    // 7 links a 0.03s de paso = el último entraba a los 0.24s, y encima con el
-                    // spring por defecto de framer encima. El escalonado terminaba después que
-                    // el propio panel. Paso de 0.015s y tween corto: cierra junto con el drawer.
-                    transition: { delay: i * 0.015, duration: 0.16, ease: 'easeOut' as const },
-                    className:
-                      'flex items-center py-4 text-lg font-medium text-white/70 hover:text-white border-b border-white/[0.04] transition-colors duration-200 group',
-                  }
-                  const inner = (
-                    <>
-                      <span className="flex-1">{t(link.key)}</span>
-                      <span className="w-1.5 h-1.5 rounded-full bg-cyan-400/0 group-hover:bg-cyan-400 transition-colors duration-200" />
-                    </>
-                  )
-                  return (
-                    <motion.div key={link.key} {...motionProps}>
-                      <Link href={hrefFor(link)} onClick={closeMobile} className="flex items-center flex-1">
-                        {inner}
-                      </Link>
-                    </motion.div>
-                  )
-                })}
-              </div>
-
-              {/* Drawer footer */}
-              <div className="px-6 pb-10 flex flex-col gap-4">
-                <LocaleToggle onSwitch={closeMobile} />
-                <MagneticButton
-                  variant="primary"
-                  href={ctaHref}
-                  onClick={closeMobile}
-                  className="w-full justify-center"
-                >
-                  {t('cta')}
-                </MagneticButton>
-              </div>
-            </motion.nav>
-          </>
+      {/* Mobile drawer overlay.
+          Ya NO hay AnimatePresence: drawer y backdrop están SIEMPRE montados y solo cambian de
+          clase. Ese era el fondo del delay al cerrar — AnimatePresence retiene el subárbol,
+          arranca el `exit` en el rAF posterior al commit y coordina backdrop + drawer + los 7
+          motion.div de los links antes de desmontar, todo desde el main thread. Al abrir no se
+          notaba (nada que re-rasterizar detrás); al cerrar el mismo hilo estaba repintando hero,
+          blurs y el backdrop-filter del header que el overlay tapaba, y el panel se quedaba
+          clavado. Con transición CSS de `transform`, el cierre lo corre el compositor: sale en el
+          primer frame del tap aunque el main thread esté ocupado. */}
+      {/* Backdrop. `touch-action: none` es lo que bloquea el scroll de fondo (antes lo hacía
+          `overflow:hidden` en el body, con el reflow de documento completo que eso implica). */}
+      <div
+        onClick={closeMobile}
+        aria-hidden
+        className={cn(
+          'fixed inset-0 z-40 bg-black/70 lg:hidden transition-opacity duration-150 ease-linear',
+          mobileOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'
         )}
-      </AnimatePresence>
+        style={{
+          touchAction: mobileOpen ? 'none' : undefined,
+          // Sin esto el backdrop invisible seguiría siendo un layer a pantalla completa que el
+          // compositor considera en cada frame. `visibility` se retrasa hasta que termina el
+          // fade para no cortarlo de golpe.
+          visibility: mobileOpen ? 'visible' : 'hidden',
+          transitionProperty: 'opacity, visibility',
+          transitionDuration: '150ms, 0s',
+          transitionDelay: mobileOpen ? '0s, 0s' : '0s, 150ms',
+        }}
+      />
+
+      {/* Drawer */}
+      <nav
+        // `inert` cuando está cerrado: el panel sigue en el DOM, así que sin esto sus links
+        // quedarían tabulables y visibles para el lector de pantalla detrás del contenido.
+        // `inert` los saca del árbol de accesibilidad, del ciclo de Tab y del hit-testing.
+        inert={!mobileOpen}
+        // overscroll-contain: si el contenido no entra en pantallas bajas, el drawer scrollea
+        // solo — sin encadenar al documento de detrás, que es lo que antes obligaba a
+        // bloquear el body.
+        style={{
+          transform: mobileOpen ? 'translate3d(0,0,0)' : 'translate3d(100%,0,0)',
+          // Misma curva y duración en ambos sentidos (easeOutQuint): sale disparado en el
+          // primer frame y frena al final. `visibility` se retrasa hasta el final del slide
+          // al cerrar para que el panel no desaparezca de golpe a mitad de camino.
+          transition: `transform ${DRAWER_MS}ms ${DRAWER_EASE}, visibility 0s linear ${mobileOpen ? 0 : DRAWER_MS}ms`,
+          visibility: mobileOpen ? 'visible' : 'hidden',
+          // `will-change` SOLO mientras el overlay está en uso. Dejarlo fijo mantiene un
+          // layer promovido a 300px de ancho y altura completa durante toda la sesión.
+          willChange: mobileOpen ? 'transform' : undefined,
+          overscrollBehavior: 'contain',
+          scrollbarWidth: 'none',
+        }}
+        data-mobile-drawer
+        className="fixed top-0 right-0 bottom-0 z-50 w-[300px] max-w-[85vw] bg-[#05060A] border-l border-white/[0.06] flex flex-col overflow-y-auto outline-none [&::-webkit-scrollbar]:w-0 lg:hidden"
+        // Semántica de diálogo modal: `aria-modal` declara inerte todo lo de detrás para
+        // el lector de pantalla (que es lo que el backdrop ya hace visualmente), y el
+        // trap de Tab del efecto de arriba hace cumplir lo mismo con el teclado.
+        // `tabIndex={-1}` para poder enfocar el panel al abrir sin añadir un tab stop.
+        id="mobile-drawer"
+        ref={drawerRef}
+        role="dialog"
+        aria-modal="true"
+        aria-label={t('menu')}
+        tabIndex={-1}
+      >
+        {/* Drawer header */}
+        <div className="flex items-center justify-between px-6 h-16 border-b border-white/[0.06]">
+          <span className="font-display font-bold text-xl bg-gradient-to-r from-cyan-400 via-violet-500 to-fuchsia-500 bg-clip-text text-transparent">
+            MS▲
+          </span>
+        </div>
+
+        {/* Drawer links */}
+        <div className="flex flex-col flex-1 px-6 py-8 gap-1">
+          {NAV_LINKS.map((link, i) => (
+            // Escalonado por CSS. El delay se aplica SOLO al abrir: al cerrar los 7 links
+            // se apagan a la vez, junto con el panel. Antes eran `motion.div`, o sea 7
+            // animaciones más que AnimatePresence tenía que orquestar antes de desmontar.
+            <div
+              key={link.key}
+              onClick={closeMobile}
+              className="flex items-center py-4 text-lg font-medium text-white/70 hover:text-white border-b border-white/[0.04] transition-colors duration-200 group"
+              style={{
+                opacity: mobileOpen ? 1 : 0,
+                transform: mobileOpen ? 'translateX(0)' : 'translateX(16px)',
+                transitionProperty: 'opacity, transform, color',
+                transitionDuration: '160ms',
+                transitionTimingFunction: 'ease-out',
+                transitionDelay: mobileOpen ? `${i * 15}ms` : '0ms',
+              }}
+            >
+              <Link href={hrefFor(link)} onClick={closeMobile} className="flex items-center flex-1">
+                <span className="flex-1">{t(link.key)}</span>
+                <span className="w-1.5 h-1.5 rounded-full bg-cyan-400/0 group-hover:bg-cyan-400 transition-colors duration-200" />
+              </Link>
+            </div>
+          ))}
+        </div>
+
+        {/* Drawer footer */}
+        <div className="px-6 pb-10 flex flex-col gap-4">
+          <LocaleToggle onSwitch={closeMobile} />
+          <MagneticButton
+            variant="primary"
+            href={ctaHref}
+            onClick={closeMobile}
+            className="w-full justify-center"
+          >
+            {t('cta')}
+          </MagneticButton>
+        </div>
+      </nav>
     </>
   )
 }
