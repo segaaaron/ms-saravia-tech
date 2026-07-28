@@ -435,9 +435,9 @@ type Content = {
   carta: {
     eyebrow: string; title: string; desc: string; lunchBadge: string; weekTitle: string; fromPre: string; perPersonFull: string
     soupOfDay: string; tagToday: string; tagWeekend: string; sideSegundo: string; sidePostre: string; sideRefresco: string
-    refrescoDetail: string; fullMenu: string; lunchIncludes: string; bs: string; perPerson: string; servedNote: string
+    refrescoDetail: string; fullMenu: string; lunchIncludes: string; perPerson: string; servedNote: string
     orderLunch: string; lunchOnlyToday: string; availOnPre: string; loginToOrder: string; lunchItemPre: string; nightNote: string
-    alaCarta: string; addToOrder: string; pricesNote: string
+    alaCarta: string; addToOrder: string
   }
   dayCap: Record<string, string>
   menuCats: string[]
@@ -510,8 +510,8 @@ const CONTENT: Record<DemoLang, Content> = {
       eyebrow: 'Carta', title: 'Cocina del valle', desc: 'Cocina boliviana de siempre — a la brasa y al fuego lento. Almuerzo casero cada día y la carta completa por las noches.',
       lunchBadge: 'Almuerzo · de lunes a domingo · 12:00 a 15:00', weekTitle: 'Menú de la semana', fromPre: 'Desde ', perPersonFull: 'por persona · sopa, segundo, postre y refresco',
       soupOfDay: 'Sopa del día', tagToday: 'Hoy', tagWeekend: 'Fin de semana · Especial', sideSegundo: 'Segundo', sidePostre: 'Postre', sideRefresco: 'Refresco', refrescoDetail: 'Bebida natural de la casa.',
-      fullMenu: 'Menú completo', lunchIncludes: 'El almuerzo incluye', bs: 'Bs', perPerson: 'por persona', servedNote: 'Servido de 12:00 a 15:00, todos los días.', orderLunch: 'Pedir este almuerzo', lunchOnlyToday: 'Solo puedes pedir el almuerzo del día en curso',
-      availOnPre: 'Disponible el ', loginToOrder: 'Inicia sesión para pedir', lunchItemPre: 'Almuerzo · ', nightNote: 'Por las noches servimos la carta completa a la brasa y al carbón.', alaCarta: 'A la carta · todas las noches', addToOrder: 'Agregar al pedido', pricesNote: 'Precios en bolivianos, impuestos incluidos · consulta a tu mesero sobre alérgenos',
+      fullMenu: 'Menú completo', lunchIncludes: 'El almuerzo incluye', perPerson: 'por persona', servedNote: 'Servido de 12:00 a 15:00, todos los días.', orderLunch: 'Pedir este almuerzo', lunchOnlyToday: 'Solo puedes pedir el almuerzo del día en curso',
+      availOnPre: 'Disponible el ', loginToOrder: 'Inicia sesión para pedir', lunchItemPre: 'Almuerzo · ', nightNote: 'Por las noches servimos la carta completa a la brasa y al carbón.', alaCarta: 'A la carta · todas las noches', addToOrder: 'Agregar al pedido',
     },
     dayCap: dayCap,
     menuCats: menuCatDefs.map(([, l]) => l),
@@ -587,8 +587,8 @@ const CONTENT: Record<DemoLang, Content> = {
       eyebrow: 'Menu', title: 'Cuisine of the valley', desc: 'Timeless Bolivian cooking — grilled and slow-cooked over fire. Homestyle lunch every day and the full menu at night.',
       lunchBadge: 'Lunch · Monday to Sunday · 12:00 to 15:00', weekTitle: 'Menu of the week', fromPre: 'From ', perPersonFull: 'per person · soup, main, dessert and a drink',
       soupOfDay: 'Soup of the day', tagToday: 'Today', tagWeekend: 'Weekend · Special', sideSegundo: 'Main', sidePostre: 'Dessert', sideRefresco: 'Drink', refrescoDetail: 'House natural drink.',
-      fullMenu: 'Full menu', lunchIncludes: 'The lunch includes', bs: 'Bs', perPerson: 'per person', servedNote: 'Served from 12:00 to 15:00, every day.', orderLunch: 'Order this lunch', lunchOnlyToday: "You can only order the current day's lunch",
-      availOnPre: 'Available on ', loginToOrder: 'Sign in to order', lunchItemPre: 'Lunch · ', nightNote: 'At night we serve the full menu grilled and over charcoal.', alaCarta: 'À la carte · every night', addToOrder: 'Add to order', pricesNote: 'Prices in bolivianos, taxes included · ask your server about allergens',
+      fullMenu: 'Full menu', lunchIncludes: 'The lunch includes', perPerson: 'per person', servedNote: 'Served from 12:00 to 15:00, every day.', orderLunch: 'Order this lunch', lunchOnlyToday: "You can only order the current day's lunch",
+      availOnPre: 'Available on ', loginToOrder: 'Sign in to order', lunchItemPre: 'Lunch · ', nightNote: 'At night we serve the full menu grilled and over charcoal.', alaCarta: 'À la carte · every night', addToOrder: 'Add to order',
     },
     dayCap: { domingo: 'Sunday', lunes: 'Monday', martes: 'Tuesday', 'miércoles': 'Wednesday', jueves: 'Thursday', viernes: 'Friday', 'sábado': 'Saturday' },
     menuCats: ['Starters & soups', 'Main plates', 'Bolivian dishes', 'Desserts'],

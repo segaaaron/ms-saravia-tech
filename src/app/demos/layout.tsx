@@ -2,6 +2,8 @@ import type { Metadata } from 'next'
 import { Manrope, Fraunces, Inter } from 'next/font/google'
 import './demos.css'
 
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.ms-tech-stack.cloud'
+
 // Sans clínico/moderno (consultorio) + serif con autoridad (bufete) + body neutro.
 const manrope = Manrope({
   subsets: ['latin'],
@@ -25,6 +27,7 @@ const inter = Inter({
 
 // Demos = piezas de portafolio (mock). No deben indexarse ni competir con el sitio.
 export const metadata: Metadata = {
+  metadataBase: new URL(siteUrl),
   robots: { index: false, follow: false },
   title: 'MSS · Showcase Demo',
 }

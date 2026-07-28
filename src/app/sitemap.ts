@@ -25,6 +25,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       'en-GB': localizedUrl('en', r.path),
       'en-CA': localizedUrl('en', r.path),
       es: localizedUrl('es', r.path),
+      'x-default': localizedUrl('en', r.path),
     }
     // Emite ambas URLs (en + es) con alternates recíprocos, como ya hacía la home.
     return (['en', 'es'] as const).map((loc) => ({
