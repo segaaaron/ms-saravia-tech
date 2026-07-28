@@ -54,8 +54,9 @@ contacto. Idiomas: **inglés (default) + español**.
   país del proxy (`cf-ipcountry` / `x-country-code`) y si no, hace lookup vía **country.is** con la
   IP del cliente (`x-forwarded-for`). US/CA/GB → precio USA (no pueden ver LATAM); LATAM → precio LATAM;
   desconocido → fallback por locale. Muestra el **país** (Intl.DisplayNames), solo lectura. 0 RAM, sin key.
-- **Mercados target (SEO geo)**: USA, Canadá, UK, LATAM (Europa pendiente). Señales aplicadas —
-  `areaServed` (US/CA/UK/LatAm) en JSON-LD Org+ProfessionalService; hreflang `en`/`en-GB`/`en-CA`/`es`
+- **Mercados target (SEO geo)**: USA, Canadá, UK, Europa, LATAM. Idiomas soportados = SOLO en/es
+  (el inglés es universal, cubre Europa; NO se agregan idiomas nuevos). Señales aplicadas —
+  `areaServed` (US/CA/UK/Europe/LatAm) en JSON-LD Org+ProfessionalService; hreflang `en`/`en-GB`/`en-CA`/`es`
   (los 3 EN → misma URL inglesa, patrón válido) + `x-default`; og `alternateLocale` en_GB/en_CA/es.
   Contenido real solo en/es (no hay copy localizado por país). GB añadido a la región de precios US.
   **Nota estratégica (PO)**: el hreflang geo sin contenido diferenciado es housekeeping, impacto BAJO

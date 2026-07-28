@@ -70,6 +70,7 @@ export default function JsonLd({ locale }: { locale: string }) {
           { '@type': 'Country', name: 'United States' },
           { '@type': 'Country', name: 'Canada' },
           { '@type': 'Country', name: 'United Kingdom' },
+          { '@type': 'Place', name: 'Europe' },
           { '@type': 'Place', name: 'Latin America' },
         ],
         ...(SAME_AS.length > 0 ? { sameAs: SAME_AS } : {}),
@@ -96,7 +97,7 @@ export default function JsonLd({ locale }: { locale: string }) {
         image: `${SITE_URL}/opengraph-image`,
         priceRange: '$$$',
         provider: { '@id': `${SITE_URL}/#organization` },
-        areaServed: ['United States', 'Canada', 'United Kingdom', 'Latin America'],
+        areaServed: ['United States', 'Canada', 'United Kingdom', 'Europe', 'Latin America'],
         hasOfferCatalog: {
           '@type': 'OfferCatalog',
           name:
