@@ -30,17 +30,14 @@ interface MyOrder { code: string; mode: string; total: number; items: TabItem[];
 interface ResTable { zone: string; id: string; seats: number }
 
 /* ---------------- helpers ---------------- */
-// Precios base están en bolivianos (Bs). Fuera de Bolivia se muestran en USD (conversión
-// solo al formatear; la matemática interna del carrito/cuenta sigue en Bs).
+// Precios SIEMPRE en USD. Los números base del menú siguen en su escala original; se convierten
+// a dólares solo al formatear (factor fijo). Sin moneda local.
 import { optimized } from '../unsplash'
 import { useLazyBg } from '../useLazyBg'
 
-const BS_PER_USD = 6.9
-const usdFromBs = (bs: number) => Math.round(bs / BS_PER_USD)
-const moneyFmt = (n: number, locale: string, currency: 'BOB' | 'USD') =>
-  currency === 'USD'
-    ? '$' + usdFromBs(n).toLocaleString('en-US')
-    : 'Bs ' + Math.round(n).toLocaleString(locale)
+const USD_DIVISOR = 6.9
+const toUsd = (base: number) => Math.round(base / USD_DIVISOR)
+const moneyFmt = (base: number) => '$' + toUsd(base).toLocaleString('en-US')
 const img = (id: string, w = 828) => optimized(`https://images.unsplash.com/${id}`, w)
 
 const nowTime = () => {
@@ -714,17 +711,14 @@ const CONTENT: Record<DemoLang, Content> = {
 /* ============================================================
    COMPONENTE
    ============================================================ */
-export default function BrasaClient({ lang, currency = 'BOB' }: { lang: DemoLang; currency?: 'BOB' | 'USD' }) {
+export default function BrasaClient({ lang }: { lang: DemoLang }) {
   const c = CONTENT[lang]
-  const numLocale = c.numLocale
-  const money = (n: number) => moneyFmt(n, numLocale, currency)
-  const curSym = currency === 'USD' ? '$' : c.carta.bs
+  const money = (n: number) => moneyFmt(n)
+  const curSym = '$'
   const pricesNote =
-    currency === 'USD'
-      ? lang === 'es'
-        ? 'Precios en USD, impuestos incluidos · consulta a tu mesero sobre alérgenos'
-        : 'Prices in USD, taxes included · ask your server about allergens'
-      : c.carta.pricesNote
+    lang === 'es'
+      ? 'Precios en USD, impuestos incluidos · consulta a tu mesero sobre alérgenos'
+      : 'Prices in USD, taxes included · ask your server about allergens'
   const dow = c.dow
   const mon = c.mon
   const dateStr = (i: number) => {
@@ -1007,7 +1001,7 @@ export default function BrasaClient({ lang, currency = 'BOB' }: { lang: DemoLang
     const ai = almuerzoData.findIndex((x) => x.d === k); const a = almuerzoData[ai]; const ca = c.alm[ai]
     const on = (k === almToday.d); const fin = !!a.fin; const wknd = (k === 'sábado' || k === 'domingo')
     return {
-      day: c.dayCap[k], precioNum: currency === 'USD' ? String(usdFromBs(a.precio)) : String(a.precio), heroImg: localMenuImg(sopaSlug[k]), heroName: ca.ent, heroDetail: ca.sDet, heroEyebrow: c.carta.soupOfDay,
+      day: c.dayCap[k], precioNum: String(toUsd(a.precio)), heroImg: localMenuImg(sopaSlug[k]), heroName: ca.ent, heroDetail: ca.sDet, heroEyebrow: c.carta.soupOfDay,
       onAddAlmuerzo: () => addToCart({ id: 'alm-' + k, name: c.carta.lunchItemPre + c.dayCap[k], price: a.precio, cat: 'cocina', img: weeklyMainImg(heroSlug[k]) }),
       sides: [
         { label: c.carta.sideSegundo, name: ca.pri, detail: ca.priDet, img: weeklyMainImg(heroSlug[k]), noImg: false },

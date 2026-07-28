@@ -207,7 +207,7 @@ const CONTENT: Record<DemoLang, Content> = {
     histm: { mesasCobradas: 'Mesas cobradas', cobrado: 'Cobrado', empty: 'Sin movimientos en tu turno', platos: 'Platos', bebidas: 'Bebidas', comensales: 'comensales' },
     caja: {
       ventasCobradas: 'Ventas cobradas', tickets: 'Tickets', ticketProm: 'Ticket promedio', propina: 'Propina 10% est.',
-      ventasMetodo: 'Ventas por método de pago', arqueoEfectivo: 'Arqueo de efectivo', fondoInicial: 'Fondo inicial (Bs)', efectivoContado: 'Efectivo contado (Bs)',
+      ventasMetodo: 'Ventas por método de pago', arqueoEfectivo: 'Arqueo de efectivo', fondoInicial: 'Fondo inicial (USD)', efectivoContado: 'Efectivo contado (USD)',
       fondoRow: 'Fondo inicial', ventasEfvt: '+ Ventas en efectivo', efvtEsperado: 'Efectivo esperado en caja',
       cuadrada: 'Caja cuadrada', sobrante: 'Sobrante', faltante: 'Faltante',
       corteConfirm: 'Se archivará el día, se reiniciará el historial de eventos y la caja quedará lista para el siguiente turno. ¿Confirmas el corte?', siCerrar: 'Sí, cerrar caja', cancel: 'Cancelar', cerrarCaja: '🔒 Cerrar caja · Corte Z',
@@ -221,7 +221,7 @@ const CONTENT: Record<DemoLang, Content> = {
     fin: {
       ingresos: 'Ingresos del día', ticketsCobrados: 'tickets cobrados', gastos: 'Gastos del día', registros: 'registros', ganancia: 'Ganancia neta', margen: 'margen',
       registrarGasto: 'Registrar gasto', registrarSub: 'Insumos, sueldos, servicios, proveedores — todo lo que sale de caja.', conceptoPh: 'Concepto — ej: Carne res 10kg, Sueldo mesero…', agregarGasto: 'Agregar gasto', gastosHoy: 'Gastos de hoy', sinGastos: 'Sin gastos registrados. Agrega el primero arriba.', eliminar: 'Eliminar',
-      gastosCategoria: 'Gastos por categoría', sinDesglosar: 'Aún sin gastos para desglosar.', inversion: 'Inversión y recuperación', inversionSub: 'Registra tu inversión inicial para seguir cuánto has recuperado con la ganancia de hoy.', inversionInicial: 'Inversión inicial (Bs)', recuperado: 'Recuperado con la ganancia de hoy',
+      gastosCategoria: 'Gastos por categoría', sinDesglosar: 'Aún sin gastos para desglosar.', inversion: 'Inversión y recuperación', inversionSub: 'Registra tu inversión inicial para seguir cuánto has recuperado con la ganancia de hoy.', inversionInicial: 'Inversión inicial (USD)', recuperado: 'Recuperado con la ganancia de hoy',
     },
     rend: {
       empty1: 'Aún sin actividad registrada', empty2: 'A medida que cocina, barra y meseros trabajan, verás su rendimiento aquí.', despachados: 'despachados', comandas: 'comandas', prepProm: 'prep. prom.',
@@ -323,7 +323,7 @@ const CONTENT: Record<DemoLang, Content> = {
     histm: { mesasCobradas: 'Tables charged', cobrado: 'Charged', empty: 'No activity this shift', platos: 'Dishes', bebidas: 'Drinks', comensales: 'guests' },
     caja: {
       ventasCobradas: 'Sales charged', tickets: 'Tickets', ticketProm: 'Average ticket', propina: 'Est. 10% tip',
-      ventasMetodo: 'Sales by payment method', arqueoEfectivo: 'Cash reconciliation', fondoInicial: 'Starting float (Bs)', efectivoContado: 'Cash counted (Bs)',
+      ventasMetodo: 'Sales by payment method', arqueoEfectivo: 'Cash reconciliation', fondoInicial: 'Starting float (USD)', efectivoContado: 'Cash counted (USD)',
       fondoRow: 'Starting float', ventasEfvt: '+ Cash sales', efvtEsperado: 'Cash expected in drawer',
       cuadrada: 'Drawer balances', sobrante: 'Over', faltante: 'Short',
       corteConfirm: 'The day will be archived, the event history will reset and the drawer will be ready for the next shift. Confirm the close?', siCerrar: 'Yes, close the drawer', cancel: 'Cancel', cerrarCaja: '🔒 Close drawer · Z-report',
@@ -337,7 +337,7 @@ const CONTENT: Record<DemoLang, Content> = {
     fin: {
       ingresos: "Today's revenue", ticketsCobrados: 'tickets charged', gastos: "Today's expenses", registros: 'entries', ganancia: 'Net profit', margen: 'margin',
       registrarGasto: 'Log expense', registrarSub: 'Supplies, payroll, utilities, vendors — everything that leaves the drawer.', conceptoPh: 'Item — e.g. Beef 10kg, Server payroll…', agregarGasto: 'Add expense', gastosHoy: "Today's expenses", sinGastos: 'No expenses logged. Add the first one above.', eliminar: 'Delete',
-      gastosCategoria: 'Expenses by category', sinDesglosar: 'No expenses to break down yet.', inversion: 'Investment and payback', inversionSub: 'Log your initial investment to track how much you’ve recovered with today’s profit.', inversionInicial: 'Initial investment (Bs)', recuperado: 'Recovered with today’s profit',
+      gastosCategoria: 'Expenses by category', sinDesglosar: 'No expenses to break down yet.', inversion: 'Investment and payback', inversionSub: 'Log your initial investment to track how much you’ve recovered with today’s profit.', inversionInicial: 'Initial investment (USD)', recuperado: 'Recovered with today’s profit',
     },
     rend: {
       empty1: 'No activity logged yet', empty2: 'As kitchen, bar and servers work, you’ll see their performance here.', despachados: 'fired', comandas: 'tickets', prepProm: 'avg prep',
@@ -545,7 +545,8 @@ type ChangeEv<T = HTMLInputElement> = { target: { value: string } } & React.Chan
 export default function BrasaPanelClient({ lang }: { lang: DemoLang }) {
   const c = CONTENT[lang]
   const es = lang === 'es'
-  const money = (n: number): string => 'Bs ' + Math.round(n).toLocaleString(c.numLocale)
+  // Precios siempre en USD (los números base del menú se convierten al formatear, factor fijo).
+  const money = (n: number): string => '$' + Math.round(n / 6.9).toLocaleString('en-US')
   const md = (m?: string): string => (m && c.modeLabels[m]) || m || ''
   const payLabel = (m?: string): string => (m && c.pay[m]) || m || ''
   const [, bump] = useReducer((x: number) => x + 1, 0)
@@ -846,7 +847,7 @@ export default function BrasaPanelClient({ lang }: { lang: DemoLang }) {
         deliverLabel: kind === 'table' ? c.mesero.servirListos : (kind === 'delivery' ? c.mesero.entregarRepartidor : c.mesero.entregarCliente),
         chargeLabel: isTable ? c.mesero.cobrarMesa : c.mesero.cobrarPedido,
         timerLabel: fullyServed ? (tm.label + ' · ' + (isTable ? c.mesero.servida : c.mesero.entregada)) : tm.label, timerColor: tm.color, timerBg: tm.bg, statusChips, guestLines, totalFmt: money(total),
-        splitFmt: (isTable && party > 1) ? ('Bs ' + Math.round(total / party).toLocaleString(c.numLocale) + ' ' + c.mesero.ea) : '', showSplit: isTable && party > 1,
+        splitFmt: (isTable && party > 1) ? ('$' + Math.round(total / party / 6.9).toLocaleString('en-US') + ' ' + c.mesero.ea) : '', showSplit: isTable && party > 1,
         canDeliver, deliver: () => deliverTable(os), canCharge, showChargeBtn: canCharge && !isTender, openCharge: () => openTender(k),
         showDecision: mixed && !decided, showHold: mixed && smode === 'together', setAsReady: () => setServeMode(k, 'asready'), setTogether: () => setServeMode(k, 'together'),
         isTender, payEfectivo: () => chargeTable(os, 'Efectivo'), payTarjeta: () => chargeTable(os, 'Tarjeta'), payQR: () => chargeTable(os, 'QR'), cancelTender,
@@ -1723,7 +1724,7 @@ export default function BrasaPanelClient({ lang }: { lang: DemoLang }) {
                           {v.expCats.map((c, i) => (<button key={i} onClick={c.onClick} style={{ background: c.bg, color: c.color, border: 'none', padding: '7px 13px', borderRadius: '20px', cursor: 'pointer', fontSize: '12px', fontWeight: 700 }}>{c.label}</button>))}
                         </div>
                         <div style={{ display: 'flex', gap: '10px' }}>
-                          <div style={{ flex: 1, display: 'flex', alignItems: 'center', gap: '8px', background: '#211810', border: '1px solid #33261a', borderRadius: '10px', padding: '0 13px' }}><span style={{ fontSize: '13px', color: '#8c7a63' }}>Bs</span><input value={v.expMonto} onChange={v.setExpMonto} type="number" placeholder="0" style={{ flex: 1, background: 'transparent', border: 'none', padding: '11px 0', fontSize: '14px', color: '#f2e8da', outline: 'none' }} /></div>
+                          <div style={{ flex: 1, display: 'flex', alignItems: 'center', gap: '8px', background: '#211810', border: '1px solid #33261a', borderRadius: '10px', padding: '0 13px' }}><span style={{ fontSize: '13px', color: '#8c7a63' }}>$</span><input value={v.expMonto} onChange={v.setExpMonto} type="number" placeholder="0" style={{ flex: 1, background: 'transparent', border: 'none', padding: '11px 0', fontSize: '14px', color: '#f2e8da', outline: 'none' }} /></div>
                           <button onClick={v.addExpense} disabled={v.addDisabled} style={{ background: '#e8934f', color: '#241a10', border: 'none', padding: '11px 22px', borderRadius: '10px', cursor: 'pointer', fontSize: '13.5px', fontWeight: 700 }}>{c.fin.agregarGasto}</button>
                         </div>
                         <div style={{ marginTop: '20px' }}>

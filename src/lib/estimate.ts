@@ -142,7 +142,7 @@ export function estimate({ region, category, platform, tier, design, compliance,
 const US_COUNTRIES = new Set(['US', 'CA', 'GB', 'PR', 'GU', 'VI', 'AS', 'MP'])
 const LATAM_COUNTRIES = new Set([
   'MX', 'GT', 'HN', 'SV', 'NI', 'CR', 'PA', 'CO', 'VE', 'EC',
-  'PE', 'BO', 'CL', 'AR', 'UY', 'PY', 'DO', 'CU',
+  'PE', 'CL', 'AR', 'UY', 'PY', 'DO', 'CU',
 ])
 
 export function regionFromCountry(country?: string | null, locale?: string): Region {
