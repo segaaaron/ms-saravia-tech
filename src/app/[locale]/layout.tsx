@@ -82,7 +82,13 @@ export async function generateMetadata({
     keywords,
     alternates: {
       canonical,
-      languages: { en: siteUrl, es: `${siteUrl}/es`, 'x-default': siteUrl },
+      languages: {
+        en: siteUrl,
+        'en-GB': siteUrl,
+        'en-CA': siteUrl,
+        es: `${siteUrl}/es`,
+        'x-default': siteUrl,
+      },
     },
     openGraph: {
       title,
@@ -90,6 +96,7 @@ export async function generateMetadata({
       url: canonical,
       siteName: 'MS SARAVIA TECH STACK LLC',
       locale: isEs ? 'es_ES' : 'en_US',
+      alternateLocale: isEs ? ['en_US', 'en_GB', 'en_CA'] : ['es_ES', 'en_GB', 'en_CA'],
       type: 'website',
     },
     twitter: {

@@ -92,6 +92,10 @@ build pasa, pero falta confirmarlo en un teléfono o con emulación de dispositi
 - **SEO completo**: metadata/canonical/hreflang/x-default, JSON-LD (Org + WebSite +
   ProfessionalService + FAQPage con FAQ visible), robots, sitemap, opengraph-image, apple-icon,
   manifest, not-found, GA4 (env), GSC verification.
+- **SEO geo multi-mercado (USA/Canadá/UK/LATAM)**: hreflang `en`/`en-GB`/`en-CA`/`es`+`x-default`,
+  `areaServed` US/CA/UK/LatAm en JSON-LD, og `alternateLocale`, GB en región de precios US. Impacto
+  SEO bajo sin contenido de respaldo (ver nota PO en CONTEXT); pendiente: case studies con datos
+  reales + copy de timezone overlap. Requiere redeploy.
   GSC: propiedad `https://www.ms-tech-stack.cloud` **verificada** (etiqueta HTML). Token
   hardcodeado como default en `src/app/[locale]/layout.tsx` (es público, ok).
 - **Estimador `/estimate` + geo por IP** — validados por QA, aptos PROD. Requieren redeploy.

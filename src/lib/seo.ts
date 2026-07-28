@@ -20,6 +20,8 @@ export function buildAlternates(locale: string, path = ''): Metadata['alternates
     canonical: localizedUrl(locale, path),
     languages: {
       en: localizedUrl('en', path),
+      'en-GB': localizedUrl('en', path),
+      'en-CA': localizedUrl('en', path),
       es: localizedUrl('es', path),
       'x-default': localizedUrl('en', path),
     },
@@ -39,6 +41,7 @@ export function buildOpenGraph(
     url: localizedUrl(locale, path),
     siteName: 'MS SARAVIA TECH STACK LLC',
     locale: locale === 'es' ? 'es_ES' : 'en_US',
+    alternateLocale: locale === 'es' ? ['en_US', 'en_GB', 'en_CA'] : ['es_ES', 'en_GB', 'en_CA'],
     type: 'website',
   }
 }

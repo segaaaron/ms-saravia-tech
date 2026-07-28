@@ -135,10 +135,11 @@ export function estimate({ region, category, platform, tier, design, compliance,
   }
 }
 
-// Región de precios determinada por PAÍS (geo por IP en el server). USA/Canadá (y territorios
+// Región de precios determinada por PAÍS (geo por IP en el server). USA/Canadá/UK (y territorios
 // USD) → 'us'; países de LATAM → 'latam'; fuera de esas regiones o desconocido → fallback por
-// locale. Así un usuario de USA/Canadá NO puede ver los precios de LATAM.
-const US_COUNTRIES = new Set(['US', 'CA', 'PR', 'GU', 'VI', 'AS', 'MP'])
+// locale. Así un usuario de USA/Canadá/UK NO puede ver los precios de LATAM (mercados target de
+// alto valor comparten la tarifa US).
+const US_COUNTRIES = new Set(['US', 'CA', 'GB', 'PR', 'GU', 'VI', 'AS', 'MP'])
 const LATAM_COUNTRIES = new Set([
   'MX', 'GT', 'HN', 'SV', 'NI', 'CR', 'PA', 'CO', 'VE', 'EC',
   'PE', 'BO', 'CL', 'AR', 'UY', 'PY', 'DO', 'CU',

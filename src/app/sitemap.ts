@@ -20,7 +20,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
   ]
 
   return routes.flatMap((r) => {
-    const languages = { en: localizedUrl('en', r.path), es: localizedUrl('es', r.path) }
+    const languages = {
+      en: localizedUrl('en', r.path),
+      'en-GB': localizedUrl('en', r.path),
+      'en-CA': localizedUrl('en', r.path),
+      es: localizedUrl('es', r.path),
+    }
     // Emite ambas URLs (en + es) con alternates recíprocos, como ya hacía la home.
     return (['en', 'es'] as const).map((loc) => ({
       url: localizedUrl(loc, r.path),
