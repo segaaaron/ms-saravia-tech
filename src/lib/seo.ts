@@ -8,6 +8,10 @@ export const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.ms-tech-
 export const locales = ['en', 'es'] as const
 export type Locale = (typeof locales)[number]
 
+// Mercados servidos (SEO geo). Fuente única para el `areaServed` de todos los JSON-LD del sitio —
+// mantiene coherente la narrativa multi-mercado (Org, ProfessionalService, Service por ruta).
+export const AREA_SERVED = ['United States', 'Canada', 'United Kingdom', 'Europe', 'Latin America']
+
 /** URL absoluta de un path (sin locale) para un locale dado. path empieza con '/', o '' para la home. */
 export function localizedUrl(locale: string, path = ''): string {
   const prefix = locale === 'es' ? '/es' : ''

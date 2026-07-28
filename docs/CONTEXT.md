@@ -62,6 +62,11 @@ contacto. Idiomas: **inglés (default) + español**.
   **Nota estratégica (PO)**: el hreflang geo sin contenido diferenciado es housekeeping, impacto BAJO
   en leads. Lo que mueve la aguja: case studies con results+testimonial reales, copy de timezone
   overlap ("US/UK/CA teams"), sitemap→GSC. Pendientes de contenido, no de código.
+- **FAQPage JSON-LD = SOLO en la home** (`components/seo/FaqJsonLd.tsx`, co-ubicado con `<Faq/>`).
+  NO va en el JsonLd global del layout: emitir FAQPage en rutas sin FAQ visible viola guideline de
+  Google. `areaServed` centralizado en `lib/seo.ts` (`AREA_SERVED`) → usado por Org, ProfessionalService
+  y los Service de `/services` y `/solutions` (antes hardcodeaban 'US', ya alineados a las 5 regiones).
+  `Post.updated?` opcional → `dateModified` real cuando se edita un post (si falta, = `date`).
 
 ## i18n routing + toggle de idioma
 - `src/i18n/routing.ts` (`defineRouting`) es la **config única** (locales, defaultLocale en,

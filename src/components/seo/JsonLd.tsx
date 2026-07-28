@@ -1,5 +1,6 @@
-import { FAQ, type Locale } from '@/content/faq'
+import { type Locale } from '@/content/faq'
 import { SAME_AS } from '@/content/socials'
+import { AREA_SERVED } from '@/lib/seo'
 
 const SITE_URL =
   process.env.NEXT_PUBLIC_SITE_URL || 'https://www.ms-tech-stack.cloud'
@@ -97,7 +98,7 @@ export default function JsonLd({ locale }: { locale: string }) {
         image: `${SITE_URL}/opengraph-image`,
         priceRange: '$$$',
         provider: { '@id': `${SITE_URL}/#organization` },
-        areaServed: ['United States', 'Canada', 'United Kingdom', 'Europe', 'Latin America'],
+        areaServed: AREA_SERVED,
         hasOfferCatalog: {
           '@type': 'OfferCatalog',
           name:
@@ -112,15 +113,10 @@ export default function JsonLd({ locale }: { locale: string }) {
           })),
         },
       },
-      {
-        '@type': 'FAQPage',
-        '@id': `${canonical}#faq`,
-        mainEntity: FAQ[l].map((f) => ({
-          '@type': 'Question',
-          name: f.q,
-          acceptedAnswer: { '@type': 'Answer', text: f.a },
-        })),
-      },
+      // NOTA: el FAQPage NO va aquí. Este JsonLd se monta en el layout raíz (todas las rutas
+      // [locale]), pero la FAQ visible solo existe en la home. Emitir FAQPage sitewide sin FAQ
+      // visible viola la guideline de Google (structured data debe matchear contenido visible).
+      // El FAQPage se emite en la home vía <FaqJsonLd/>, co-ubicado con <Faq/>.
     ],
   }
 

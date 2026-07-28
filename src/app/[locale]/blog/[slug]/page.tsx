@@ -56,7 +56,7 @@ export default async function BlogPostPage({
     headline: c.title,
     description: c.excerpt,
     datePublished: post.date,
-    dateModified: post.date,
+    dateModified: post.updated ?? post.date,
     inLanguage: loc,
     url: localizedUrl(locale, `/blog/${slug}`),
     mainEntityOfPage: localizedUrl(locale, `/blog/${slug}`),

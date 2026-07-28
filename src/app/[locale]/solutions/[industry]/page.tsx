@@ -5,7 +5,7 @@ import { getTranslations } from 'next-intl/server'
 import { ArrowUpRight, Check } from 'lucide-react'
 import CtaButton from '@/components/ui/CtaButton'
 import { getSolutionPage, getServicePage } from '@/content/seo'
-import { buildAlternates, buildOpenGraph, localizedUrl } from '@/lib/seo'
+import { buildAlternates, buildOpenGraph, localizedUrl, AREA_SERVED } from '@/lib/seo'
 import Breadcrumbs from '@/components/seo/Breadcrumbs'
 import JsonLdScript from '@/components/seo/JsonLdScript'
 import GradientText from '@/components/ui/GradientText'
@@ -57,7 +57,7 @@ export default async function SolutionPage({
     serviceType: t(`items.${industry}.metaTitle`),
     description: t(`items.${industry}.metaDesc`),
     provider: { '@type': 'Organization', name: 'MS SARAVIA TECH STACK LLC', url: localizedUrl('en') },
-    areaServed: 'US',
+    areaServed: AREA_SERVED,
     url: localizedUrl(locale, `/solutions/${industry}`),
   }
 

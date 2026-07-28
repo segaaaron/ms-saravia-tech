@@ -10,10 +10,17 @@ import Process from '@/components/sections/Process'
 import About from '@/components/sections/About'
 import Faq from '@/components/sections/Faq'
 import Contact from '@/components/sections/Contact'
+import FaqJsonLd from '@/components/seo/FaqJsonLd'
 
-export default function HomePage() {
+export default async function HomePage({
+  params,
+}: {
+  params: Promise<{ locale: string }>
+}) {
+  const { locale } = await params
   return (
     <>
+      <FaqJsonLd locale={locale} />
       <Hero />
       <Services />
       <StackMarquee />

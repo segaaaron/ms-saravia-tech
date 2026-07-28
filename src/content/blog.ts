@@ -20,6 +20,8 @@ export type Post = {
   slug: string
   /** ISO date (publicación). Orden del hub = date desc. */
   date: string
+  /** ISO date de última edición. Opcional; si falta, dateModified = date (sin señal de frescura). */
+  updated?: string
   /** slug del service pillar relacionado (para CTA + internal link). */
   cluster: string
   en: PostContent

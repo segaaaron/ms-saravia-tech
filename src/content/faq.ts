@@ -3,7 +3,8 @@ export type Locale = 'en' | 'es'
 export type FaqItem = { q: string; a: string }
 
 // Shared FAQ source of truth: rendered visibly by <Faq /> AND emitted as
-// FAQPage JSON-LD by <JsonLd />. Keep both in sync by importing from here.
+// FAQPage JSON-LD by <FaqJsonLd /> — both ONLY on the home page (schema must match visible FAQ).
+// Keep both in sync by importing from here.
 export const FAQ: Record<Locale, FaqItem[]> = {
   en: [
     {
