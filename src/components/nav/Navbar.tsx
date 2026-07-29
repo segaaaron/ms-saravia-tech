@@ -48,6 +48,11 @@ export default function Navbar() {
     if (link.href.startsWith('#')) return `${prefix}/${link.href}`
     return `${prefix}${link.href}`
   }
+  // /demos es OTRO root layout (html/tema/fuentes propios). Cruzarlo requiere navegación de
+  // documento completo: <a>, no <Link> (el soft-nav rompe el DOM entre los dos <html> → CSS
+  // roto / crash). En este nav, route:true marca justamente ese cruce.
+  const crossesRootLayout = (link: { href: string; route?: boolean }) =>
+    Boolean(link.route)
   // CTA "Let's Talk" → sección de contacto de la home, desde cualquier página.
   const ctaHref = `${prefix}/#contact`
   const [scrolled, setScrolled] = useState(false)
@@ -246,8 +251,15 @@ export default function Navbar() {
                   <span className="absolute -bottom-0.5 left-0 w-0 h-px bg-gradient-to-r from-cyan-400 to-violet-500 group-hover:w-full transition-all duration-300" />
                 </>
               )
-              // Todos los links (anclas normalizadas a /#x, rutas y demos) van por hrefFor →
-              // siempre <Link> con href navegable. Funciona desde cualquier página.
+              // Anclas y rutas in-locale → <Link> (soft-nav). El cruce a /demos (otro root
+              // layout) → <a> hard-nav, si no el soft-nav rompe el DOM entre los dos <html>.
+              if (crossesRootLayout(link)) {
+                return (
+                  <a key={link.key} href={hrefFor(link)} className={className}>
+                    {inner}
+                  </a>
+                )
+              }
               return (
                 <Link key={link.key} href={hrefFor(link)} className={className}>
                   {inner}
@@ -401,10 +413,17 @@ export default function Navbar() {
                 transitionDelay: mobileOpen ? `${i * 15}ms` : '0ms',
               }}
             >
-              <Link href={hrefFor(link)} onClick={closeMobile} className="flex items-center flex-1">
-                <span className="flex-1">{t(link.key)}</span>
-                <span className="w-1.5 h-1.5 rounded-full bg-cyan-400/0 group-hover:bg-cyan-400 transition-colors duration-200" />
-              </Link>
+              {crossesRootLayout(link) ? (
+                <a href={hrefFor(link)} onClick={closeMobile} className="flex items-center flex-1">
+                  <span className="flex-1">{t(link.key)}</span>
+                  <span className="w-1.5 h-1.5 rounded-full bg-cyan-400/0 group-hover:bg-cyan-400 transition-colors duration-200" />
+                </a>
+              ) : (
+                <Link href={hrefFor(link)} onClick={closeMobile} className="flex items-center flex-1">
+                  <span className="flex-1">{t(link.key)}</span>
+                  <span className="w-1.5 h-1.5 rounded-full bg-cyan-400/0 group-hover:bg-cyan-400 transition-colors duration-200" />
+                </Link>
+              )}
             </div>
           ))}
         </div>
