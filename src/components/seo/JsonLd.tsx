@@ -5,7 +5,7 @@ import { AREA_SERVED } from '@/lib/seo'
 const SITE_URL =
   process.env.NEXT_PUBLIC_SITE_URL || 'https://www.ms-tech-stack.cloud'
 
-const CONTACT_EMAIL = 'contact@ms-tech-stack.cloud'
+const CONTACT_EMAIL = 'techstackmssaravia@gmail.com'
 
 const SERVICES: Record<Locale, { name: string; desc: string }[]> = {
   en: [
