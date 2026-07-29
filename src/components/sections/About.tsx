@@ -56,7 +56,7 @@ export default function About() {
             className="space-y-8"
           >
             <motion.div variants={slideInLeft}>
-              <SectionLabel color="cyan">About</SectionLabel>
+              <SectionLabel color="cyan">{t('label')}</SectionLabel>
             </motion.div>
 
             <motion.h2

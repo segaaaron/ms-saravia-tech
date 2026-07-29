@@ -35,7 +35,7 @@ export default function Work() {
           className="text-center mb-16 space-y-4"
         >
           <motion.div variants={floatUp3D}>
-            <SectionLabel color="magenta">Portfolio</SectionLabel>
+            <SectionLabel color="magenta">{t('label')}</SectionLabel>
           </motion.div>
 
           <motion.h2

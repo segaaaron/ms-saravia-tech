@@ -10,7 +10,8 @@
     "cta": "Hablemos",
     "menu": "Menú de navegación",
     "openMenu": "Abrir menú",
-    "closeMenu": "Cerrar menú"
+    "closeMenu": "Cerrar menú",
+    "aria": "Navegación principal"
   },
   "showcase": {
     "label": "Demos en vivo",
@@ -49,9 +50,11 @@
     "cta_secondary": "Ver servicios",
     "stat1": "Productos lanzados",
     "stat2": "Uptime promedio",
-    "stat3": "Años de experiencia"
+    "stat3": "Años de experiencia",
+    "scroll": "Desliza"
   },
   "services": {
+    "label": "Servicios",
     "title": "Lo Que Construimos",
     "subtitle": "Soluciones de software élite para empresas ambiciosas",
     "items": [
@@ -110,6 +113,7 @@
     ]
   },
   "work": {
+    "label": "Portafolio",
     "title": "Nuestro Trabajo",
     "subtitle": "Productos reales, en producción.",
     "projects": [
@@ -141,6 +145,7 @@
     "seeAll": "Ver todos los proyectos"
   },
   "process": {
+    "label": "Proceso",
     "title": "Cómo Trabajamos",
     "subtitle": "Un proceso probado para entregar software élite, a tiempo y dentro del presupuesto.",
     "steps": [
@@ -172,6 +177,7 @@
     ]
   },
   "about": {
+    "label": "Nosotros",
     "title": "Construidos para el Futuro",
     "subtitle": "Una LLC con sede en EE.UU. que entrega software élite a startups y empresas en todo el mundo.",
     "stats": [
@@ -201,6 +207,7 @@
     "highlightLabel": "Liderado por el fundador"
   },
   "contact": {
+    "label": "Contacto",
     "title": "Iniciar un Proyecto",
     "subtitle": "Cuéntanos qué estás construyendo. Lo haremos realidad.",
     "name": "Nombre Completo",

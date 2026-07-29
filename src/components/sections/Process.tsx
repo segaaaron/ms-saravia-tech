@@ -135,7 +135,7 @@ export default function Process() {
           className="flex w-full flex-col items-center text-center mb-12 px-4 space-y-4 shrink-0"
         >
           <motion.div variants={fadeInUp}>
-            <SectionLabel color="violet">Process</SectionLabel>
+            <SectionLabel color="violet">{t('label')}</SectionLabel>
           </motion.div>
 
           <motion.h2

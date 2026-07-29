@@ -10,7 +10,8 @@
     "cta": "Let's Talk",
     "menu": "Navigation menu",
     "openMenu": "Open menu",
-    "closeMenu": "Close menu"
+    "closeMenu": "Close menu",
+    "aria": "Main navigation"
   },
   "showcase": {
     "label": "Live demos",
@@ -49,9 +50,11 @@
     "cta_secondary": "View services",
     "stat1": "Products launched",
     "stat2": "Avg. uptime",
-    "stat3": "Years of experience"
+    "stat3": "Years of experience",
+    "scroll": "Scroll"
   },
   "services": {
+    "label": "Services",
     "title": "What We Build",
     "subtitle": "Elite software solutions for ambitious businesses",
     "items": [
@@ -110,6 +113,7 @@
     ]
   },
   "work": {
+    "label": "Portfolio",
     "title": "Our Work",
     "subtitle": "Real products, live in production.",
     "projects": [
@@ -141,6 +145,7 @@
     "seeAll": "See all work"
   },
   "process": {
+    "label": "Process",
     "title": "How We Work",
     "subtitle": "A proven process for delivering elite software, on time and on budget.",
     "steps": [
@@ -172,6 +177,7 @@
     ]
   },
   "about": {
+    "label": "About",
     "title": "Built for the Future",
     "subtitle": "A USA-based LLC delivering elite software to startups and enterprises worldwide.",
     "stats": [
@@ -201,6 +207,7 @@
     "highlightLabel": "Founder-led"
   },
   "contact": {
+    "label": "Contact",
     "title": "Start a Project",
     "subtitle": "Tell us what you're building. We'll make it real.",
     "name": "Full Name",

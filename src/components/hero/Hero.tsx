@@ -106,7 +106,7 @@ export default function Hero() {
           animate={{ scaleY: [0, 1, 0] }}
           transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
         />
-        <span className="text-white/20 text-xs font-mono tracking-widest uppercase" style={{ writingMode: 'vertical-rl' }}>scroll</span>
+        <span className="text-white/20 text-xs font-mono tracking-widest uppercase" style={{ writingMode: 'vertical-rl' }}>{t('scroll')}</span>
       </motion.div>
     </section>
   )

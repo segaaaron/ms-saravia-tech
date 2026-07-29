@@ -236,7 +236,7 @@ export default function Navbar() {
           </Link>
 
           {/* Desktop nav */}
-          <nav className="hidden lg:flex items-center gap-8" aria-label="Main navigation">
+          <nav className="hidden lg:flex items-center gap-8" aria-label={t('aria')}>
             {NAV_LINKS.map((link) => {
               const className =
                 'text-sm text-white/60 hover:text-white transition-colors duration-200 font-medium relative group'

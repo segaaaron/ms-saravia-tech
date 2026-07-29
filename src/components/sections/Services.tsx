@@ -34,7 +34,7 @@ export default function Services() {
           className="text-center mb-16 space-y-4"
         >
           <motion.div variants={fadeInUp}>
-            <SectionLabel color="cyan">Services</SectionLabel>
+            <SectionLabel color="cyan">{t('label')}</SectionLabel>
           </motion.div>
 
           <motion.h2

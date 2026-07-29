@@ -174,7 +174,7 @@ export default function Contact() {
             className="space-y-8 lg:sticky lg:top-24"
           >
             <motion.div variants={slideInLeft}>
-              <SectionLabel color="cyan">Contact</SectionLabel>
+              <SectionLabel color="cyan">{t('label')}</SectionLabel>
             </motion.div>
 
             <motion.h2
