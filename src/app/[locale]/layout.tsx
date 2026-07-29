@@ -127,11 +127,20 @@ export default async function RootLayout({
     <html lang={locale} className={`${spaceGrotesk.variable} ${inter.variable}`}>
       <body suppressHydrationWarning>
         {/*
-          Host canónico apex→www: se resuelve en el edge (Traefik, redirect 308 antes de
-          Next — ver /etc/dokploy/traefik/dynamic/zz-apex-redirect.yml en el VPS). El apex
-          nunca sirve documento, así que ningún <Link> puede disparar un fetch RSC
-          cross-origin. El middleware Next mantiene el guard como defensa en profundidad.
+          Canonical-host guard (cliente). El redirect 308 del middleware sólo aplica a
+          requests de documento completos; una navegación soft (<Link>) hace fetch RSC al
+          MISMO origen del documento. Si un documento quedó servido/cacheado en el apex
+          (ms-tech-stack.cloud, sin www) de antes del redirect canónico, cada soft-nav pide
+          el RSC al apex → 308 a www (otro origen) → CORS lo bloquea → "Application error:
+          a client-side exception". Este script fuerza un hard-redirect a www APENAS bootea
+          el documento apex, antes de que exista cualquier <Link>, y auto-sana esas sesiones.
         */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html:
+              "(function(){try{if(location.hostname==='ms-tech-stack.cloud'){location.replace('https://www.ms-tech-stack.cloud'+location.pathname+location.search+location.hash)}}catch(e){}})()",
+          }}
+        />
         <JsonLd locale={locale} />
         <Analytics />
         <NextIntlClientProvider locale={locale} messages={messages}>

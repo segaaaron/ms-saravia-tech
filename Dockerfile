@@ -1,21 +1,16 @@
 FROM node:22-alpine AS base
-# corepack activa el pnpm pineado en package.json ("packageManager"): builds reproducibles.
-RUN corepack enable
 
 FROM base AS deps
 WORKDIR /app
-# Manifiesto + lock + config de workspace (overrides/allowBuilds viven en
-# pnpm-workspace.yaml y .npmrc; sin ellos --frozen-lockfile falla por
-# ERR_PNPM_LOCKFILE_CONFIG_MISMATCH). Solo estos → cachea deps si no cambian.
-COPY package.json pnpm-lock.yaml pnpm-workspace.yaml .npmrc ./
-RUN pnpm install --frozen-lockfile
+COPY package.json ./
+RUN npm install
 
 FROM base AS builder
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 ENV NEXT_TELEMETRY_DISABLED=1
-RUN pnpm build
+RUN npm run build
 
 FROM base AS runner
 WORKDIR /app
