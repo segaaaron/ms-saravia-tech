@@ -126,31 +126,6 @@ export default async function RootLayout({
   return (
     <html lang={locale} className={`${spaceGrotesk.variable} ${inter.variable}`}>
       <body suppressHydrationWarning>
-        {/*
-          Dos protecciones de cliente contra estados rotos de navegación:
-
-          1) apex→www: el canónico lo hace el server (middleware 308) en toda carga nueva. Pero
-             un documento del apex ya cacheado/bookmarkeado/restaurado de bfcache sigue vivo en
-             el navegador; su soft-nav haría fetch RSC same-origin al apex → 308 a www (otro
-             origen) → CORS → crash. Se hard-redirige a www apenas aparece.
-
-          2) bfcache stale: al volver con el botón atrás desde un documento externo (p. ej. la
-             demo en Vercel de un proyecto), el navegador restaura la página desde bfcache con
-             el router de Next en estado viejo → la siguiente soft-nav carga mal (crash o CSS
-             sin aplicar, padding perdido). 'pageshow' con persisted=true = restauración de
-             bfcache: forzamos un reload para arrancar con estado limpio. Solo dispara al
-             regresar de una navegación de documento completo (raro), no en el ruteo normal SPA.
-
-          Corre en parse inicial y en 'pageshow' (único evento que dispara al restaurar bfcache,
-          donde los scripts no re-ejecutan). El reload no cicla: una carga fresca trae
-          persisted=false.
-        */}
-        <script
-          dangerouslySetInnerHTML={{
-            __html:
-              "(function(){function w(){try{if(location.hostname==='ms-tech-stack.cloud'){location.replace('https://www.ms-tech-stack.cloud'+location.pathname+location.search+location.hash);return true}}catch(e){}return false}w();addEventListener('pageshow',function(e){if(w())return;if(e&&e.persisted){location.reload()}})})()",
-          }}
-        />
         <JsonLd locale={locale} />
         <Analytics />
         <NextIntlClientProvider locale={locale} messages={messages}>
