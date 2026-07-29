@@ -10,12 +10,17 @@ export default function CtaButton({
   className = '',
   size = 'md',
   external = false,
+  hardNav = false,
 }: {
   href: string
   children: React.ReactNode
   className?: string
   size?: 'md' | 'lg'
   external?: boolean
+  // hardNav: navegación de documento completo en la MISMA pestaña (sin target=_blank).
+  // Necesario al cruzar a otro root layout (p. ej. /demos): un <Link> soft-nav rompería
+  // el DOM entre los dos <html>. external abre en pestaña nueva; hardNav no.
+  hardNav?: boolean
 }) {
   const pad = size === 'lg' ? 'px-8 py-4 text-base' : 'px-7 py-3.5 text-sm'
   const inner = (
@@ -36,6 +41,13 @@ export default function CtaButton({
   if (external) {
     return (
       <a href={href} target="_blank" rel="noopener noreferrer" className={cls} style={style}>
+        {inner}
+      </a>
+    )
+  }
+  if (hardNav) {
+    return (
+      <a href={href} className={cls} style={style}>
         {inner}
       </a>
     )

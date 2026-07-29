@@ -1,7 +1,6 @@
 'use client'
 import { motion } from 'framer-motion'
 import { useTranslations, useLocale } from 'next-intl'
-import Link from 'next/link'
 import Image from 'next/image'
 import { ArrowUpRight, Sparkles, Smartphone } from 'lucide-react'
 import GradientText from '@/components/ui/GradientText'
@@ -75,7 +74,10 @@ export default function DemosShowcase() {
                   boxShadow: '0 22px 44px -24px rgba(0,0,0,0.75), 0 2px 8px -2px rgba(0,0,0,0.4)',
                 }}
               >
-                <Link
+                {/* /demos es OTRO root layout (html/tema/fuentes propios). Cruzar root
+                    layouts requiere navegación de documento completo: <a>, no <Link> (el
+                    soft-nav rompe el DOM entre los dos <html> → CSS roto / crash). */}
+                <a
                   href={`/demos/${card.slug}?lang=${locale}`}
                   className="relative z-[2] block"
                   aria-label={`${t('open')} — ${item.name}`}
@@ -126,7 +128,7 @@ export default function DemosShowcase() {
                       <ArrowUpRight size={13} className="transition-transform duration-200 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
                     </span>
                   </div>
-                </Link>
+                </a>
               </TiltCard>
             )
           })}
@@ -163,7 +165,7 @@ export default function DemosShowcase() {
             </motion.div>
 
             <motion.div variants={floatUp3D} className="flex lg:justify-end">
-              <CtaButton href={`/demos?lang=${locale}`}>{t('cta')}</CtaButton>
+              <CtaButton href={`/demos?lang=${locale}`} hardNav>{t('cta')}</CtaButton>
             </motion.div>
           </div>
         </motion.div>
