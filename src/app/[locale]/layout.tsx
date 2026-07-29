@@ -127,17 +127,18 @@ export default async function RootLayout({
     <html lang={locale} className={`${spaceGrotesk.variable} ${inter.variable}`}>
       <body suppressHydrationWarning>
         {/*
-          apex→www: el redirect canónico vive en el edge (Traefik, 308) y cubre toda carga
-          NUEVA. Este guard cubre el caso que el edge no puede: un documento del apex que ya
-          quedó abierto/cacheado/bookmarkeado en un navegador. Ahí la soft-nav haría fetch RSC
-          same-origin al apex → 308 a www (otro origen) → CORS lo bloquea → crash. El script
-          hard-redirige a www apenas bootea el documento apex, antes de que exista cualquier
-          <Link>, evacuando esas sesiones. Defensa en profundidad, no reemplazo del edge.
+          apex→www: el redirect canónico lo hace el server (middleware 308) en toda carga NUEVA.
+          Este guard cubre el caso que el server no alcanza: un documento del apex ya
+          abierto/cacheado/bookmarkeado o restaurado de bfcache (botón atrás). Ahí la soft-nav
+          hace fetch RSC same-origin al apex → 308 a www (otro origen) → CORS lo bloquea → crash.
+          El script hard-redirige a www APENAS aparece un documento apex, antes de cualquier
+          <Link>. Corre en el parse inicial Y en 'pageshow' (que sí dispara al volver de
+          bfcache, donde los scripts normales no re-ejecutan). Defensa del lado del cliente.
         */}
         <script
           dangerouslySetInnerHTML={{
             __html:
-              "(function(){try{if(location.hostname==='ms-tech-stack.cloud'){location.replace('https://www.ms-tech-stack.cloud'+location.pathname+location.search+location.hash)}}catch(e){}})()",
+              "(function(){function r(){try{if(location.hostname==='ms-tech-stack.cloud'){location.replace('https://www.ms-tech-stack.cloud'+location.pathname+location.search+location.hash)}}catch(e){}}r();addEventListener('pageshow',r)})()",
           }}
         />
         <JsonLd locale={locale} />
