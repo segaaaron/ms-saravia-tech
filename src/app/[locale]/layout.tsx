@@ -126,8 +126,20 @@ export default async function RootLayout({
   return (
     <html lang={locale} className={`${spaceGrotesk.variable} ${inter.variable}`}>
       <body suppressHydrationWarning>
-        {/* apex→www se resuelve en el edge (Traefik, 308 antes de Next). El apex nunca
-            sirve documento, así que no hace falta ningún redirect en cliente. */}
+        {/*
+          apex→www: el redirect canónico vive en el edge (Traefik, 308) y cubre toda carga
+          NUEVA. Este guard cubre el caso que el edge no puede: un documento del apex que ya
+          quedó abierto/cacheado/bookmarkeado en un navegador. Ahí la soft-nav haría fetch RSC
+          same-origin al apex → 308 a www (otro origen) → CORS lo bloquea → crash. El script
+          hard-redirige a www apenas bootea el documento apex, antes de que exista cualquier
+          <Link>, evacuando esas sesiones. Defensa en profundidad, no reemplazo del edge.
+        */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html:
+              "(function(){try{if(location.hostname==='ms-tech-stack.cloud'){location.replace('https://www.ms-tech-stack.cloud'+location.pathname+location.search+location.hash)}}catch(e){}})()",
+          }}
+        />
         <JsonLd locale={locale} />
         <Analytics />
         <NextIntlClientProvider locale={locale} messages={messages}>
