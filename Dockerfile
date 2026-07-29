@@ -4,8 +4,10 @@ RUN corepack enable
 
 FROM base AS deps
 WORKDIR /app
-# Solo manifiesto + lock → cachea la capa de deps si no cambian.
-COPY package.json pnpm-lock.yaml ./
+# Manifiesto + lock + config de workspace (overrides/allowBuilds viven en
+# pnpm-workspace.yaml y .npmrc; sin ellos --frozen-lockfile falla por
+# ERR_PNPM_LOCKFILE_CONFIG_MISMATCH). Solo estos → cachea deps si no cambian.
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml .npmrc ./
 RUN pnpm install --frozen-lockfile
 
 FROM base AS builder
