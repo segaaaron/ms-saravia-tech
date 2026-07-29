@@ -18,7 +18,16 @@ export default function middleware(request: NextRequest) {
     request.headers.get('host') ??
     ''
   ).toLowerCase()
-  if (host === 'ms-tech-stack.cloud') {
+  // Canónico apex -> www SOLO para requests de documento. Un request RSC (soft-nav de Next:
+  // header 'RSC' o query '_rsc') NO se redirige: si un documento del apex quedó abierto/cacheado
+  // en un navegador, su soft-nav hace fetch RSC same-origin al apex; redirigirlo a www (otro
+  // origen) lo bloquea CORS → crash ("Something went wrong"). Sirviéndolo same-origin no cruza
+  // de origen y no crashea. El documento completo sí redirige, así que el canónico se mantiene.
+  const isRsc =
+    request.headers.get('rsc') !== null ||
+    request.headers.get('next-router-prefetch') !== null ||
+    request.nextUrl.searchParams.has('_rsc')
+  if (host === 'ms-tech-stack.cloud' && !isRsc) {
     const url = request.nextUrl.clone()
     url.host = CANONICAL_HOST
     url.protocol = 'https:'
