@@ -1,16 +1,19 @@
 FROM node:22-alpine AS base
+# corepack activa el pnpm pineado en package.json ("packageManager"): builds reproducibles.
+RUN corepack enable
 
 FROM base AS deps
 WORKDIR /app
-COPY package.json ./
-RUN npm install
+# Solo manifiesto + lock → cachea la capa de deps si no cambian.
+COPY package.json pnpm-lock.yaml ./
+RUN pnpm install --frozen-lockfile
 
 FROM base AS builder
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 ENV NEXT_TELEMETRY_DISABLED=1
-RUN npm run build
+RUN pnpm build
 
 FROM base AS runner
 WORKDIR /app
