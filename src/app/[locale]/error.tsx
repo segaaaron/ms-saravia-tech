@@ -1,6 +1,5 @@
 'use client'
 
-import { useEffect } from 'react'
 import { usePathname } from 'next/navigation'
 
 const COPY = {
@@ -19,16 +18,11 @@ const COPY = {
 } as const
 
 /**
- * Route-level error boundary del árbol [locale]. Captura excepciones de cliente (p. ej. un
- * fetch RSC que falla por CORS al quedar el documento en el apex) y, en vez de la pantalla
- * negra "Application error", muestra una UI de marca con recuperación.
- *
- * Auto-recuperación one-shot: si el documento está en el apex sin-www, un hard-reload cae en
- * www vía el 308 canónico y el error desaparece. Se marca en sessionStorage para no ciclar
- * si el error persistiera en www.
+ * Route-level error boundary del árbol [locale]. Ante una excepción de cliente muestra una
+ * UI de marca con recuperación (reintentar / recargar) en vez de la pantalla negra de Next.
+ * El caso apex→www que lo motivó ya se resuelve en el edge (Traefik).
  */
 export default function LocaleError({
-  error,
   reset,
 }: {
   error: Error & { digest?: string }
@@ -36,21 +30,6 @@ export default function LocaleError({
 }) {
   const pathname = usePathname()
   const t = pathname?.startsWith('/es') ? COPY.es : COPY.en
-
-  useEffect(() => {
-    if (typeof window === 'undefined') return
-    const KEY = 'mss_err_recover'
-    const alreadyTried = sessionStorage.getItem(KEY) === '1'
-    if (location.hostname === 'ms-tech-stack.cloud' && !alreadyTried) {
-      sessionStorage.setItem(KEY, '1')
-      location.replace(
-        'https://www.ms-tech-stack.cloud' +
-          location.pathname +
-          location.search +
-          location.hash,
-      )
-    }
-  }, [error])
 
   return (
     <div
