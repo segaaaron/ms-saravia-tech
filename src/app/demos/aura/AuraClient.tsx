@@ -290,7 +290,13 @@ export default function AuraClient({ lang }: { lang: DemoLang }) {
   const [phone, setPhone] = useState('')
 
   useEffect(() => {
-    const r = document.documentElement.style
+    // Las CSS vars del portal (--accent, --door, --p, --fly, --heroText, --enterText, --flare,
+    // --mx, --my) se escriben en el ROOT propio de la demo, no en document.documentElement (:root
+    // global). Se heredan igual a todos los descendientes —que son quienes las leen— y se van con
+    // el elemento al desmontar, así no quedan pegadas en :root tras un soft-nav a otra ruta.
+    const host = rootEl.current
+    if (!host) return
+    const r = host.style
     r.setProperty('--accent', ACCENT)
 
     // Reduced-motion: sin portal animado. Estado "entrado" estático (puertas abiertas + CTA) y

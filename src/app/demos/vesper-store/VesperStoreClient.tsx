@@ -565,6 +565,11 @@ export default function VesperStoreClient({ lang: initialLang }: { lang: DemoLan
   const closeAll = () => setCartOpen(false)
   const stop = (e: ReactMouseEvent) => e.stopPropagation()
   const onCurrency = (e: ChangeEvent<HTMLSelectElement>) => setCurrency(e.target.value as 'USD' | 'EUR' | 'MXN')
+  // El root de la demo (rootRef, ~:961) ya pinta `background: var(--bg)`, así que el color del
+  // CONTENIDO ya sigue al tema por sí solo. La escritura a `body` existe solo para pintar el gutter
+  // de overscroll (que vive en body/html, fuera del root de 100vh; no se puede colorear desde el
+  // root). Para que ese inline no se pegue al `<body>` compartido tras un soft-nav, se limpia en el
+  // cleanup de abajo. Resultado: visual idéntico dentro de la demo, sin leak al salir.
   const toggleTheme = () => { const t = theme === 'dark' ? 'light' : 'dark'; setTheme(t); try { document.body.style.background = t === 'dark' ? '#0e0f13' : '#ffffff' } catch { /* noop */ } }
   const toggleLang = () => { const l = lang === 'en' ? 'es' : 'en'; setLang(l); showToast(l === 'en' ? 'Language: English' : 'Idioma: Español', 1800) }
 
@@ -687,6 +692,12 @@ export default function VesperStoreClient({ lang: initialLang }: { lang: DemoLan
   const cardUntilt = (e: ReactMouseEvent<HTMLElement>) => { const el = e.currentTarget; el.style.transform = ''; el.style.setProperty('--gl', '0') }
   const swEnter = (url: string, e: ReactMouseEvent<HTMLElement>) => { const cc = (e.currentTarget as HTMLElement).closest('[data-card]') as HTMLElement | null; if (cc) cc.style.setProperty('--cimg', 'url(' + url + ')') }
   const swLeave = (e: ReactMouseEvent<HTMLElement>) => { const cc = (e.currentTarget as HTMLElement).closest('[data-card]') as HTMLElement | null; if (cc) cc.style.removeProperty('--cimg') }
+
+  // Al desmontar (soft-nav fuera de la demo) se borra el background inline que `toggleTheme`
+  // pudo dejar en el `<body>` compartido. Sin esto, tras entrar en tema oscuro y volver al sitio,
+  // el body quedaría en #0e0f13 pisando su fondo real. `''` quita el inline y devuelve el body a
+  // su valor de hoja de estilos.
+  useEffect(() => () => { try { document.body.style.background = '' } catch { /* noop */ } }, [])
 
   // ---------- mount ----------
   useEffect(() => {
