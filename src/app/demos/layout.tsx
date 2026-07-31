@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import { Manrope, Fraunces, Inter } from 'next/font/google'
+import Analytics from '@/components/seo/Analytics'
 import './demos.css'
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.ms-tech-stack.cloud'
@@ -36,7 +37,12 @@ export const metadata: Metadata = {
 export default function DemosLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={`${manrope.variable} ${fraunces.variable} ${inter.variable}`}>
-      <body suppressHydrationWarning>{children}</body>
+      {/* Umami (+ GA4 opt-in): este es un root layout aparte del de [locale], así que sin esto
+          los pageviews de las demos (/demos/*) no se registrarían. Mismo website de Umami. */}
+      <body suppressHydrationWarning>
+        {children}
+        <Analytics />
+      </body>
     </html>
   )
 }

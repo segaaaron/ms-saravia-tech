@@ -1,20 +1,13 @@
 import type { Metadata } from 'next'
 import { Space_Grotesk, Inter } from 'next/font/google'
-import { NextIntlClientProvider } from 'next-intl'
-import { getMessages } from 'next-intl/server'
-import { Toaster } from 'sonner'
-import dynamic from 'next/dynamic'
 import './globals.css'
-// Navbar and Footer are imported from components (written by other agents)
-import Navbar from '@/components/nav/Navbar'
-import Footer from '@/components/sections/Footer'
-import JsonLd from '@/components/seo/JsonLd'
 import Analytics from '@/components/seo/Analytics'
 
-// Decorative-only WebGL particles: defer to client, keep out of SSR/LCP path.
-const InteractiveParticles = dynamic(
-  () => import('@/components/fx/InteractiveParticles'),
-)
+// ÚNICO root layout con <html>/<body> de toda la app navegable. El site vive en el grupo
+// (site) y las demos en (demos): dos grupos de chrome bajo ESTE mismo <html>/<body>, así que
+// navegar entre ellos es soft-nav (no hay un segundo root layout que fuerce full-reload ni
+// rompa la hidratación entre dos <html>). Antes /demos tenía su propio root layout — de ahí el
+// hard-nav obligado y los parches `hardNav`/`crossesRootLayout` que ya se eliminaron.
 
 const spaceGrotesk = Space_Grotesk({
   subsets: ['latin'],
@@ -122,28 +115,14 @@ export default async function RootLayout({
   params: Promise<{ locale: string }>
 }) {
   const { locale } = await params
-  const messages = await getMessages()
   return (
     <html lang={locale} className={`${spaceGrotesk.variable} ${inter.variable}`}>
+      {/* Umami (+ GA4 opt-in) una sola vez en el root: cubre tanto (site) como (demos). Antes las
+          demos tenían su propio <Analytics/> en su root layout aparte; al unificar, este único
+          montaje registra los pageviews de todo el árbol. */}
       <body suppressHydrationWarning>
-        <JsonLd locale={locale} />
         <Analytics />
-        <NextIntlClientProvider locale={locale} messages={messages}>
-          <InteractiveParticles />
-          <Navbar />
-          <main>{children}</main>
-          <Footer />
-          <Toaster
-            position="bottom-right"
-            toastOptions={{
-              style: {
-                background: '#0d0f14',
-                border: '1px solid rgba(0,229,255,0.2)',
-                color: 'white',
-              },
-            }}
-          />
-        </NextIntlClientProvider>
+        {children}
       </body>
     </html>
   )
