@@ -2,6 +2,7 @@
 import { motion } from 'framer-motion'
 import { useTranslations } from 'next-intl'
 import MagneticButton from '@/components/ui/MagneticButton'
+import { umamiAttrs } from '@/lib/analytics'
 import GradientText from '@/components/ui/GradientText'
 import AuroraBackground from '@/components/fx/AuroraBackground'
 import Spotlight from './Spotlight'
@@ -48,10 +49,18 @@ export default function Hero() {
 
             {/* CTAs */}
             <div className="hero-rise hero-rise-3 flex flex-wrap gap-4">
-              <MagneticButton variant="primary" href="#contact">
+              <MagneticButton
+                variant="primary"
+                href="#contact"
+                dataUmami={umamiAttrs('cta-click', { placement: 'hero', target: 'contact' })}
+              >
                 {t('cta_primary')}
               </MagneticButton>
-              <MagneticButton variant="ghost" href="#services">
+              <MagneticButton
+                variant="ghost"
+                href="#services"
+                dataUmami={umamiAttrs('cta-click', { placement: 'hero', target: 'services' })}
+              >
                 {t('cta_secondary')} <span style={{ color: '#2FF5E0', fontFamily: 'monospace' }}>→</span>
               </MagneticButton>
             </div>

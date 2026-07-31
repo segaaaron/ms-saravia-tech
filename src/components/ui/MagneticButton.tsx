@@ -11,9 +11,12 @@ type Props = {
   className?: string
   type?: 'button' | 'submit'
   disabled?: boolean
+  // Atributos data-umami-event* (usar umamiAttrs()). Umami los lee en su propio listener de
+  // click, así el evento se envía de forma fiable aunque el click navegue fuera de la página.
+  dataUmami?: Record<string, string>
 }
 
-export default function MagneticButton({ children, href, onClick, variant = 'primary', className, type = 'button', disabled }: Props) {
+export default function MagneticButton({ children, href, onClick, variant = 'primary', className, type = 'button', disabled, dataUmami }: Props) {
   const ref = useRef<HTMLElement>(null)
 
   // Motion values, no useState: antes cada `mousemove` disparaba un setState, o sea un
@@ -74,6 +77,7 @@ export default function MagneticButton({ children, href, onClick, variant = 'pri
     whileTap: { scale: 0.97 },
     className: cn('group', baseClasses),
     style: { ...(primaryStyle ?? ghostStyle), x, y },
+    ...dataUmami,
   }
 
   if (href) {

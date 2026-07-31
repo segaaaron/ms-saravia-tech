@@ -1,5 +1,5 @@
 'use client'
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useRef, useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { useTranslations, useLocale } from 'next-intl'
 import {
@@ -11,6 +11,7 @@ import GradientText from '@/components/ui/GradientText'
 import SectionLabel from '@/components/ui/SectionLabel'
 import CtaButton from '@/components/ui/CtaButton'
 import { fadeInUp } from '@/lib/motion'
+import { track, umamiAttrs } from '@/lib/analytics'
 import {
   estimate, formatUsd,
   CATEGORIES, PLATFORMS, TIERS, DESIGNS, COMPLIANCES, FEATURES,
@@ -80,6 +81,36 @@ export default function AppCostEstimator({
   const toggleFeature = (k: FeatureKey) =>
     setFeatures((prev) => (prev.includes(k) ? prev.filter((x) => x !== k) : [...prev, k]))
 
+  // Analytics del estimador. `interacted` evita disparar `estimate-complete` en el montaje:
+  // el componente vive en el árbol de la home, así que sin esta guarda cada visita a la home
+  // (aunque nadie tocara el estimador) inflaría el evento con la config por defecto.
+  const interacted = useRef(false)
+  const change = (field: string, value: string) => {
+    interacted.current = true
+    track('estimate-change', { field, value })
+  }
+
+  // `estimate-complete` = el usuario tocó algo y el precio se asentó (debounce 1.2s tras el
+  // último cambio). Trae la config completa + el rango en USD → sabemos qué presupuesto se pide.
+  useEffect(() => {
+    if (!interacted.current) return
+    const id = window.setTimeout(() => {
+      track('estimate-complete', {
+        usd_low: result.low,
+        usd_high: result.high,
+        weeks: result.weeks,
+        region,
+        category,
+        platform,
+        tier,
+        design,
+        compliance,
+        features_count: features.length,
+      })
+    }, 1200)
+    return () => window.clearTimeout(id)
+  }, [result, region, category, platform, tier, design, compliance, features])
+
   const contactHref = `${locale === 'es' ? '/es' : ''}/?source=estimator#contact`
   const range = `${formatUsd(result.low)} – ${formatUsd(result.high)}`
 
@@ -145,7 +176,7 @@ export default function AppCostEstimator({
               <GroupHead icon={LayoutGrid}>{t('categoryLabel')}</GroupHead>
               <div className="grid grid-cols-2 gap-2.5">
                 {CATEGORIES.map((c) => (
-                  <SegBtn key={c.key} active={category === c.key} onClick={() => setCategory(c.key)}>{t(`category.${c.key}`)}</SegBtn>
+                  <SegBtn key={c.key} active={category === c.key} onClick={() => { setCategory(c.key); change('category', c.key) }}>{t(`category.${c.key}`)}</SegBtn>
                 ))}
               </div>
               <p className="text-xs text-white/40 leading-relaxed">{t('categoryHint')}</p>
@@ -156,7 +187,7 @@ export default function AppCostEstimator({
               <GroupHead icon={Smartphone}>{t('platformLabel')}</GroupHead>
               <div className="grid grid-cols-2 gap-2.5">
                 {PLATFORMS.map((p) => (
-                  <SegBtn key={p.key} active={platform === p.key} onClick={() => setPlatform(p.key)}>{t(`platform.${p.key}`)}</SegBtn>
+                  <SegBtn key={p.key} active={platform === p.key} onClick={() => { setPlatform(p.key); change('platform', p.key) }}>{t(`platform.${p.key}`)}</SegBtn>
                 ))}
               </div>
               <p className="text-xs text-white/40 leading-relaxed">{t(`platformHint.${platform}`)}</p>
@@ -167,7 +198,7 @@ export default function AppCostEstimator({
               <GroupHead icon={Gauge}>{t('tierLabel')}</GroupHead>
               <div className="grid grid-cols-3 gap-2.5">
                 {TIERS.map((tr) => (
-                  <SegBtn key={tr.key} active={tier === tr.key} onClick={() => setTier(tr.key)}>{t(`tier.${tr.key}`)}</SegBtn>
+                  <SegBtn key={tr.key} active={tier === tr.key} onClick={() => { setTier(tr.key); change('tier', tr.key) }}>{t(`tier.${tr.key}`)}</SegBtn>
                 ))}
               </div>
               <p className="text-xs text-white/40 leading-relaxed">{t(`tierHint.${tier}`)}</p>
@@ -178,7 +209,7 @@ export default function AppCostEstimator({
               <GroupHead icon={Palette}>{t('designLabel')}</GroupHead>
               <div className="grid grid-cols-3 gap-2.5">
                 {DESIGNS.map((d) => (
-                  <SegBtn key={d.key} active={design === d.key} onClick={() => setDesign(d.key)}>{t(`design.${d.key}`)}</SegBtn>
+                  <SegBtn key={d.key} active={design === d.key} onClick={() => { setDesign(d.key); change('design', d.key) }}>{t(`design.${d.key}`)}</SegBtn>
                 ))}
               </div>
               <p className="text-xs text-white/40 leading-relaxed">{t(`designHint.${design}`)}</p>
@@ -189,7 +220,7 @@ export default function AppCostEstimator({
               <GroupHead icon={ShieldCheck}>{t('complianceLabel')}</GroupHead>
               <div className="grid grid-cols-3 gap-2.5">
                 {COMPLIANCES.map((c) => (
-                  <SegBtn key={c.key} active={compliance === c.key} onClick={() => setCompliance(c.key)}>{t(`compliance.${c.key}`)}</SegBtn>
+                  <SegBtn key={c.key} active={compliance === c.key} onClick={() => { setCompliance(c.key); change('compliance', c.key) }}>{t(`compliance.${c.key}`)}</SegBtn>
                 ))}
               </div>
               <p className="text-xs text-white/40 leading-relaxed">{t(`complianceHint.${compliance}`)}</p>
@@ -207,7 +238,11 @@ export default function AppCostEstimator({
                       key={f.key}
                       type="button"
                       aria-pressed={on}
-                      onClick={() => toggleFeature(f.key)}
+                      onClick={() => {
+                        interacted.current = true
+                        toggleFeature(f.key)
+                        track('estimate-feature', { feature: f.key, on: !on })
+                      }}
                       className="inline-flex min-h-[40px] items-center gap-1.5 rounded-full px-3.5 py-1.5 text-[13px] transition-all duration-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-[#2FF5E0]"
                       style={{
                         border: on ? '1px solid rgba(47,245,224,0.5)' : '1px solid rgba(120,200,255,0.12)',
@@ -290,7 +325,15 @@ export default function AppCostEstimator({
 
                 <div className="mt-6 border-t border-white/[0.08] pt-6">
                   <p className="text-sm font-semibold text-white/85">{t('ctaTitle')}</p>
-                  <CtaButton href={contactHref} className="mt-4 w-full">{t('ctaButton')}</CtaButton>
+                  <CtaButton
+                    href={contactHref}
+                    className="mt-4 w-full"
+                    dataUmami={umamiAttrs('estimate-cta-click', {
+                      usd_low: String(result.low),
+                      usd_high: String(result.high),
+                      weeks: String(result.weeks),
+                    })}
+                  >{t('ctaButton')}</CtaButton>
                 </div>
               </div>
             </div>

@@ -8,6 +8,7 @@ import SectionLabel from '@/components/ui/SectionLabel'
 import TiltCard from '@/components/ui/TiltCard'
 import CtaButton from '@/components/ui/CtaButton'
 import { floatUp3D, staggerContainer } from '@/lib/motion'
+import { umamiAttrs } from '@/lib/analytics'
 
 type Item = { name: string; tag: string }
 
@@ -81,6 +82,7 @@ export default function DemosShowcase() {
                   href={`/demos/${card.slug}?lang=${locale}`}
                   className="relative z-[2] block"
                   aria-label={`${t('open')} — ${item.name}`}
+                  {...umamiAttrs('demo-open', { demo: card.slug, placement: 'showcase' })}
                 >
                   {/* Image header — next/image (lazy + responsive) debajo, overlay encima */}
                   <div
@@ -165,7 +167,7 @@ export default function DemosShowcase() {
             </motion.div>
 
             <motion.div variants={floatUp3D} className="flex lg:justify-end">
-              <CtaButton href={`/demos?lang=${locale}`} hardNav>{t('cta')}</CtaButton>
+              <CtaButton href={`/demos?lang=${locale}`} hardNav dataUmami={umamiAttrs('demos-all')}>{t('cta')}</CtaButton>
             </motion.div>
           </div>
         </motion.div>

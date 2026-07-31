@@ -7,6 +7,7 @@ import NavCircuit from '@/components/nav/NavCircuit'
 import { cn } from '@/lib/utils'
 import { fadeInUp, staggerContainer } from '@/lib/motion'
 import { SOCIALS, type SocialKey } from '@/content/socials'
+import { umamiAttrs } from '@/lib/analytics'
 
 const NAV_LINKS = [
   { href: '#services', labelKey: 'services' },
@@ -112,6 +113,7 @@ export default function Footer() {
                   <Link
                     href={`${prefix}/${href}`}
                     className="text-white/40 text-sm hover:text-cyan-400 transition-colors duration-200 hover:translate-x-0.5 inline-block"
+                    {...umamiAttrs('nav-click', { item: labelKey, placement: 'footer' })}
                   >
                     {tNav(labelKey as 'services' | 'work' | 'about' | 'contact')}
                   </Link>
@@ -131,6 +133,7 @@ export default function Footer() {
               href="mailto:techstackmssaravia@gmail.com"
               aria-label="Email techstackmssaravia@gmail.com"
               className="group inline-flex items-center gap-3 text-white/45 text-sm hover:text-cyan-400 transition-colors duration-200"
+              {...umamiAttrs('email-click', { placement: 'footer' })}
             >
               <span
                 className={cn(
@@ -165,6 +168,7 @@ export default function Footer() {
                           'hover:shadow-[0_0_16px_rgba(0,229,255,0.25)]',
                           'transition-all duration-200 cursor-pointer'
                         )}
+                        {...umamiAttrs('social-click', { network: key })}
                       >
                         <Icon size={15} strokeWidth={1.5} />
                       </a>

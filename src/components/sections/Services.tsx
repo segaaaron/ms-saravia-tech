@@ -8,6 +8,7 @@ import SectionLabel from '@/components/ui/SectionLabel'
 import TiltCard from '@/components/ui/TiltCard'
 import { fadeInUp, staggerContainer } from '@/lib/motion'
 import { serviceSlugs } from '@/content/seo'
+import { umamiAttrs } from '@/lib/analytics'
 
 const ICONS = [Cloud, Smartphone, Bot, Lightbulb]
 
@@ -128,6 +129,7 @@ export default function Services() {
                       href={`${prefix}/services/${serviceSlugs[i]}`}
                       className="group/link mt-5 inline-flex items-center gap-1.5 text-xs font-semibold text-white/55 transition-colors hover:text-[#2FF5E0]"
                       aria-label={`${t('learnMore')}: ${item.title}`}
+                      {...umamiAttrs('service-open', { service: serviceSlugs[i] })}
                     >
                       {t('learnMore')}
                       <ArrowUpRight size={13} className="transition-transform duration-200 group-hover/link:-translate-y-0.5 group-hover/link:translate-x-0.5" />

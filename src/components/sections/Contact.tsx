@@ -8,6 +8,7 @@ import GradientText from '@/components/ui/GradientText'
 import MagneticButton from '@/components/ui/MagneticButton'
 import SectionLabel from '@/components/ui/SectionLabel'
 import { fadeInUp, staggerContainer, slideInLeft, slideInRight } from '@/lib/motion'
+import { track, umamiAttrs } from '@/lib/analytics'
 
 const VALUE_PROPS = [
   { icon: Clock, key: 'value_response' as const },
@@ -128,6 +129,9 @@ export default function Contact() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setSending(true)
+    // Sin PII: solo señales categóricas. has_company ayuda a distinguir lead B2B de particular.
+    const hasCompany = form.company.trim().length > 0
+    track('contact-submit', { locale, has_company: hasCompany })
     try {
       // Atribución de origen: las landings (/solutions, demos) enlazan a #contact con
       // ?source=…; se persiste en el Lead para medir qué canal convierte. Máx 60 chars (zod).
@@ -141,9 +145,12 @@ export default function Contact() {
         body: JSON.stringify({ ...form, locale, source }),
       })
       if (!res.ok) throw new Error('Request failed')
+      // Conversión: el North-Star del sitio. `source` da el canal (estimator, demos, ad UTM…).
+      track('lead', { locale, has_company: hasCompany, source: source ?? 'direct' })
       toast.success(t('success'))
       setForm({ name: '', email: '', company: '', message: '' })
     } catch {
+      track('contact-error', { locale })
       toast.error(t('error'))
     } finally {
       setSending(false)
@@ -193,6 +200,7 @@ export default function Contact() {
               <a
                 href="mailto:techstackmssaravia@gmail.com"
                 className="flex items-center gap-3 text-white/60 hover:text-cyan-400 transition-colors duration-200 group"
+                {...umamiAttrs('email-click', { placement: 'contact-card' })}
               >
                 <div className="w-10 h-10 rounded-xl glass border border-white/10 flex items-center justify-center group-hover:border-cyan-400/40 transition-colors duration-200">
                   <Mail size={16} />
@@ -325,6 +333,7 @@ export default function Contact() {
                   <a
                     href="mailto:techstackmssaravia@gmail.com"
                     className="text-cyan-400/70 hover:text-cyan-400 transition-colors"
+                    {...umamiAttrs('email-click', { placement: 'contact-form' })}
                   >
                     techstackmssaravia@gmail.com
                   </a>

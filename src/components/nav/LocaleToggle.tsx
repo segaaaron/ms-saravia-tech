@@ -3,6 +3,7 @@ import { useLocale } from 'next-intl'
 import { usePathname, getPathname } from '@/i18n/navigation'
 import { motion } from 'framer-motion'
 import { Globe } from 'lucide-react'
+import { track } from '@/lib/analytics'
 
 // Toggle de idioma de un solo botón: muestra el idioma AL QUE se cambia (destino) y alterna.
 // Arma la URL destino con `getPathname` de next-intl (respeta localePrefix 'as-needed') y navega
@@ -16,6 +17,7 @@ export default function LocaleToggle({ onSwitch }: { onSwitch?: () => void } = {
     // La cookie manda sobre localeDetection en el middleware: sin ella, volver al locale por
     // defecto (/) rebota a /es por Accept-Language.
     document.cookie = `NEXT_LOCALE=${other};path=/;max-age=31536000;samesite=lax`
+    track('lang-switch', { from: currentLocale, to: other })
     onSwitch?.()
     // Nav DURA, no router.replace. En una visita que entró por el redirect / -> /es, el Router
     // Cache del App Router guarda "/" resuelto a /es; un soft-nav a "/" reusa esa entrada y

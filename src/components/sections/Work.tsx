@@ -7,6 +7,7 @@ import GradientText from '@/components/ui/GradientText'
 import SectionLabel from '@/components/ui/SectionLabel'
 import TiltCard from '@/components/ui/TiltCard'
 import { floatUp3D, staggerContainer } from '@/lib/motion'
+import { umamiAttrs } from '@/lib/analytics'
 
 type Project = {
   title: string
@@ -130,6 +131,7 @@ export default function Work() {
                         rel="noopener noreferrer"
                         className="group/link flex items-center gap-1.5 text-xs font-semibold text-white/60 transition-colors duration-200 hover:text-[#2FF5E0]"
                         aria-label={`View ${project.title} project`}
+                        {...umamiAttrs('work-open', { project: project.title })}
                       >
                         {t('view')}
                         <ExternalLink
@@ -157,6 +159,7 @@ export default function Work() {
           <Link
             href={locale === 'es' ? '/es/work' : '/work'}
             className="group inline-flex items-center gap-2 text-sm font-semibold text-white/60 transition-colors hover:text-[#2FF5E0]"
+            {...umamiAttrs('work-all')}
           >
             {t('seeAll')}
             <ArrowRight size={15} className="transition-transform duration-200 group-hover:translate-x-1" />

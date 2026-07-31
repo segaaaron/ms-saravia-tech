@@ -4,6 +4,7 @@ import { useTranslations, useLocale } from 'next-intl'
 import { Calculator } from 'lucide-react'
 import CtaButton from '@/components/ui/CtaButton'
 import { fadeInUp } from '@/lib/motion'
+import { umamiAttrs } from '@/lib/analytics'
 
 // Card compacta en la home que invita a cotizar → lleva a la página /estimate.
 export default function EstimateCta() {
@@ -47,7 +48,7 @@ export default function EstimateCta() {
                 <p className="max-w-xl text-[15px] leading-[1.6] text-white/55">{t('subtitle')}</p>
               </div>
             </div>
-            <CtaButton href={href} size="lg" className="shrink-0">
+            <CtaButton href={href} size="lg" className="shrink-0" dataUmami={umamiAttrs('cta-click', { placement: 'estimate-cta', target: 'estimate' })}>
               {t('button')}
             </CtaButton>
           </div>

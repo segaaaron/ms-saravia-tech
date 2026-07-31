@@ -6,6 +6,7 @@ import GradientText from '@/components/ui/GradientText'
 import SectionLabel from '@/components/ui/SectionLabel'
 import { fadeInUp, staggerContainer } from '@/lib/motion'
 import { FAQ, type Locale } from '@/content/faq'
+import { track } from '@/lib/analytics'
 
 export default function Faq() {
   const locale = useLocale()
@@ -51,10 +52,13 @@ export default function Faq() {
           viewport={{ once: true, margin: '-100px' }}
           className="space-y-3"
         >
-          {items.map((item) => (
+          {items.map((item, i) => (
             <motion.details
               key={item.q}
               variants={fadeInUp}
+              onToggle={(e) => {
+                if ((e.target as HTMLDetailsElement).open) track('faq-open', { index: i })
+              }}
               className="group overflow-hidden"
               style={{
                 borderRadius: 16,

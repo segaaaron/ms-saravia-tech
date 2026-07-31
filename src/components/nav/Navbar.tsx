@@ -7,6 +7,7 @@ import MagneticButton from '@/components/ui/MagneticButton'
 import LocaleToggle from './LocaleToggle'
 import NavCircuit from './NavCircuit'
 import { cn } from '@/lib/utils'
+import { track, umamiAttrs } from '@/lib/analytics'
 import { Menu, X } from 'lucide-react'
 
 const SCROLL_KEYS = ['PageDown', 'PageUp', 'ArrowDown', 'ArrowUp', 'Home', 'End', ' ']
@@ -255,13 +256,13 @@ export default function Navbar() {
               // layout) → <a> hard-nav, si no el soft-nav rompe el DOM entre los dos <html>.
               if (crossesRootLayout(link)) {
                 return (
-                  <a key={link.key} href={hrefFor(link)} className={className}>
+                  <a key={link.key} href={hrefFor(link)} className={className} {...umamiAttrs('nav-click', { item: link.key, placement: 'header' })}>
                     {inner}
                   </a>
                 )
               }
               return (
-                <Link key={link.key} href={hrefFor(link)} className={className}>
+                <Link key={link.key} href={hrefFor(link)} className={className} {...umamiAttrs('nav-click', { item: link.key, placement: 'header' })}>
                   {inner}
                 </Link>
               )
@@ -271,7 +272,12 @@ export default function Navbar() {
           {/* Right side: locale toggle + CTA */}
           <div className="hidden lg:flex items-center gap-4">
             <LocaleToggle />
-            <MagneticButton variant="primary" href={ctaHref} className="text-xs px-5 py-2.5">
+            <MagneticButton
+              variant="primary"
+              href={ctaHref}
+              className="text-xs px-5 py-2.5"
+              dataUmami={umamiAttrs('cta-click', { placement: 'nav', target: 'contact' })}
+            >
               {t('cta')}
             </MagneticButton>
           </div>
@@ -288,7 +294,7 @@ export default function Navbar() {
           cerraba nada. Como hermano posterior con z-[70], la X siempre recibe el tap. */}
       <button
         ref={toggleRef}
-        onClick={() => setMobileOpen((v) => !v)}
+        onClick={() => setMobileOpen((v) => { if (!v) track('menu-open'); return !v })}
         className="lg:hidden fixed top-0 right-6 z-[70] w-11 h-11 flex items-center justify-center text-white/70 hover:text-white transition-colors active:scale-90"
         // touch-action por style, no por clase: con el drawer abierto tiene que ser `none`
         // (el botón es z-[70], está por encima del backdrop, y `manipulation` = `pan-x pan-y`
@@ -414,12 +420,12 @@ export default function Navbar() {
               }}
             >
               {crossesRootLayout(link) ? (
-                <a href={hrefFor(link)} onClick={closeMobile} className="flex items-center flex-1">
+                <a href={hrefFor(link)} onClick={closeMobile} className="flex items-center flex-1" {...umamiAttrs('nav-click', { item: link.key, placement: 'drawer' })}>
                   <span className="flex-1">{t(link.key)}</span>
                   <span className="w-1.5 h-1.5 rounded-full bg-cyan-400/0 group-hover:bg-cyan-400 transition-colors duration-200" />
                 </a>
               ) : (
-                <Link href={hrefFor(link)} onClick={closeMobile} className="flex items-center flex-1">
+                <Link href={hrefFor(link)} onClick={closeMobile} className="flex items-center flex-1" {...umamiAttrs('nav-click', { item: link.key, placement: 'drawer' })}>
                   <span className="flex-1">{t(link.key)}</span>
                   <span className="w-1.5 h-1.5 rounded-full bg-cyan-400/0 group-hover:bg-cyan-400 transition-colors duration-200" />
                 </Link>
@@ -436,6 +442,7 @@ export default function Navbar() {
             href={ctaHref}
             onClick={closeMobile}
             className="w-full justify-center"
+            dataUmami={umamiAttrs('cta-click', { placement: 'drawer', target: 'contact' })}
           >
             {t('cta')}
           </MagneticButton>
