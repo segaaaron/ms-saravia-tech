@@ -1,60 +1,53 @@
-/* Base mínima para los demos — independiente del CSS del sitio principal. */
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-}
-html {
-  -webkit-text-size-adjust: 100%;
-}
-body {
-  margin: 0;
+/* Base mínima para los demos. TODAS las reglas de elemento van scopeadas bajo el wrapper
+   [data-demo-surface] (ver (demos)/layout.tsx). El prefijo va en `:where(...)` → aporta 0 a la
+   especificidad, así el selector conserva EXACTAMENTE la misma especificidad que su versión pelada
+   de antes (la cascada no cambia) pero queda acotado al subtree de las demos: ni sangran al sitio
+   ni el reset/Preflight de Tailwind del sitio las pisa. Los estilos inline de cada demo siguen
+   ganando. box-sizing y -webkit-text-size-adjust ya los aporta Preflight → no se repiten. */
+:where([data-demo-surface]) {
   font-family: var(--font-inter-demo), system-ui, sans-serif;
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
 }
-h1,
-h2,
-h3,
-h4,
-p,
-figure {
+:where([data-demo-surface]) *,
+:where([data-demo-surface]) *::before,
+:where([data-demo-surface]) *::after {
+  box-sizing: border-box;
+}
+:where([data-demo-surface]) :is(h1, h2, h3, h4, p, figure) {
   margin: 0;
 }
-img,
-canvas {
+:where([data-demo-surface]) :is(img, canvas) {
   display: block;
   max-width: 100%;
 }
-a {
+:where([data-demo-surface]) a {
   color: inherit;
   text-decoration: none;
 }
-button {
+:where([data-demo-surface]) button {
   font: inherit;
   cursor: pointer;
   border: none;
   background: none;
 }
-:focus-visible {
+:where([data-demo-surface]) :focus-visible {
   outline: 2px solid currentColor;
   outline-offset: 3px;
   border-radius: 4px;
 }
-canvas {
+:where([data-demo-surface]) canvas {
   touch-action: none;
 }
 @media (prefers-reduced-motion: reduce) {
-  html {
-    scroll-behavior: auto;
-  }
   /* Neutraliza animaciones CSS decorativas (kenBurns, marquees, spins, sweeps) y hace
      instantáneas las transiciones/reveals. Las animaciones scroll-driven en JS (puertas de
-     aura/roman) se cortan aparte en su efecto. */
-  *,
-  *::before,
-  *::after {
+     aura/roman) se cortan aparte en su efecto. (El scroll-behavior del <html> ya lo maneja
+     globals.css del sitio, que ahora comparte el mismo <html>.) */
+  :where([data-demo-surface]) *,
+  :where([data-demo-surface]) *::before,
+  :where([data-demo-surface]) *::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
@@ -69,16 +62,10 @@ canvas {
    Un solo lugar controla todos los breakpoints de los demos.
    ============================================================ */
 
-/* Red de seguridad: ningún demo debe provocar scroll horizontal de página.
-   Usamos `clip` (no `hidden`): `overflow-x: hidden` obliga a `overflow-y: auto`
-   (regla CSS: si un eje no es visible, el otro pasa a auto), lo que convierte a
-   html/body en scroll-container y ROMPE `position: sticky` (los heros con puertas
-   que se abren al scrollear — aura, roman — dejaban de fijarse). `clip` clipea el
-   overflow horizontal sin crear scroll-container, así el sticky sigue funcionando. */
-html,
-body {
-  overflow-x: clip;
-}
+/* (El `overflow-x: clip` de html,body que evita el scroll horizontal de página lo aporta ahora
+   globals.css del sitio —mismo <html>/<body> compartido—, así que la regla duplicada que vivía
+   aquí se eliminó. El razonamiento —`clip` y no `hidden` para no romper `position: sticky` de los
+   heros con puertas de aura/roman— sigue documentado en globals.css.) */
 
 /* Las celdas de grid deben poder encoger bajo su min-content (texto largo
    irrompible, iframes, hijos de ancho fijo). Sin esto, `1fr` = `minmax(auto,1fr)`
@@ -563,9 +550,9 @@ body {
    16px en móvil para TODOS los campos de los demos (el tamaño de diseño se mantiene en desktop).
    Un solo lugar, sin tocar los estilos inline de cada input. */
 @media (max-width: 768px) {
-  input,
-  select,
-  textarea {
+  :where([data-demo-surface]) input,
+  :where([data-demo-surface]) select,
+  :where([data-demo-surface]) textarea {
     font-size: 16px !important;
   }
 }
