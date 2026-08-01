@@ -21,6 +21,10 @@
     "cta": "See all demos",
     "items": [
       {
+        "name": "SAVERA GT",
+        "tag": "Hypercar"
+      },
+      {
         "name": "PULSE",
         "tag": "Gym SaaS"
       },

@@ -127,7 +127,7 @@ const DEMOS: Demo[] = [
 // store y dashboard quedaban separados por el bloque PULSE). Flagship legal
 // primero; luego cada marca con sus piezas contiguas (web → panel → app).
 const ORDER = [
-  // 'savera-gt', // OCULTO por ahora — reactivar descomentando (registro y ruta intactos)
+  'savera-gt',
   'roman-ashford',
   'aura',
   'brasa', 'brasa-panel',
@@ -141,7 +141,7 @@ const ORDERED_DEMOS = ORDER.map((slug) => DEMOS.find((d) => d.slug === slug)!).f
 // bajaba ~990 kB en 9 miniaturas que se pintan a ~350px de ancho.
 const THUMBS: Record<string, string> = {
   // Thumb = la foto HERO real (Unsplash) del scroll cinematográfico.
-  'savera-gt': uns('1763898020227-3ae31ed53867', 640),
+  'savera-gt': uns('1626002595481-688505bc19ba', 640),
   aura: local('/showcase/img/recepcion.webp', 640),
   brasa: local('/showcase/img/menu/pique.webp', 640),
   'brasa-panel': local('/showcase/img/menu/silpancho.webp', 640),

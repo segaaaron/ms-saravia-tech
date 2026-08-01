@@ -4,7 +4,7 @@ import Image from 'next/image'
 import { ArrowUpRight, Cloud, Smartphone, Sparkles, Lightbulb } from 'lucide-react'
 import TiltCard from '@/components/ui/TiltCard'
 
-// Cover por cluster: foto real (public/blog/<cluster>.webp) + tinte de marca + icono.
+// Cover por post: foto real (public/blog/<slug>.webp) + tinte de marca por cluster + icono.
 const CLUSTER: Record<string, { grad: string; accent: string; Icon: typeof Cloud }> = {
   saas: { grad: 'linear-gradient(135deg, #2FF5E0 0%, #4D7CFF 100%)', accent: '#2FF5E0', Icon: Cloud },
   'mobile-apps': { grad: 'linear-gradient(135deg, #9B6CFF 0%, #FF2BD6 100%)', accent: '#9B6CFF', Icon: Smartphone },
