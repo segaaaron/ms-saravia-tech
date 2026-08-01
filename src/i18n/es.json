@@ -660,6 +660,24 @@
           "Portal del socio — perfil, plan, asistencia y progreso",
           "Panel del dueño con ingresos y asistencia en tiempo real",
           "Tu marca, tu dominio — no un SaaS genérico"
+        ],
+        "faq": [
+          {
+            "q": "¿Reemplaza al software de gimnasio que uso hoy?",
+            "a": "Sí — construimos un sistema a la medida de cómo opera tu gimnasio: membresías, horarios de clases, check-in y un panel del dueño en un solo lugar, para dejar de pegar herramientas sueltas y hojas de cálculo."
+          },
+          {
+            "q": "¿Maneja cobro recurrente?",
+            "a": "Sí. Suscripciones, pausas, upgrades y recuperación de pagos fallidos vienen incluidos, para que el ingreso fluya sin perseguir cobros a mano en recepción."
+          },
+          {
+            "q": "¿Los socios tienen su propia app?",
+            "a": "Sí. El socio reserva clases, ve su horario y gestiona su plan desde el teléfono, y cada acción actualiza el panel del dueño en tiempo real."
+          },
+          {
+            "q": "¿Cuánto tarda en salir en vivo?",
+            "a": "Una primera versión acotada suele salir en pocas semanas; lo dividimos en fases para que veas software funcionando temprano y sumes funciones una vez que el núcleo está en vivo."
+          }
         ]
       },
       "clinic-website": {
@@ -673,6 +691,24 @@
           "Secciones de credibilidad de doctores y equipo",
           "Diseño mobile-first y de carga rápida",
           "Bases de SEO y visibilidad local"
+        ],
+        "faq": [
+          {
+            "q": "¿Incluye reservas online?",
+            "a": "Sí. Los pacientes descubren tratamientos y piden o agendan una consulta sin fricción, para captar leads incluso fuera del horario en vez de perderlos en llamadas de ida y vuelta."
+          },
+          {
+            "q": "¿Se conecta con WhatsApp?",
+            "a": "Sí. Las reservas y consultas pueden ir directo a WhatsApp, que es donde muchos pacientes prefieren hablar — sin otra app que aprender."
+          },
+          {
+            "q": "¿Será rápida en el móvil?",
+            "a": "Sí. La mayoría llega desde el teléfono, así que el sitio carga casi al instante y se siente premium desde la primera pantalla, justo donde se gana o se pierde la confianza."
+          },
+          {
+            "q": "¿Puedo actualizar el contenido yo?",
+            "a": "Sí. Lo dejamos listo para que tu equipo actualice tratamientos, precios y contenido sin tocar código ni esperar a un desarrollador."
+          }
         ]
       },
       "restaurant-website": {
@@ -686,6 +722,24 @@
           "Panel para actualizar menú y contenido",
           "Mapas, horarios y direcciones en un toque",
           "Rápida, mobile-first y fácil de compartir"
+        ],
+        "faq": [
+          {
+            "q": "¿Cobran comisión por pedido?",
+            "a": "No. A diferencia de las apps de terceros, la web del comensal es tuya — sin tajada por pedido ni intermediario dueño de tus clientes o sus datos. Te quedas con la relación y el margen."
+          },
+          {
+            "q": "¿Incluye menú QR y reservas?",
+            "a": "Sí. El comensal escanea un QR para ver el menú con fotos y reserva mesa con disponibilidad en tiempo real, para llenar el salón sin llamadas de ida y vuelta."
+          },
+          {
+            "q": "¿Pueden pagar en línea?",
+            "a": "Sí. Pedir y pagar desde el teléfono elimina la fila en caja, y todo cae en un panel operativo en vivo para cocina y salón."
+          },
+          {
+            "q": "¿Hay panel para el personal?",
+            "a": "Sí. Los pedidos aparecen apenas se hacen, las mesas se actualizan y el personal ve el pulso del local en una pantalla — hecho para seguir rápido en la hora pico."
+          }
         ]
       },
       "ecommerce-store": {
@@ -699,9 +753,28 @@
           "Panel de pedidos e inventario",
           "Integración de pagos (Stripe y más)",
           "Optimizada para velocidad y conversión"
+        ],
+        "faq": [
+          {
+            "q": "¿Tienda a medida o Shopify?",
+            "a": "Hacemos tiendas a medida (headless) cuando quieres más control, páginas más rápidas y sin comisiones por venta de la plataforma. Si solo necesitas un catálogo simple, una plataforma de estante puede servir — te ayudamos a trazar esa línea con honestidad."
+          },
+          {
+            "q": "¿Qué métodos de pago soporta?",
+            "a": "Pagos con tarjeta y wallets digitales vía un procesador confiable, con un checkout corto y seguro. Cableamos el flujo para que el comprador llegue al pago en los menos pasos posibles."
+          },
+          {
+            "q": "¿La tienda será rápida?",
+            "a": "Sí. Las páginas de producto cargan casi al instante, porque cada segundo extra baja la conversión de forma medible — sobre todo en un teléfono con datos móviles."
+          },
+          {
+            "q": "¿Escala si crece mi catálogo?",
+            "a": "Sí. La tienda está hecha para soportar un catálogo creciente, picos de tráfico y nuevas funciones sin reconstruir, para que crezca con el negocio en vez de reemplazarse."
+          }
         ]
       }
-    }
+    },
+    "faqLabel": "Preguntas frecuentes"
   },
   "estimator": {
     "label": "Calculadora de costo de apps",

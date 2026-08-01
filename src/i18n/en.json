@@ -660,6 +660,24 @@
           "Member portal — profile, plan, attendance and progress",
           "Owner dashboard with real-time revenue and attendance",
           "Your branding, your domain — not a generic SaaS"
+        ],
+        "faq": [
+          {
+            "q": "Does it replace my current gym software?",
+            "a": "Yes — we build a system tailored to how your gym actually runs: memberships, class scheduling, check-in and an owner dashboard in one place, so you stop stitching together separate tools and spreadsheets."
+          },
+          {
+            "q": "Does it handle recurring billing?",
+            "a": "Yes. Subscriptions, pauses, upgrades and failed-payment recovery are built in, so revenue keeps flowing without manual chasing at the front desk."
+          },
+          {
+            "q": "Do members get their own app?",
+            "a": "Yes. Members can book classes, see their schedule and manage their plan from their phone, while every action updates the owner dashboard in real time."
+          },
+          {
+            "q": "How long does it take to launch?",
+            "a": "A focused first version typically launches in a few weeks; we scope it in phases so you see working software early and add features once the core is live."
+          }
         ]
       },
       "clinic-website": {
@@ -673,6 +691,24 @@
           "Doctor and team credibility sections",
           "Mobile-first, fast-loading design",
           "SEO and local visibility foundations"
+        ],
+        "faq": [
+          {
+            "q": "Does it include online booking?",
+            "a": "Yes. Patients can discover treatments and request or book a consultation without friction, so you capture leads even outside office hours instead of losing them to a phone tag."
+          },
+          {
+            "q": "Can it connect to WhatsApp?",
+            "a": "Yes. Booking and enquiries can route straight to WhatsApp, which is where many patients prefer to talk — no extra app for them to learn."
+          },
+          {
+            "q": "Will it be fast on mobile?",
+            "a": "Yes. Most patients arrive from a phone, so the site is built to load almost instantly and feel premium on the first screen, which is exactly where trust is won or lost."
+          },
+          {
+            "q": "Can I update the content myself?",
+            "a": "Yes. We set it up so your team can update treatments, prices and content without touching code or waiting on a developer."
+          }
         ]
       },
       "restaurant-website": {
@@ -686,6 +722,24 @@
           "Admin panel to update menu and content",
           "Maps, hours and one-tap directions",
           "Fast, mobile-first and shareable"
+        ],
+        "faq": [
+          {
+            "q": "Do you charge a commission per order?",
+            "a": "No. Unlike third-party apps, the guest web is yours — no per-order cut and no middleman owning your customers or their data. You keep the relationship and the margin."
+          },
+          {
+            "q": "Does it include a QR menu and reservations?",
+            "a": "Yes. Guests scan a QR to see the menu with photos, and can reserve a table with real-time availability, so the floor fills without phone back-and-forth."
+          },
+          {
+            "q": "Can guests pay online?",
+            "a": "Yes. Order-and-pay from the phone removes the queue at the till, and everything lands on a live operations panel for the kitchen and floor."
+          },
+          {
+            "q": "Is there a panel for staff?",
+            "a": "Yes. Orders appear the moment they are placed, tables update, and staff see the pulse of the venue on one screen — built to stay fast during a rush."
+          }
         ]
       },
       "ecommerce-store": {
@@ -699,9 +753,28 @@
           "Order and inventory admin dashboard",
           "Payment integration (Stripe and more)",
           "Optimized for speed and conversion"
+        ],
+        "faq": [
+          {
+            "q": "Custom store or Shopify?",
+            "a": "We build custom (headless) stores when you want more control, faster pages and no per-sale platform fees. If a simple catalog is all you need, an off-the-shelf platform can be fine — we help you draw that line honestly."
+          },
+          {
+            "q": "Which payment methods are supported?",
+            "a": "Card payments and digital wallets through a trusted processor, with a short, secure checkout. We wire the flow so buyers reach payment in as few steps as possible."
+          },
+          {
+            "q": "Will the store be fast?",
+            "a": "Yes. Product pages are built to load almost instantly, because every extra second measurably drops conversion — especially on a phone over mobile data."
+          },
+          {
+            "q": "Can it scale as my catalog grows?",
+            "a": "Yes. The store is built to handle a growing catalog, traffic spikes and new features without a rebuild, so it grows with the business instead of being replaced."
+          }
         ]
       }
-    }
+    },
+    "faqLabel": "Frequently asked"
   },
   "estimator": {
     "label": "App cost estimator",

@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { getTranslations } from 'next-intl/server'
-import { ArrowUpRight, Check } from 'lucide-react'
+import { ArrowUpRight, Check, ChevronDown } from 'lucide-react'
 import CtaButton from '@/components/ui/CtaButton'
 import { getSolutionPage, getServicePage } from '@/content/seo'
 import { buildAlternates, buildOpenGraph, localizedUrl, AREA_SERVED } from '@/lib/seo'
@@ -45,6 +45,7 @@ export default async function SolutionPage({
   const h1 = t(`items.${industry}.h1`)
   const intro = t(`items.${industry}.intro`)
   const bullets = t.raw(`items.${industry}.bullets`) as string[]
+  const faq = (t.raw(`items.${industry}.faq`) as { q: string; a: string }[]) ?? []
   const service = getServicePage(page.service)
   const serviceTitle = service ? (tSvc.raw('items') as { title: string }[])[service.itemIndex].title : ''
   // CTA con tracking de origen: el form de contacto lee ?source= y lo persiste en el Lead.
@@ -61,9 +62,21 @@ export default async function SolutionPage({
     url: localizedUrl(locale, `/solutions/${industry}`),
   }
 
+  // FAQPage JSON-LD — respaldado por la FAQ visible y crawlable de más abajo.
+  const faqJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'FAQPage',
+    mainEntity: faq.map((f) => ({
+      '@type': 'Question',
+      name: f.q,
+      acceptedAnswer: { '@type': 'Answer', text: f.a },
+    })),
+  }
+
   return (
     <>
       <JsonLdScript data={jsonLd} />
+      {faq.length > 0 && <JsonLdScript data={faqJsonLd} />}
       <Breadcrumbs
         locale={locale}
         ariaLabel={tCrumb('aria')}
@@ -110,6 +123,24 @@ export default async function SolutionPage({
                   {d}
                   <ArrowUpRight size={13} className="transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
                 </Link>
+              ))}
+            </div>
+          </section>
+        )}
+
+        {/* FAQ — visible y crawlable (respalda el FAQPage JSON-LD) */}
+        {faq.length > 0 && (
+          <section className="mt-14">
+            <h2 className="text-sm font-mono uppercase tracking-[0.16em] text-white/40">{t('faqLabel')}</h2>
+            <div className="mt-6" style={{ borderTop: '1px solid rgba(120,200,255,0.10)' }}>
+              {faq.map((f) => (
+                <details key={f.q} className="group px-1 py-5" style={{ borderBottom: '1px solid rgba(120,200,255,0.10)' }}>
+                  <summary className="flex cursor-pointer list-none items-center justify-between gap-4 [&::-webkit-details-marker]:hidden">
+                    <h3 className="font-display text-base font-medium tracking-tight text-white/90 transition-colors group-hover:text-white">{f.q}</h3>
+                    <ChevronDown size={18} className="shrink-0 text-white/35 transition-transform duration-300 group-open:rotate-180 group-open:text-[#2FF5E0]" aria-hidden="true" />
+                  </summary>
+                  <p className="mt-3 max-w-3xl text-sm leading-[1.7] text-white/55">{f.a}</p>
+                </details>
               ))}
             </div>
           </section>
