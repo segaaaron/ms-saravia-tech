@@ -3,6 +3,7 @@ import Link from 'next/link'
 import Image from 'next/image'
 import { ArrowUpRight, Cloud, Smartphone, Sparkles, Lightbulb } from 'lucide-react'
 import TiltCard from '@/components/ui/TiltCard'
+import { umamiAttrs } from '@/lib/analytics'
 
 // Cover por post: foto real (public/blog/<slug>.webp) + tinte de marca por cluster + icono.
 const CLUSTER: Record<string, { grad: string; accent: string; Icon: typeof Cloud }> = {
@@ -37,7 +38,7 @@ export default function BlogCard({
         background: 'linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.01))',
       }}
     >
-      <Link href={href} className="flex h-full flex-col" style={{ transform: 'translateZ(28px)' }}>
+      <Link href={href} className="flex h-full flex-col" style={{ transform: 'translateZ(28px)' }} {...umamiAttrs('blog-open', { slug, placement: 'blog-hub' })}>
         {/* Cover: foto real + tinte de marca + icono */}
         <div className="relative h-44 overflow-hidden" style={{ background: '#0a1018' }}>
           <Image

@@ -46,6 +46,9 @@ export type MssEvent =
   | 'faq-open'
   | 'email-click'
   | 'social-click'
+  | 'blog-open'
+  | 'blog-cta'
+  | 'blog-service'
 
 /** Emite un evento por JS. No-op en SSR o si el tracker aún no cargó (fire-and-forget). */
 export function track(event: MssEvent, data?: UmamiEventData): void {

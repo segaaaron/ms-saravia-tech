@@ -5,6 +5,7 @@ import { useLazyBg } from './useLazyBg'
 // Link locale-aware: recibe href sin prefijo (`/demos/<slug>`) y añade `/es` según el locale
 // actual. Soft-nav dentro del grupo (demos), mismo root layout que el sitio.
 import { Link } from '@/i18n/navigation'
+import { umamiAttrs } from '@/lib/analytics'
 
 export type GalleryCardData = {
   href: string
@@ -47,6 +48,7 @@ export default function GalleryCard({ data }: { data: GalleryCardData }) {
       href={data.href}
       className="gallery-card"
       style={{ display: 'block', perspective: '1000px' }}
+      {...umamiAttrs('demo-open', { demo: data.href.split('/').pop() || data.href, placement: 'gallery' })}
     >
       <article
         ref={ref}

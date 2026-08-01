@@ -7,6 +7,7 @@ import CtaButton from '@/components/ui/CtaButton'
 import { getPost, readingMinutes, type Locale } from '@/content/blog'
 import { getServicePage } from '@/content/seo'
 import { buildAlternates, buildOpenGraph, localizedUrl } from '@/lib/seo'
+import { umamiAttrs } from '@/lib/analytics'
 import Breadcrumbs from '@/components/seo/Breadcrumbs'
 import JsonLdScript from '@/components/seo/JsonLdScript'
 import PostBody from '@/components/blog/PostBody'
@@ -110,12 +111,13 @@ export default async function BlogPostPage({
               <Link
                 href={locale === 'es' ? `/es/services/${service.slug}` : `/services/${service.slug}`}
                 className="font-semibold text-white/75 underline decoration-white/20 underline-offset-4 transition-colors hover:text-[#2FF5E0]"
+                {...umamiAttrs('blog-service', { slug, service: service.slug })}
               >
                 {serviceItems[service.itemIndex].title}
               </Link>
             </p>
           )}
-          <CtaButton href={locale === 'es' ? '/es#contact' : '/#contact'} size="lg" className="mt-6">
+          <CtaButton href={locale === 'es' ? '/es#contact' : '/#contact'} size="lg" className="mt-6" dataUmami={umamiAttrs('blog-cta', { slug, target: 'contact' })}>
             {t('ctaButton')}
           </CtaButton>
         </section>
@@ -133,6 +135,7 @@ export default async function BlogPostPage({
                 key={d}
                 href={`${locale === 'es' ? '/es' : ''}/demos/${d}`}
                 className="group inline-flex items-center gap-1.5 rounded-full border border-white/10 px-4 py-2 text-xs text-white/60 transition-colors hover:border-[#2FF5E0]/40 hover:text-[#2FF5E0]"
+                {...umamiAttrs('demo-open', { demo: d, placement: 'blog' })}
               >
                 {d}
                 <ArrowUpRight size={12} className="transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
