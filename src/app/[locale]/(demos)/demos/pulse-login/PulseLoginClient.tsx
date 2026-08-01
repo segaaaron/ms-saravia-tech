@@ -1,8 +1,8 @@
 'use client'
 
-import Link from 'next/link'
+import { Link } from '@/i18n/navigation'
 import { useState, type CSSProperties, type ReactNode } from 'react'
-import type { DemoLang } from '../lang'
+import type { DemoLang } from '../types'
 
 /* ============================================================
    PULSE / FITLIFE GYM — Login (demo). Port nativo Next.js del
@@ -457,7 +457,7 @@ export default function PulseLoginClient({ lang }: { lang: DemoLang }) {
             </a>
           </p>
           <p style={{ textAlign: 'center', fontSize: 13, color: '#9aa0a8', marginTop: 28 }}>
-            <Link href={`/demos/pulse-landing?lang=${lang}`} style={{ color: '#9aa0a8', fontWeight: 500 }}>
+            <Link href="/demos/pulse-landing" style={{ color: '#9aa0a8', fontWeight: 500 }}>
               {c.backHome}
             </Link>
           </p>

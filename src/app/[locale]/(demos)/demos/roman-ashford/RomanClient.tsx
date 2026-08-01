@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useRef, useState, type CSSProperties } from 'react'
-import type { DemoLang } from '../lang'
+import type { DemoLang } from '../types'
 
 /* ============================================================
    ROMÁN & ASHFORD — Abogados (demo). Port nativo Next.js del

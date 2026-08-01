@@ -2,7 +2,9 @@
 
 import { useRef, useState } from 'react'
 import { useLazyBg } from './useLazyBg'
-import Link from 'next/link'
+// Link locale-aware: recibe href sin prefijo (`/demos/<slug>`) y añade `/es` según el locale
+// actual. Soft-nav dentro del grupo (demos), mismo root layout que el sitio.
+import { Link } from '@/i18n/navigation'
 
 export type GalleryCardData = {
   href: string

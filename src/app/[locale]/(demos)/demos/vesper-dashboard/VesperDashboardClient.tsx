@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from 'react'
-import type { DemoLang } from '../lang'
+import type { DemoLang } from '../types'
 
 /* ============================================================
    VESPER — Panel de e-commerce (demo). Port nativo Next.js del

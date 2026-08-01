@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, type CSSProperties, type ReactNode } from 'react'
-import type { DemoLang } from '../lang'
+import type { DemoLang } from '../types'
 
 /* ============================================================
    PULSE — FITLIFE GYM · Panel de gestión (demo).

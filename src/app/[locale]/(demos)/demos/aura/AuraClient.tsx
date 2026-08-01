@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState, type CSSProperties } from 'react'
 import dynamic from 'next/dynamic'
-import type { DemoLang } from '../lang'
+import type { DemoLang } from '../types'
 
 /* ============================================================
    AURA — Medicina Estética (demo). Port nativo Next.js del

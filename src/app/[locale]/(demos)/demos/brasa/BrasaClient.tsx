@@ -8,7 +8,7 @@ import {
   type ReactNode,
   type MouseEvent as ReactMouseEvent,
 } from 'react'
-import type { DemoLang } from '../lang'
+import type { DemoLang } from '../types'
 import { useVisibleInterval } from '../useVisibleInterval'
 
 /* ============================================================

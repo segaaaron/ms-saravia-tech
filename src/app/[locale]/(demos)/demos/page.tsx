@@ -1,6 +1,9 @@
 import type { Metadata } from 'next'
-import Link from 'next/link'
-import { getDemoLang, type DemoLang } from './lang'
+// Link locale-aware de next-intl: hrefs sin prefijo (`/`, `/estimate`, `/demos/<slug>`) y él
+// añade `/es` cuando corresponde. Las demos ya viven en el mismo root layout que el sitio, así
+// que estos enlaces son soft-nav normales (no cruzan a otro <html> — se acabó el hard-nav).
+import { Link } from '@/i18n/navigation'
+import type { DemoLang } from './types'
 import GalleryCard from './_GalleryCard'
 
 export const metadata: Metadata = {
@@ -154,8 +157,9 @@ const COPY = {
   },
 } satisfies Record<DemoLang, { back: string; title: string; intro: string; view: string }>
 
-export default async function DemosGallery({ searchParams }: { searchParams: Promise<{ lang?: string }> }) {
-  const lang = await getDemoLang(await searchParams)
+export default async function DemosGallery({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params
+  const lang = locale as DemoLang
   const copy = COPY[lang]
 
   return (
@@ -171,7 +175,7 @@ export default async function DemosGallery({ searchParams }: { searchParams: Pro
     >
       <div style={{ maxWidth: 1120, margin: '0 auto' }}>
         <Link
-          href={lang === 'es' ? '/es' : '/'}
+          href="/"
           className="demos-back"
           style={{
             display: 'inline-flex',
@@ -219,7 +223,7 @@ export default async function DemosGallery({ searchParams }: { searchParams: Pro
 
         {/* Banner: estimador de costo → página /estimate */}
         <Link
-          href={lang === 'es' ? '/es/estimate' : '/estimate'}
+          href="/estimate"
           className="gallery-card"
           style={{
             display: 'flex',
@@ -277,7 +281,7 @@ export default async function DemosGallery({ searchParams }: { searchParams: Pro
               <GalleryCard
                 key={d.slug}
                 data={{
-                  href: `/demos/${d.slug}?lang=${lang}`,
+                  href: `/demos/${d.slug}`,
                   accent: d.accent,
                   accent2: d.accent2,
                   thumb: THUMBS[d.slug],

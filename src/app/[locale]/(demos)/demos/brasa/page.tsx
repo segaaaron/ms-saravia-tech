@@ -1,14 +1,15 @@
 import type { Metadata } from 'next'
 import BrasaClient from './BrasaClient'
-import { getDemoLang } from '../lang'
+import type { DemoLang } from '../types'
 
 export const metadata: Metadata = {
   title: 'BRASA · Parrilla Cochabambina — Demo',
   robots: { index: false, follow: false },
 }
 
-export default async function BrasaPage({ searchParams }: { searchParams: Promise<{ lang?: string }> }) {
+export default async function BrasaPage({ params }: { params: Promise<{ locale: string }> }) {
   // Precios siempre en USD (sin moneda local ni geo por país).
-  const lang = await getDemoLang(await searchParams)
+  const { locale } = await params
+  const lang = locale as DemoLang
   return <BrasaClient lang={lang} />
 }
