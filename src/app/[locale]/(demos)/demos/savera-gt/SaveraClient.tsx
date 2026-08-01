@@ -1,29 +1,40 @@
 'use client'
 
 import { useEffect, useRef, useState, type CSSProperties, type FormEvent } from 'react'
-import dynamic from 'next/dynamic'
+import Image from 'next/image'
 import type { DemoLang } from '../types'
 
 /* ============================================================================
    SAVERA GT — landing premium de superdeportivo (demo de portafolio, ficticia).
-   Escena 3D scroll-driven (R3F) + secciones editoriales. Bilingüe es/en.
+   Scroll cinematográfico con FOTOS REALES (Unsplash) + secciones editoriales.
+   Bilingüe es/en.
 
-   El Canvas es WebGL puro: no aporta al HTML servido y arrastra ~el bundle de
-   three, así que va con dynamic(ssr:false) y montado bajo el pliegue por
-   IntersectionObserver — el LCP es el título del hero (texto HTML), nunca espera
-   a que baje three.
+   El scroll manda una secuencia de cross-fades full-bleed (hero → cabina →
+   motor → aero) con Ken Burns sutil, y revela/oculta las cards glassmorphism
+   de cada fase. El progreso (0→1) NO pasa por React state: se escribe en CSS
+   vars (opacidad + zoom de cada foto, opacidad de cada card) leídas por el
+   layout. Cero re-render por scroll — el handler solo toca `style` en rAF.
 
-   El progreso de scroll (0→1) NO pasa por React state: se escribe en un ref
-   (leído dentro de useFrame para mover cámara + rig) y en CSS vars (leídas por
-   las cards de info). Cero re-render por scroll.
+   Fotos por next/image (host images.unsplash.com ya whitelisteado): el hero
+   con `priority` (es el LCP), el resto lazy. Sin three.js: la versión 3D
+   procedural low-poly no daba el nivel premium.
    ============================================================================ */
-
-const SaveraScene = dynamic(() => import('./SaveraScene'), { ssr: false })
 
 const ROSSO = '#e50914'
 const ROSSO_HOT = '#ff2800'
 const CHALK = '#f5f5f7'
 const CARBON = '#0b0b0b'
+
+// Fotos de supercar (Unsplash, licencia libre). Orden = fases del scroll.
+const HERO_IMG = 'https://images.unsplash.com/photo-1763898020227-3ae31ed53867'
+const PHASE_IMG = [
+  'https://images.unsplash.com/photo-1616322956281-ae8fe364daa7', // F1 cabina / cockpit
+  'https://images.unsplash.com/photo-1610531526986-af419fe24501', // F2 motor / V12
+  'https://images.unsplash.com/photo-1628890954311-74476fcbf0d4', // F3 chasis / aero
+]
+const STAGE_IMG = [HERO_IMG, ...PHASE_IMG]
+// Origen de zoom por foto → cada Ken Burns entra distinto (no todos al centro).
+const KB_ORIGIN = ['50% 42%', '38% 50%', '58% 46%', '46% 58%']
 
 type Phase = { badge: string; title: string; body: string; specs: { k: string; v: string }[] }
 type Spec = { label: string; value: string; unit: string; note: string }
@@ -35,6 +46,7 @@ type Content = {
   heroSub: string
   scrollHint: string
   phases: Phase[]
+  imgAlt: string[]
   specsEyebrow: string
   specsTitle: string
   specsSub: string
@@ -60,6 +72,12 @@ const CONTENT: Record<DemoLang, Content> = {
     heroTagline: 'El silencio antes de la tormenta',
     heroSub: 'Doce cilindros forjados a mano. Una carrocería nacida en el túnel de viento. Un manifiesto de ingeniería italiana llevado a su forma más pura.',
     scrollHint: 'Scroll para explorar',
+    imgAlt: [
+      'SAVERA SV-12 Stradale, exterior de superdeportivo',
+      'Cabina de carreras del SAVERA SV-12, cockpit',
+      'Motor V12 biturbo del SAVERA SV-12',
+      'Chasis y aerodinámica en fibra de carbono',
+    ],
     phases: [
       {
         badge: 'Fase 01 · Habitáculo',
@@ -120,6 +138,12 @@ const CONTENT: Record<DemoLang, Content> = {
     heroTagline: 'The silence before the storm',
     heroSub: 'Twelve hand-forged cylinders. A body born in the wind tunnel. A manifesto of Italian engineering distilled to its purest form.',
     scrollHint: 'Scroll to explore',
+    imgAlt: [
+      'SAVERA SV-12 Stradale, supercar exterior',
+      'SAVERA SV-12 racing cabin, cockpit',
+      'SAVERA SV-12 twin-turbo V12 engine',
+      'Carbon-fibre chassis and aerodynamics',
+    ],
     phases: [
       {
         badge: 'Phase 01 · Cockpit',
@@ -175,6 +199,8 @@ const CONTENT: Record<DemoLang, Content> = {
   },
 }
 
+const clamp01 = (x: number) => (x < 0 ? 0 : x > 1 ? 1 : x)
+const ramp = (p: number, a: number, b: number) => clamp01((p - a) / (b - a))
 /* opacidad triangular: sube a→b, mantiene b→c, baja c→d */
 const winOp = (p: number, a: number, b: number, c: number, d: number) => {
   if (p <= a || p >= d) return 0
@@ -184,7 +210,7 @@ const winOp = (p: number, a: number, b: number, c: number, d: number) => {
 }
 
 const glassCard: CSSProperties = {
-  background: 'linear-gradient(150deg, rgba(26,26,30,.72), rgba(11,11,11,.58))',
+  background: 'linear-gradient(150deg, rgba(26,26,30,.72), rgba(11,11,11,.6))',
   border: '1px solid rgba(255,255,255,.14)',
   borderRadius: 20,
   backdropFilter: 'blur(18px)',
@@ -207,12 +233,8 @@ export default function SaveraClient({ lang }: { lang: DemoLang }) {
   const rootEl = useRef<HTMLDivElement>(null)
   const trackEl = useRef<HTMLElement>(null)
   const stageEl = useRef<HTMLDivElement>(null)
-  const progress = useRef(0)
 
   const [reduced, setReduced] = useState(false)
-  const [mounted, setMounted] = useState(false) // Canvas montado (LCP-safe)
-  const [active, setActive] = useState(true) // frameloop on/off por visibilidad
-  const [hq, setHq] = useState(true) // calidad alta (desktop) vs. degradada (móvil)
   const [menuOpen, setMenuOpen] = useState(false)
   const [status, setStatus] = useState<'idle' | 'sending' | 'sent'>('idle')
 
@@ -221,19 +243,15 @@ export default function SaveraClient({ lang }: { lang: DemoLang }) {
     if (!host) return
     const r = host.style
     const rm = window.matchMedia('(prefers-reduced-motion: reduce)').matches
-    const smallOrTouch = window.matchMedia('(max-width: 820px)').matches || window.matchMedia('(pointer: coarse)').matches
     setReduced(rm)
-    setHq(!smallOrTouch)
 
-    // Reduced-motion: sin scroll-driving. Progreso fijo en el hero (auto cerrado),
-    // track colapsado a una pantalla, y las fases se muestran como sección normal.
+    // Reduced-motion: sin scroll-driving. Hero fijo, track colapsado a una pantalla y
+    // las fases se muestran como secciones apiladas normales (cada foto con su card).
     if (rm) {
-      progress.current = 0.02
-      setActive(false) // frameloop 'never' → un frame estático, cero rAF permanente
       if (trackEl.current) trackEl.current.style.height = '100svh'
-      setMounted(true)
       r.setProperty('--heroText', '1')
       r.setProperty('--hint', '0')
+      r.setProperty('--o0', '1')
       return
     }
 
@@ -247,12 +265,22 @@ export default function SaveraClient({ lang }: { lang: DemoLang }) {
       const total = t.offsetHeight - stageH
       const scrolled = Math.min(Math.max(-t.getBoundingClientRect().top, 0), Math.max(total, 1))
       const p = total > 0 ? scrolled / total : 0
-      progress.current = p
-      r.setProperty('--heroText', (1 - Math.min(1, p / 0.1)).toFixed(3))
-      r.setProperty('--hint', (1 - Math.min(1, p / 0.06)).toFixed(3))
-      r.setProperty('--c1', winOp(p, 0.15, 0.21, 0.33, 0.4).toFixed(3))
-      r.setProperty('--c2', winOp(p, 0.43, 0.49, 0.61, 0.67).toFixed(3))
-      r.setProperty('--c3', winOp(p, 0.68, 0.74, 0.86, 0.93).toFixed(3))
+      // opacidad de las 4 fotos (cross-fade encadenado)
+      r.setProperty('--o0', (1 - ramp(p, 0.2, 0.28)).toFixed(3))
+      r.setProperty('--o1', winOp(p, 0.2, 0.28, 0.46, 0.54).toFixed(3))
+      r.setProperty('--o2', winOp(p, 0.46, 0.54, 0.7, 0.78).toFixed(3))
+      r.setProperty('--o3', ramp(p, 0.7, 0.78).toFixed(3))
+      // Ken Burns: cada foto crece 1.0→1.08 a lo largo de su permanencia
+      r.setProperty('--z0', (1 + ramp(p, 0, 0.3) * 0.08).toFixed(4))
+      r.setProperty('--z1', (1 + ramp(p, 0.24, 0.54) * 0.08).toFixed(4))
+      r.setProperty('--z2', (1 + ramp(p, 0.5, 0.78) * 0.08).toFixed(4))
+      r.setProperty('--z3', (1 + ramp(p, 0.72, 1) * 0.08).toFixed(4))
+      // textos
+      r.setProperty('--heroText', (1 - ramp(p, 0.04, 0.14)).toFixed(3))
+      r.setProperty('--hint', (1 - ramp(p, 0.02, 0.08)).toFixed(3))
+      r.setProperty('--c1', winOp(p, 0.28, 0.33, 0.43, 0.48).toFixed(3))
+      r.setProperty('--c2', winOp(p, 0.54, 0.59, 0.67, 0.72).toFixed(3))
+      r.setProperty('--c3', winOp(p, 0.78, 0.83, 0.93, 0.98).toFixed(3))
     }
     const onScroll = () => {
       if (ticking) return
@@ -262,17 +290,6 @@ export default function SaveraClient({ lang }: { lang: DemoLang }) {
     window.addEventListener('scroll', onScroll, { passive: true })
     window.addEventListener('resize', onScroll)
     update()
-
-    // Monta el Canvas y controla frameloop cuando el stage entra/sale de pantalla.
-    const io = new IntersectionObserver(
-      (ents) => {
-        const vis = ents[0]?.isIntersecting ?? false
-        if (vis) setMounted(true)
-        setActive(vis)
-      },
-      { rootMargin: '200px' },
-    )
-    if (stageEl.current) io.observe(stageEl.current)
 
     // Reveal progresivo de las secciones normales
     const reveals = [...host.querySelectorAll<HTMLElement>('[data-reveal]')]
@@ -295,7 +312,6 @@ export default function SaveraClient({ lang }: { lang: DemoLang }) {
     return () => {
       window.removeEventListener('scroll', onScroll)
       window.removeEventListener('resize', onScroll)
-      io.disconnect()
       rio.disconnect()
     }
   }, [])
@@ -308,9 +324,7 @@ export default function SaveraClient({ lang }: { lang: DemoLang }) {
     setTimeout(() => setStatus('sent'), 1100)
   }
 
-  // fallback 0 para las cards de fase (ocultas hasta su ventana); 1 para hero/hint, así el
-  // título es visible en el HTML servido antes de que el efecto escriba las vars (LCP inmediato).
-  const cardVar = (v: string, fb = 0): CSSProperties => ({ opacity: `var(${v},${fb})` as unknown as number })
+  const op = (v: string, fb = 0): CSSProperties => ({ opacity: `var(${v},${fb})` as unknown as number })
 
   return (
     <div ref={rootEl} id="top" style={{ position: 'relative', background: CARBON, color: CHALK, fontFamily: "'Inter',system-ui,sans-serif", overflowX: 'hidden' }}>
@@ -328,7 +342,8 @@ export default function SaveraClient({ lang }: { lang: DemoLang }) {
         .sv-input{ transition: border-color .2s, background .2s }
         .sv-input:focus{ border-color:${ROSSO}; background:rgba(255,255,255,.05); outline:none }
         .sv-input::placeholder{ color:rgba(245,245,247,.4) }
-        @media (max-width:820px){ .sv-desknav{ display:none!important } .sv-menu-btn{ display:flex!important } .sv-phase-card{ right:16px!important; left:16px!important; max-width:none!important } .sv-specgrid{ grid-template-columns:1fr 1fr!important } .sv-contact-grid{ grid-template-columns:1fr!important } }
+        .sv-img{ object-fit:cover }
+        @media (max-width:820px){ .sv-desknav{ display:none!important } .sv-menu-btn{ display:flex!important } .sv-phase-card{ right:16px!important; left:16px!important; max-width:none!important; width:auto!important } .sv-specgrid{ grid-template-columns:1fr 1fr!important } .sv-contact-grid{ grid-template-columns:1fr!important } }
         @media (min-width:821px){ .sv-menu-btn{ display:none!important } }
       `}</style>
 
@@ -362,69 +377,97 @@ export default function SaveraClient({ lang }: { lang: DemoLang }) {
         )}
       </header>
 
-      {/* ---------------- ESCENA 3D SCROLL-DRIVEN ---------------- */}
-      <section ref={trackEl} style={{ position: 'relative', height: '520svh', background: CARBON }}>
-        <div ref={stageEl} style={{ position: 'sticky', top: 0, height: '100svh', overflow: 'hidden' }}>
-          {/* fondo de estudio */}
-          <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(70% 60% at 50% 42%, #1a1a1e 0%, #121212 45%, #0b0b0b 100%)' }} />
-          <div style={{ position: 'absolute', inset: 0, background: `radial-gradient(40% 30% at 50% 78%, rgba(229,9,20,.14), transparent 70%)`, pointerEvents: 'none' }} />
+      {/* ---------------- SCROLL CINEMATOGRÁFICO (fotos reales) ---------------- */}
+      {!reduced && (
+        <section ref={trackEl} style={{ position: 'relative', height: '460svh', background: CARBON }}>
+          <div ref={stageEl} style={{ position: 'sticky', top: 0, height: '100svh', overflow: 'hidden', background: CARBON }}>
+            {/* Capas de foto: cross-fade por --o{n}, Ken Burns por --z{n}. next/image fill. */}
+            {STAGE_IMG.map((src, i) => (
+              <div key={i} style={{ position: 'absolute', inset: 0, overflow: 'hidden', transform: `scale(var(--z${i},1))`, transformOrigin: KB_ORIGIN[i], willChange: 'transform, opacity', ...op(`--o${i}`, i === 0 ? 1 : 0) }}>
+                <Image
+                  src={src}
+                  alt={c.imgAlt[i]}
+                  fill
+                  priority={i === 0}
+                  sizes="100vw"
+                  quality={80}
+                  className="sv-img"
+                />
+              </div>
+            ))}
+            {/* overlay para legibilidad del texto */}
+            <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', background: 'linear-gradient(180deg, rgba(11,11,11,.5) 0%, rgba(11,11,11,.15) 35%, rgba(11,11,11,.55) 100%)' }} />
+            <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', background: 'radial-gradient(120% 100% at 50% 50%, transparent 45%, rgba(0,0,0,.6) 100%)' }} />
 
-          {/* Canvas: montado bajo el pliegue por IO. Mientras no está, el hero (texto) ya pinta. */}
-          <div style={{ position: 'absolute', inset: 0 }}>
-            {mounted && <SaveraScene progress={progress} active={active} hq={hq} />}
-          </div>
-
-          {/* viñeta */}
-          <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', background: 'radial-gradient(100% 100% at 50% 45%, transparent 55%, rgba(0,0,0,.6) 100%)' }} />
-
-          {/* HERO TEXT */}
-          <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', pointerEvents: 'none', padding: '0 20px', ...cardVar('--heroText', 1) }}>
-            <div style={{ fontFamily: "'Syncopate',sans-serif", fontWeight: 700, fontSize: 'clamp(38px,8.5vw,120px)', letterSpacing: '.14em', paddingLeft: '.14em', lineHeight: 1, color: CHALK, textShadow: '0 6px 50px rgba(0,0,0,.6)' }}>SAVERA GT</div>
-            <div style={{ marginTop: 18, fontSize: 'clamp(12px,1.5vw,17px)', letterSpacing: '.42em', textTransform: 'uppercase', color: ROSSO }}>{c.heroTagline}</div>
-            <p style={{ maxWidth: 560, margin: '26px auto 0', fontSize: 'clamp(14px,1.4vw,16px)', lineHeight: 1.75, color: 'rgba(245,245,247,.66)', fontWeight: 300 }}>{c.heroSub}</p>
-            <div style={{ marginTop: 14, fontFamily: "'Syncopate',sans-serif", fontSize: 11, letterSpacing: '.3em', color: 'rgba(245,245,247,.5)' }}>{c.heroModel}</div>
-          </div>
-
-          {/* SCROLL HINT */}
-          <div style={{ position: 'absolute', left: 0, right: 0, bottom: 34, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10, pointerEvents: 'none', ...cardVar('--hint', 1) }}>
-            <span style={{ fontSize: 10.5, letterSpacing: '.32em', textTransform: 'uppercase', color: 'rgba(245,245,247,.7)' }}>{c.scrollHint}</span>
-            <div style={{ width: 24, height: 40, border: '1px solid rgba(245,245,247,.4)', borderRadius: 14, position: 'relative' }}>
-              <span style={{ position: 'absolute', left: '50%', top: 7, transform: 'translateX(-50%)', width: 3, height: 7, borderRadius: 3, background: ROSSO, animation: 'svDot 1.8s ease-in-out infinite' }} />
+            {/* HERO TEXT */}
+            <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', pointerEvents: 'none', padding: '0 20px', ...op('--heroText', 1) }}>
+              <div style={{ fontFamily: "'Syncopate',sans-serif", fontWeight: 700, fontSize: 'clamp(38px,8.5vw,120px)', letterSpacing: '.14em', paddingLeft: '.14em', lineHeight: 1, color: CHALK, textShadow: '0 6px 50px rgba(0,0,0,.7)' }}>SAVERA GT</div>
+              <div style={{ marginTop: 18, fontSize: 'clamp(12px,1.5vw,17px)', letterSpacing: '.42em', textTransform: 'uppercase', color: ROSSO }}>{c.heroTagline}</div>
+              <p style={{ maxWidth: 560, margin: '26px auto 0', fontSize: 'clamp(14px,1.4vw,16px)', lineHeight: 1.75, color: 'rgba(245,245,247,.82)', fontWeight: 300, textShadow: '0 2px 20px rgba(0,0,0,.7)' }}>{c.heroSub}</p>
+              <div style={{ marginTop: 14, fontFamily: "'Syncopate',sans-serif", fontSize: 11, letterSpacing: '.3em', color: 'rgba(245,245,247,.6)' }}>{c.heroModel}</div>
             </div>
-          </div>
 
-          {/* PHASE CARDS (glassmorphism, opacidad por CSS var — no re-render) */}
-          {!reduced && c.phases.map((ph, i) => (
-            <div key={i} className="sv-phase-card" style={{ position: 'absolute', right: 'clamp(20px,5vw,72px)', top: '50%', transform: 'translateY(-50%)', maxWidth: 380, width: '42vw', padding: 30, ...glassCard, pointerEvents: 'none', ...cardVar(['--c1', '--c2', '--c3'][i]) }}>
-              <div style={{ fontFamily: "'Syncopate',sans-serif", fontSize: 10.5, letterSpacing: '.24em', color: ROSSO, marginBottom: 16 }}>{ph.badge}</div>
-              <h2 style={{ fontSize: 'clamp(24px,2.8vw,34px)', fontWeight: 600, lineHeight: 1.1, margin: '0 0 14px', letterSpacing: '-.01em' }}>{ph.title}</h2>
-              <p style={{ fontSize: 14.5, lineHeight: 1.7, color: 'rgba(245,245,247,.7)', fontWeight: 300, margin: '0 0 22px' }}>{ph.body}</p>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 10, borderTop: '1px solid rgba(255,255,255,.1)', paddingTop: 18 }}>
-                {ph.specs.map((s) => (
-                  <div key={s.k} style={{ display: 'flex', justifyContent: 'space-between', gap: 14 }}>
-                    <span style={{ fontSize: 12.5, color: 'rgba(245,245,247,.5)', letterSpacing: '.03em' }}>{s.k}</span>
-                    <span style={{ fontSize: 13.5, fontWeight: 500, color: CHALK }}>{s.v}</span>
-                  </div>
-                ))}
+            {/* SCROLL HINT */}
+            <div style={{ position: 'absolute', left: 0, right: 0, bottom: 34, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10, pointerEvents: 'none', ...op('--hint', 1) }}>
+              <span style={{ fontSize: 10.5, letterSpacing: '.32em', textTransform: 'uppercase', color: 'rgba(245,245,247,.8)' }}>{c.scrollHint}</span>
+              <div style={{ width: 24, height: 40, border: '1px solid rgba(245,245,247,.45)', borderRadius: 14, position: 'relative' }}>
+                <span style={{ position: 'absolute', left: '50%', top: 7, transform: 'translateX(-50%)', width: 3, height: 7, borderRadius: 3, background: ROSSO, animation: 'svDot 1.8s ease-in-out infinite' }} />
               </div>
             </div>
-          ))}
-        </div>
-      </section>
 
-      {/* Reduced-motion: fases como sección estática normal (sin overlay animado) */}
-      {reduced && (
-        <section style={{ padding: '80px clamp(18px,5vw,44px)', background: '#0e0e10' }}>
-          <div style={{ maxWidth: 1180, margin: '0 auto', display: 'grid', gap: 20, gridTemplateColumns: 'repeat(auto-fit,minmax(280px,1fr))' }}>
+            {/* PHASE CARDS (glassmorphism, opacidad por CSS var — no re-render) */}
             {c.phases.map((ph, i) => (
-              <div key={i} style={{ padding: 30, ...glassCard }}>
+              <div key={i} className="sv-phase-card" style={{ position: 'absolute', right: 'clamp(20px,5vw,72px)', top: '50%', transform: 'translateY(-50%)', maxWidth: 380, width: '42vw', padding: 30, ...glassCard, pointerEvents: 'none', ...op(['--c1', '--c2', '--c3'][i]) }}>
                 <div style={{ fontFamily: "'Syncopate',sans-serif", fontSize: 10.5, letterSpacing: '.24em', color: ROSSO, marginBottom: 16 }}>{ph.badge}</div>
-                <h2 style={{ fontSize: 26, fontWeight: 600, margin: '0 0 14px' }}>{ph.title}</h2>
-                <p style={{ fontSize: 14.5, lineHeight: 1.7, color: 'rgba(245,245,247,.7)', fontWeight: 300, margin: 0 }}>{ph.body}</p>
+                <h2 style={{ fontSize: 'clamp(24px,2.8vw,34px)', fontWeight: 600, lineHeight: 1.1, margin: '0 0 14px', letterSpacing: '-.01em' }}>{ph.title}</h2>
+                <p style={{ fontSize: 14.5, lineHeight: 1.7, color: 'rgba(245,245,247,.72)', fontWeight: 300, margin: '0 0 22px' }}>{ph.body}</p>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 10, borderTop: '1px solid rgba(255,255,255,.1)', paddingTop: 18 }}>
+                  {ph.specs.map((s) => (
+                    <div key={s.k} style={{ display: 'flex', justifyContent: 'space-between', gap: 14 }}>
+                      <span style={{ fontSize: 12.5, color: 'rgba(245,245,247,.5)', letterSpacing: '.03em' }}>{s.k}</span>
+                      <span style={{ fontSize: 13.5, fontWeight: 500, color: CHALK }}>{s.v}</span>
+                    </div>
+                  ))}
+                </div>
               </div>
             ))}
           </div>
         </section>
+      )}
+
+      {/* Reduced-motion: hero fijo + fases como secciones apiladas normales (foto + card) */}
+      {reduced && (
+        <>
+          <section style={{ position: 'relative', height: '100svh', overflow: 'hidden', background: CARBON }}>
+            <Image src={HERO_IMG} alt={c.imgAlt[0]} fill priority sizes="100vw" quality={80} className="sv-img" />
+            <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(180deg, rgba(11,11,11,.5), rgba(11,11,11,.2) 40%, rgba(11,11,11,.6))' }} />
+            <div style={{ position: 'absolute', inset: 0, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', padding: '0 20px' }}>
+              <div style={{ fontFamily: "'Syncopate',sans-serif", fontWeight: 700, fontSize: 'clamp(38px,8.5vw,120px)', letterSpacing: '.14em', paddingLeft: '.14em', lineHeight: 1, color: CHALK, textShadow: '0 6px 50px rgba(0,0,0,.7)' }}>SAVERA GT</div>
+              <div style={{ marginTop: 18, fontSize: 'clamp(12px,1.5vw,17px)', letterSpacing: '.42em', textTransform: 'uppercase', color: ROSSO }}>{c.heroTagline}</div>
+              <p style={{ maxWidth: 560, margin: '26px auto 0', fontSize: 'clamp(14px,1.4vw,16px)', lineHeight: 1.75, color: 'rgba(245,245,247,.82)', fontWeight: 300 }}>{c.heroSub}</p>
+              <div style={{ marginTop: 14, fontFamily: "'Syncopate',sans-serif", fontSize: 11, letterSpacing: '.3em', color: 'rgba(245,245,247,.6)' }}>{c.heroModel}</div>
+            </div>
+          </section>
+          {c.phases.map((ph, i) => (
+            <section key={i} style={{ position: 'relative', minHeight: '80svh', display: 'flex', alignItems: 'flex-end', overflow: 'hidden', background: CARBON }}>
+              <Image src={PHASE_IMG[i]} alt={c.imgAlt[i + 1]} fill sizes="100vw" quality={80} className="sv-img" />
+              <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(180deg, rgba(11,11,11,.3), rgba(11,11,11,.7))' }} />
+              <div className="sv-phase-card" style={{ position: 'relative', margin: 'clamp(20px,4vw,48px)', maxWidth: 420, padding: 30, ...glassCard }}>
+                <div style={{ fontFamily: "'Syncopate',sans-serif", fontSize: 10.5, letterSpacing: '.24em', color: ROSSO, marginBottom: 16 }}>{ph.badge}</div>
+                <h2 style={{ fontSize: 28, fontWeight: 600, margin: '0 0 14px' }}>{ph.title}</h2>
+                <p style={{ fontSize: 14.5, lineHeight: 1.7, color: 'rgba(245,245,247,.72)', fontWeight: 300, margin: '0 0 22px' }}>{ph.body}</p>
+                <div style={{ display: 'flex', flexDirection: 'column', gap: 10, borderTop: '1px solid rgba(255,255,255,.1)', paddingTop: 18 }}>
+                  {ph.specs.map((s) => (
+                    <div key={s.k} style={{ display: 'flex', justifyContent: 'space-between', gap: 14 }}>
+                      <span style={{ fontSize: 12.5, color: 'rgba(245,245,247,.5)' }}>{s.k}</span>
+                      <span style={{ fontSize: 13.5, fontWeight: 500, color: CHALK }}>{s.v}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </section>
+          ))}
+        </>
       )}
 
       {/* ---------------- SPECS GRID ---------------- */}
