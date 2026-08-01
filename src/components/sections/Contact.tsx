@@ -3,10 +3,23 @@ import { useState } from 'react'
 import { motion } from 'framer-motion'
 import { useTranslations, useLocale } from 'next-intl'
 import { toast } from 'sonner'
-import { Send, Mail, MapPin, Clock, MessageSquare, Handshake } from 'lucide-react'
+import {
+  Send,
+  Mail,
+  MapPin,
+  Clock,
+  MessageSquare,
+  Handshake,
+  ShieldCheck,
+  FileText,
+  UserRoundCheck,
+  Globe,
+  ArrowRight,
+} from 'lucide-react'
 import GradientText from '@/components/ui/GradientText'
 import MagneticButton from '@/components/ui/MagneticButton'
 import SectionLabel from '@/components/ui/SectionLabel'
+import { Link } from '@/i18n/navigation'
 import { fadeInUp, staggerContainer, slideInLeft, slideInRight } from '@/lib/motion'
 import { track, umamiAttrs } from '@/lib/analytics'
 
@@ -15,6 +28,23 @@ const VALUE_PROPS = [
   { icon: MessageSquare, key: 'value_consultation' as const },
   { icon: Handshake, key: 'value_contracts' as const },
 ]
+
+// Señales de confianza para vender a US/CA — solo verificables (LLC US real, modelo senior-led,
+// timezone nearshore). Sin métricas/logos/testimonios inventados. `timezone` enlaza a /nearshore.
+const TRUST_SIGNALS = [
+  { icon: ShieldCheck, key: 'trust_llc' as const },
+  { icon: FileText, key: 'trust_nda' as const },
+  { icon: UserRoundCheck, key: 'trust_senior' as const },
+  { icon: Globe, key: 'trust_timezone' as const, href: '/nearshore' as const },
+]
+
+// Enums de calificación: el valor enviado es la clave estable (validada por zod en el server);
+// el label visible sale de i18n. Mantener en sync con BUDGET_VALUES/PROJECT_TYPE_VALUES en route.ts.
+const BUDGET_OPTIONS = ['lt5k', '5k_15k', '15k_50k', '50k_plus', 'not_sure'] as const
+const PROJECT_TYPE_OPTIONS = ['saas', 'mobile', 'ai_agent', 'nearshore', 'other'] as const
+
+// <option> hereda el fondo del sistema en el dropdown nativo; forzamos el tema oscuro.
+const optionStyle: React.CSSProperties = { background: '#0B0D14', color: 'white' }
 
 const inputStyles: React.CSSProperties = {
   width: '100%',
@@ -108,10 +138,50 @@ function StyledTextarea({
   )
 }
 
+function StyledSelect({
+  name,
+  value,
+  onChange,
+  required,
+  'aria-label': ariaLabel,
+  children,
+}: {
+  name: string
+  value: string
+  onChange: (e: React.ChangeEvent<HTMLSelectElement>) => void
+  required?: boolean
+  'aria-label'?: string
+  children: React.ReactNode
+}) {
+  return (
+    <select
+      id={name}
+      name={name}
+      value={value}
+      onChange={onChange}
+      required={required}
+      aria-label={ariaLabel}
+      style={{ ...inputStyles, cursor: 'pointer' }}
+      onFocus={(e) => {
+        e.currentTarget.style.borderColor = 'rgba(0,229,255,0.5)'
+        e.currentTarget.style.boxShadow = '0 0 0 3px rgba(0,229,255,0.1)'
+      }}
+      onBlur={(e) => {
+        e.currentTarget.style.borderColor = 'rgba(255,255,255,0.1)'
+        e.currentTarget.style.boxShadow = 'none'
+      }}
+    >
+      {children}
+    </select>
+  )
+}
+
 type FormState = {
   name: string
   email: string
   company: string
+  budget: string
+  projectType: string
   message: string
 }
 
@@ -119,10 +189,19 @@ export default function Contact() {
   const t = useTranslations('contact')
   const locale = useLocale()
 
-  const [form, setForm] = useState<FormState>({ name: '', email: '', company: '', message: '' })
+  const [form, setForm] = useState<FormState>({
+    name: '',
+    email: '',
+    company: '',
+    budget: '',
+    projectType: '',
+    message: '',
+  })
   const [sending, setSending] = useState(false)
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+  ) => {
     setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }))
   }
 
@@ -146,9 +225,16 @@ export default function Contact() {
       })
       if (!res.ok) throw new Error('Request failed')
       // Conversión: el North-Star del sitio. `source` da el canal (estimator, demos, ad UTM…).
-      track('lead', { locale, has_company: hasCompany, source: source ?? 'direct' })
+      // budget/projectType son categóricos (no PII) → señal de calidad del lead en el funnel.
+      track('lead', {
+        locale,
+        has_company: hasCompany,
+        source: source ?? 'direct',
+        budget: form.budget,
+        project_type: form.projectType,
+      })
       toast.success(t('success'))
-      setForm({ name: '', email: '', company: '', message: '' })
+      setForm({ name: '', email: '', company: '', budget: '', projectType: '', message: '' })
     } catch {
       track('contact-error', { locale })
       toast.error(t('error'))
@@ -231,6 +317,52 @@ export default function Contact() {
                 </motion.div>
               ))}
             </motion.div>
+
+            {/* Trust signals — credibilidad para clientes US/CA (LLC, NDA, senior-led, timezone).
+                Glass card al estilo de la founder card de About; el ítem de timezone enlaza a /nearshore. */}
+            <motion.div
+              variants={fadeInUp}
+              className="rounded-2xl p-6 space-y-4"
+              style={{
+                background:
+                  'linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.01))',
+                border: '1px solid rgba(120,200,255,0.14)',
+                backdropFilter: 'blur(8px)',
+              }}
+            >
+              <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.18em] text-[#2FF5E0]/85">
+                {t('trust_label')}
+              </p>
+              <ul className="space-y-3">
+                {TRUST_SIGNALS.map(({ icon: Icon, key, href }) => (
+                  <li key={key} className="flex gap-3">
+                    <div
+                      className="flex h-8 w-8 shrink-0 items-center justify-center text-[#2FF5E0]"
+                      style={{
+                        borderRadius: 10,
+                        background: 'rgba(120,200,255,0.06)',
+                        border: '1px solid rgba(120,200,255,0.20)',
+                      }}
+                    >
+                      <Icon size={15} strokeWidth={1.6} />
+                    </div>
+                    <div className="space-y-1">
+                      <p className="text-sm leading-snug text-white/75">{t(key)}</p>
+                      {href && (
+                        <Link
+                          href={href}
+                          className="inline-flex items-center gap-1 text-xs text-cyan-400/80 hover:text-cyan-400 transition-colors"
+                          {...umamiAttrs('nearshore-click', { placement: 'contact-trust' })}
+                        >
+                          {t('trust_timezone_link')}
+                          <ArrowRight size={12} />
+                        </Link>
+                      )}
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            </motion.div>
           </motion.div>
 
           {/* RIGHT: Form */}
@@ -290,6 +422,53 @@ export default function Contact() {
                     value={form.company}
                     onChange={handleChange}
                   />
+                </div>
+
+                {/* Budget + Project type — calificación del lead (obligatorios) */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                  <div className="space-y-1.5">
+                    <label htmlFor="budget" className="block text-white/60 text-xs font-medium tracking-wide uppercase">
+                      {t('budget')} <span className="text-fuchsia-400">*</span>
+                    </label>
+                    <StyledSelect
+                      name="budget"
+                      value={form.budget}
+                      onChange={handleChange}
+                      required
+                      aria-label={t('budget')}
+                    >
+                      <option value="" disabled style={optionStyle}>
+                        {t('budget_placeholder')}
+                      </option>
+                      {BUDGET_OPTIONS.map((o) => (
+                        <option key={o} value={o} style={optionStyle}>
+                          {t(`budget_options.${o}`)}
+                        </option>
+                      ))}
+                    </StyledSelect>
+                  </div>
+
+                  <div className="space-y-1.5">
+                    <label htmlFor="projectType" className="block text-white/60 text-xs font-medium tracking-wide uppercase">
+                      {t('projectType')} <span className="text-fuchsia-400">*</span>
+                    </label>
+                    <StyledSelect
+                      name="projectType"
+                      value={form.projectType}
+                      onChange={handleChange}
+                      required
+                      aria-label={t('projectType')}
+                    >
+                      <option value="" disabled style={optionStyle}>
+                        {t('projectType_placeholder')}
+                      </option>
+                      {PROJECT_TYPE_OPTIONS.map((o) => (
+                        <option key={o} value={o} style={optionStyle}>
+                          {t(`projectType_options.${o}`)}
+                        </option>
+                      ))}
+                    </StyledSelect>
+                  </div>
                 </div>
 
                 {/* Message */}

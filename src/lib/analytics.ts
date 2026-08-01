@@ -50,6 +50,7 @@ export type MssEvent =
   | 'blog-cta'
   | 'blog-service'
   | 'blog-nearshore'
+  | 'nearshore-click'
 
 /** Emite un evento por JS. No-op en SSR o si el tracker aún no cargó (fire-and-forget). */
 export function track(event: MssEvent, data?: UmamiEventData): void {

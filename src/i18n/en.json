@@ -223,7 +223,31 @@
     "location": "United States of America",
     "value_response": "Response within 24h",
     "value_consultation": "Free consultation",
-    "value_contracts": "No long-term contracts"
+    "value_contracts": "No long-term contracts",
+    "budget": "Project Budget",
+    "budget_placeholder": "Select a range",
+    "budget_options": {
+      "lt5k": "< $5k",
+      "5k_15k": "$5k–$15k",
+      "15k_50k": "$15k–$50k",
+      "50k_plus": "$50k+",
+      "not_sure": "Not sure yet"
+    },
+    "projectType": "Project Type",
+    "projectType_placeholder": "Select a type",
+    "projectType_options": {
+      "saas": "SaaS / Web App",
+      "mobile": "Mobile App",
+      "ai_agent": "AI Agent / Automation",
+      "nearshore": "Nearshore team / staff augmentation",
+      "other": "Other"
+    },
+    "trust_label": "Why work with us",
+    "trust_llc": "US-registered LLC",
+    "trust_nda": "Standard contracts & NDA on request",
+    "trust_senior": "Senior-led — you work directly with a senior engineer, not a sales team",
+    "trust_timezone": "Same-timezone collaboration (nearshore)",
+    "trust_timezone_link": "See our nearshore model"
   },
   "footer": {
     "tagline": "Building the future, one product at a time.",
