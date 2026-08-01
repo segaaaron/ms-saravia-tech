@@ -23,6 +23,15 @@ import { uns, local } from './unsplash'
 
 const DEMOS: Demo[] = [
   {
+    slug: 'savera-gt',
+    accent: '#e50914',
+    accent2: '#ff2800',
+    i18n: {
+      es: { vertical: 'Automotriz', name: 'SAVERA GT · Superdeportivo', desc: 'Landing de superdeportivo de lujo con auto 3D real que se abre al scroll: puertas ala, motor V12 y alerón activo.', tags: ['3D', 'Scroll', 'R3F'] },
+      en: { vertical: 'Automotive', name: 'SAVERA GT · Hypercar', desc: 'Luxury supercar landing with a real 3D car that opens on scroll: gullwing doors, V12 engine and active wing.', tags: ['3D', 'Scroll', 'R3F'] },
+    },
+  },
+  {
     slug: 'aura',
     accent: '#c2a274',
     accent2: '#86bfb7',
@@ -118,6 +127,7 @@ const DEMOS: Demo[] = [
 // store y dashboard quedaban separados por el bloque PULSE). Flagship legal
 // primero; luego cada marca con sus piezas contiguas (web → panel → app).
 const ORDER = [
+  'savera-gt',
   'roman-ashford',
   'aura',
   'brasa', 'brasa-panel',
@@ -130,6 +140,9 @@ const ORDERED_DEMOS = ORDER.map((slug) => DEMOS.find((d) => d.slug === slug)!).f
 // Todas pasan por el optimizador (ver ../unsplash): los originales son de 1600px y el índice
 // bajaba ~990 kB en 9 miniaturas que se pintan a ~350px de ancho.
 const THUMBS: Record<string, string> = {
+  // Placeholder de marca (gradiente Rosso sobre carbón) hasta capturar el screenshot real
+  // de la escena 3D. La GalleryCard igual pinta sus gradientes de fondo si la imagen falta.
+  'savera-gt': local('/showcase/thumbs/savera-gt.webp', 640),
   aura: local('/showcase/img/recepcion.webp', 640),
   brasa: local('/showcase/img/menu/pique.webp', 640),
   'brasa-panel': local('/showcase/img/menu/silpancho.webp', 640),

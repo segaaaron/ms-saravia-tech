@@ -21,6 +21,10 @@
     "cta": "Ver todos los demos",
     "items": [
       {
+        "name": "SAVERA GT",
+        "tag": "Superdeportivo"
+      },
+      {
         "name": "PULSE",
         "tag": "SaaS de gimnasio"
       },
@@ -31,10 +35,6 @@
       {
         "name": "AURA",
         "tag": "Clínica de piel"
-      },
-      {
-        "name": "VESPER",
-        "tag": "Analytics"
       }
     ],
     "pitchTitle": "Esto es solo un punto de partida.",

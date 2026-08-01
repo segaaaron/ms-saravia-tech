@@ -19,10 +19,10 @@ type Item = { name: string; tag: string }
 // Los thumbs son webp optimizados (~800px, <40KB) generados en public/showcase/thumbs/
 // — nunca los masters de 6-8MB. Se sirven vía next/image para lazy + responsive.
 const CARDS = [
+  { slug: 'savera-gt', thumb: '/showcase/thumbs/savera-gt.webp', accent: '#e50914' },
   { slug: 'pulse-landing', thumb: '/showcase/thumbs/pulse-landing.webp', accent: '#3b5bdb' },
   { slug: 'vesper-store', thumb: '/showcase/thumbs/vesper-store.webp', accent: '#a855f7' },
   { slug: 'aura', thumb: '/showcase/thumbs/aura.webp', accent: '#c2a274' },
-  { slug: 'vesper-dashboard', thumb: '/showcase/thumbs/vesper-dashboard.webp', accent: '#00E5FF' },
 ] as const
 
 export default function DemosShowcase() {
