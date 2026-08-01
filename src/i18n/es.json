@@ -581,29 +581,53 @@
         "metaDesc": "Cómo construimos la presencia digital completa de una clínica de medicina estética premium. Caso de éxito de MS Saravia Tech Stack.",
         "challenge": "Una clínica estética premium se juega todo en la confianza y la primera impresión, pero muchas dependen de plantillas genéricas o solo de redes sociales. Los pacientes potenciales no podían descubrir tratamientos, evaluar credibilidad ni agendar una consulta sin fricción.",
         "solution": "Construimos una presencia digital completa — una vitrina pulida de tratamientos y servicios, un flujo de reserva moderno y una identidad de marca coherente — pensada para convertir visitantes en consultas agendadas y reflejar la calidad de la práctica.",
-        "results": "",
+        "results": "La clínica ahora tiene una presencia online que se siente tan premium como la práctica — intuitiva, elegante y rápida de recorrer. Los pacientes descubren tratamientos, se hacen una idea real de la clínica y piden una consulta sin fricción, y se ve pulida en cualquier dispositivo.",
         "testimonial": "",
-        "testimonialAuthor": ""
+        "testimonialAuthor": "",
+        "highlights": [
+          "Intuitiva y fácil de recorrer",
+          "Look premium desde la primera pantalla",
+          "Tratamientos fáciles de explorar",
+          "Agendar consulta en pocos toques",
+          "Rápida y fluida en cualquier teléfono"
+        ]
       },
       "readycv": {
         "metaTitle": "ReadyCV — Creador de CV con IA | Caso de Éxito",
         "metaDesc": "Cómo construimos ReadyCV, un creador de currículums con IA que ayuda a profesionales a conseguir el trabajo de sus sueños. Caso de éxito.",
         "challenge": "Quien busca empleo sabe que un CV fuerte y a medida es decisivo, pero escribir uno que se lea bien y pase los filtros automáticos es lento e intimidante. La mayoría de herramientas se quedan en plantillas rígidas y dejan lo difícil — las palabras — al usuario.",
         "solution": "Construimos ReadyCV, un creador de currículums con IA que ayuda a profesionales a redactar CVs convincentes y adaptados al puesto en minutos. Guía al usuario con entradas estructuradas y genera contenido pulido y compatible con ATS, convirtiendo una página en blanco en un CV listo para entrevistas.",
-        "results": "",
+        "results": "La experiencia es guiada de principio a fin: lo que era una hoja en blanco intimidante se vuelve un flujo fluido que da confianza, y el resultado se ve pulido y profesional. Es rápida, limpia y simple para que cualquiera arme un CV del que se sienta orgulloso.",
         "testimonial": "",
-        "testimonialAuthor": ""
+        "testimonialAuthor": "",
+        "highlights": [
+          "Flujo guiado y fácil para cualquiera",
+          "Resultados pulidos y profesionales",
+          "De la hoja en blanco a un CV en minutos",
+          "Interfaz limpia y sin distracciones",
+          "Rápida y responsive en todos lados"
+        ]
       },
       "nova-nutrition": {
         "metaTitle": "NOVA Nutrition — App de Nutrición con IA | Caso de Éxito",
         "metaDesc": "NOVA Nutrition: seguimiento nutricional inteligente con IA para iOS y Android. Caso de éxito de MS Saravia Tech Stack.",
         "challenge": "El seguimiento nutricional constante es donde se caen la mayoría de las metas de salud — registrar a mano es tedioso, los planes genéricos ignoran el contexto de cada persona y la retroalimentación llega tarde para cambiar hábitos. Se necesita una guía que se adapte al momento.",
         "solution": "Estamos construyendo NOVA, una app para iOS y Android que usa IA para seguimiento nutricional inteligente, planes de comidas personalizados e insights en tiempo real. Reduce la fricción del registro y convierte las decisiones diarias de comida en una guía accionable e individualizada.",
-        "results": "",
+        "results": "NOVA hace que registrar se sienta sin esfuerzo en vez de tedioso — una app limpia y elegante que convierte el hábito diario en algo de segundos y mantiene la motivación con insights claros y personalizados. Diseñada para sentirse nativa y premium en iOS y Android.",
         "testimonial": "",
-        "testimonialAuthor": ""
+        "testimonialAuthor": "",
+        "highlights": [
+          "Registro diario sin esfuerzo",
+          "Insights claros y motivadores",
+          "Personalizada para cada usuario",
+          "App fluida con sensación nativa",
+          "Diseñada para crear un hábito duradero"
+        ]
       }
-    }
+    },
+    "highlightsLabel": "La experiencia",
+    "scopeLabel": "Alcance",
+    "yearLabel": "Año"
   },
   "blogPage": {
     "metaTitle": "Blog — Ingeniería SaaS, IA y Móvil | MS Saravia Tech Stack",

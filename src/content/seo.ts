@@ -121,12 +121,34 @@ export type CaseStudyPage = {
   slug: string
   projectId: (typeof projects)[number]['id']
   projectIndex: number
+  /** alcance del trabajo (bilingüe, corto). */
+  scope: { en: string; es: string }
+  /** año (o "En curso"). */
+  year: string
 }
 
 export const caseStudyPages: CaseStudyPage[] = [
-  { slug: 'yasmin-medrano', projectId: 'yasmin', projectIndex: 0 },
-  { slug: 'readycv', projectId: 'readycv', projectIndex: 1 },
-  { slug: 'nova-nutrition', projectId: 'nova', projectIndex: 2 },
+  {
+    slug: 'yasmin-medrano',
+    projectId: 'yasmin',
+    projectIndex: 0,
+    scope: { en: 'Design + Build · Web', es: 'Diseño + Build · Web' },
+    year: '2025',
+  },
+  {
+    slug: 'readycv',
+    projectId: 'readycv',
+    projectIndex: 1,
+    scope: { en: 'Product · Web + AI', es: 'Producto · Web + IA' },
+    year: '2025',
+  },
+  {
+    slug: 'nova-nutrition',
+    projectId: 'nova',
+    projectIndex: 2,
+    scope: { en: 'Product · Mobile', es: 'Producto · Móvil' },
+    year: '2026',
+  },
 ]
 
 export const caseStudySlugs = caseStudyPages.map((c) => c.slug)

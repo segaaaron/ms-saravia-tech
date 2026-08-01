@@ -581,29 +581,53 @@
         "metaDesc": "How we built the complete digital presence for a premium aesthetic medicine practice. Case study by MS Saravia Tech Stack.",
         "challenge": "Premium aesthetic clinics live and die on trust and first impressions, yet many rely on generic templates or social media alone. Prospective patients struggled to discover treatments, gauge credibility, and book a consultation without friction.",
         "solution": "We built a complete digital presence — a polished treatments and services showcase, a modern booking flow, and a cohesive brand identity — designed to turn first-time visitors into booked consultations and reflect the quality of the practice.",
-        "results": "",
+        "results": "The clinic now has an online presence that feels as premium as the practice itself — intuitive, elegant, and quick to explore. Patients can discover treatments, get a real sense of the clinic, and request a consultation without friction, and it looks polished on any device.",
         "testimonial": "",
-        "testimonialAuthor": ""
+        "testimonialAuthor": "",
+        "highlights": [
+          "Intuitive, effortless to navigate",
+          "Premium look from the first screen",
+          "Treatments easy to explore",
+          "Consultation booking in a few taps",
+          "Fast and smooth on any phone"
+        ]
       },
       "readycv": {
         "metaTitle": "ReadyCV — AI Resume Builder | Case Study",
         "metaDesc": "How we built ReadyCV, an AI-powered resume builder helping professionals land their dream jobs. Case study by MS Saravia Tech Stack.",
         "challenge": "Job seekers know a strong, tailored CV is decisive, but writing one that reads well and passes automated screening is slow and intimidating. Most resume tools stop at rigid templates and leave the hardest part — the words — to the user.",
         "solution": "We built ReadyCV, an AI-powered resume builder that helps professionals craft compelling, role-tailored CVs in minutes. It guides users through structured input and generates polished, ATS-friendly content, turning a blank page into an interview-ready resume.",
-        "results": "",
+        "results": "The experience is guided from start to finish: what used to be an intimidating blank page becomes a smooth, confidence-building flow, and the result looks polished and professional. It is fast, clean, and simple enough that anyone can produce a CV they are proud to send.",
         "testimonial": "",
-        "testimonialAuthor": ""
+        "testimonialAuthor": "",
+        "highlights": [
+          "Guided, beginner-friendly flow",
+          "Polished, professional results",
+          "From blank page to CV in minutes",
+          "Clean, distraction-free interface",
+          "Fast and responsive anywhere"
+        ]
       },
       "nova-nutrition": {
         "metaTitle": "NOVA Nutrition — AI Nutrition App | Case Study",
         "metaDesc": "NOVA Nutrition: smart, AI-powered nutrition tracking for iOS and Android. Case study by MS Saravia Tech Stack.",
         "challenge": "Consistent nutrition tracking is where most health goals fall apart — manual logging is tedious, generic meal plans ignore individual context, and feedback arrives too late to change behavior. People need guidance that adapts to them in the moment.",
         "solution": "We are building NOVA, an iOS and Android app that uses AI for smart nutrition tracking, personalized meal plans, and real-time insights. It reduces logging friction and turns everyday food choices into actionable, individualized guidance.",
-        "results": "",
+        "results": "NOVA makes tracking feel effortless instead of tedious — a clean, elegant app that turns the daily habit into something that takes seconds and keeps people motivated with clear, personalized insights. Designed to feel native and premium on both iOS and Android.",
         "testimonial": "",
-        "testimonialAuthor": ""
+        "testimonialAuthor": "",
+        "highlights": [
+          "Effortless daily logging",
+          "Clear, motivating insights",
+          "Personalized to each user",
+          "Smooth, native-feeling app",
+          "Designed to build a lasting habit"
+        ]
       }
-    }
+    },
+    "highlightsLabel": "The experience",
+    "scopeLabel": "Scope",
+    "yearLabel": "Year"
   },
   "blogPage": {
     "metaTitle": "Blog — SaaS, AI & Mobile Engineering | MS Saravia Tech Stack",

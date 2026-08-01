@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import Link from 'next/link'
+import NotFoundContent from './_not-found-content'
 
 export const metadata: Metadata = {
   metadataBase: new URL(
@@ -9,7 +9,13 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 }
 
-// Root not-found renders outside the [locale] layout, so it needs its own html/body.
+/**
+ * Root not-found: renderiza FUERA del árbol [locale], por eso trae su propio html/body y NO hay
+ * contexto de next-intl aquí. Se mantiene como Server Component (preserva el status 404 y el
+ * metadata; un not-found client con html propio rompe). El copy visible y el `lang` se localizan
+ * en el cliente por la URL (/es) vía <NotFoundContent> — antes el 404 salía siempre en inglés,
+ * también bajo /es.
+ */
 export default function NotFound() {
   return (
     <html lang="en">
@@ -29,29 +35,7 @@ export default function NotFound() {
           padding: 24,
         }}
       >
-        <p style={{ fontSize: 72, fontWeight: 700, margin: 0, color: '#00E5FF' }}>
-          404
-        </p>
-        <h1 style={{ fontSize: 22, fontWeight: 600, margin: 0 }}>
-          Page not found
-        </h1>
-        <p style={{ color: '#8896A6', maxWidth: 420, margin: 0 }}>
-          The page you are looking for does not exist or has been moved.
-        </p>
-        <Link
-          href="/"
-          style={{
-            marginTop: 8,
-            padding: '10px 20px',
-            borderRadius: 10,
-            border: '1px solid rgba(0,229,255,0.4)',
-            color: '#00E5FF',
-            textDecoration: 'none',
-            fontWeight: 600,
-          }}
-        >
-          Back to home
-        </Link>
+        <NotFoundContent />
       </body>
     </html>
   )
