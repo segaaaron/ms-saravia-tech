@@ -126,9 +126,9 @@
         "status": "live"
       },
       {
-        "title": "ReadyCV",
+        "title": "Valhalla Resume",
         "category": "AI Resume Builder",
-        "desc": "AI-powered resume builder helping professionals craft compelling CVs and land their dream jobs.",
+        "desc": "AI-powered resume builder helping professionals craft compelling resumes and land their dream jobs.",
         "url": "https://www.valhallaresume.com",
         "status": "live"
       },
@@ -619,17 +619,17 @@
         ]
       },
       "valhalla-resume": {
-        "metaTitle": "ReadyCV — AI Resume Builder | Case Study",
-        "metaDesc": "How we built ReadyCV, an AI-powered resume builder helping professionals land their dream jobs. Case study by MS Tech Stack.",
-        "challenge": "Job seekers know a strong, tailored CV is decisive, but writing one that reads well and passes automated screening is slow and intimidating. Most resume tools stop at rigid templates and leave the hardest part — the words — to the user.",
-        "solution": "We built ReadyCV, an AI-powered resume builder that helps professionals craft compelling, role-tailored CVs in minutes. It guides users through structured input and generates polished, ATS-friendly content, turning a blank page into an interview-ready resume.",
-        "results": "The experience is guided from start to finish: what used to be an intimidating blank page becomes a smooth, confidence-building flow, and the result looks polished and professional. It is fast, clean, and simple enough that anyone can produce a CV they are proud to send.",
+        "metaTitle": "Valhalla Resume — AI Resume Builder | Case Study",
+        "metaDesc": "How we built Valhalla Resume, an AI-powered resume builder helping professionals land their dream jobs. Case study by MS Tech Stack.",
+        "challenge": "Job seekers know a strong, tailored resume is decisive, but writing one that reads well and passes automated screening is slow and intimidating. Most resume tools stop at rigid templates and leave the hardest part — the words — to the user.",
+        "solution": "We built Valhalla Resume, an AI-powered resume builder that helps professionals craft compelling, role-tailored resumes in minutes. It guides users through structured input and generates polished, ATS-friendly content, turning a blank page into an interview-ready resume.",
+        "results": "The experience is guided from start to finish: what used to be an intimidating blank page becomes a smooth, confidence-building flow, and the result looks polished and professional. It is fast, clean, and simple enough that anyone can produce a resume they are proud to send.",
         "testimonial": "",
         "testimonialAuthor": "",
         "highlights": [
           "Guided, beginner-friendly flow",
           "Polished, professional results",
-          "From blank page to CV in minutes",
+          "From blank page to resume in minutes",
           "Clean, distraction-free interface",
           "Fast and responsive anywhere"
         ]

@@ -10,7 +10,7 @@ export const projects = [
   },
   {
     id: 'readycv',
-    title: 'ReadyCV',
+    title: 'Valhalla Resume',
     category: 'AI Resume Builder',
     desc: 'AI-powered resume builder helping professionals land their dream jobs.',
     url: 'https://www.valhallaresume.com',
