@@ -1,6 +1,9 @@
 'use client'
 import { motion } from 'framer-motion'
 import { useTranslations, useLocale } from 'next-intl'
+// Link locale-aware: href sin prefijo, añade /es solo. Las demos comparten root layout con el
+// sitio (grupo (demos) bajo [locale]) → soft-nav normal, sin el <a> hard-nav que había antes.
+import { Link } from '@/i18n/navigation'
 import Image from 'next/image'
 import { ArrowUpRight, Sparkles, Smartphone } from 'lucide-react'
 import GradientText from '@/components/ui/GradientText'
@@ -75,11 +78,8 @@ export default function DemosShowcase() {
                   boxShadow: '0 22px 44px -24px rgba(0,0,0,0.75), 0 2px 8px -2px rgba(0,0,0,0.4)',
                 }}
               >
-                {/* /demos es OTRO root layout (html/tema/fuentes propios). Cruzar root
-                    layouts requiere navegación de documento completo: <a>, no <Link> (el
-                    soft-nav rompe el DOM entre los dos <html> → CSS roto / crash). */}
-                <a
-                  href={`/demos/${card.slug}?lang=${locale}`}
+                <Link
+                  href={`/demos/${card.slug}`}
                   className="relative z-[2] block"
                   aria-label={`${t('open')} — ${item.name}`}
                   {...umamiAttrs('demo-open', { demo: card.slug, placement: 'showcase' })}
@@ -130,7 +130,7 @@ export default function DemosShowcase() {
                       <ArrowUpRight size={13} className="transition-transform duration-200 group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
                     </span>
                   </div>
-                </a>
+                </Link>
               </TiltCard>
             )
           })}
@@ -167,7 +167,7 @@ export default function DemosShowcase() {
             </motion.div>
 
             <motion.div variants={floatUp3D} className="flex lg:justify-end">
-              <CtaButton href={`/demos?lang=${locale}`} hardNav dataUmami={umamiAttrs('demos-all')}>{t('cta')}</CtaButton>
+              <CtaButton href={locale === 'es' ? '/es/demos' : '/demos'} dataUmami={umamiAttrs('demos-all')}>{t('cta')}</CtaButton>
             </motion.div>
           </div>
         </motion.div>

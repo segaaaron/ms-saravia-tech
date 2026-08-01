@@ -102,14 +102,14 @@ export default async function SolutionPage({
             <h2 className="text-sm font-mono uppercase tracking-[0.16em] text-white/40">{t('seeDemoLabel')}</h2>
             <div className="mt-4 flex flex-wrap gap-3">
               {page.demos.map((d) => (
-                <a
+                <Link
                   key={d}
-                  href={`/demos/${d}?lang=${locale}`}
+                  href={`${locale === 'es' ? '/es' : ''}/demos/${d}`}
                   className="group inline-flex items-center gap-1.5 rounded-full border border-white/10 px-4 py-2 text-sm text-white/70 transition-colors hover:border-[#2FF5E0]/40 hover:text-[#2FF5E0]"
                 >
                   {d}
                   <ArrowUpRight size={13} className="transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
-                </a>
+                </Link>
               ))}
             </div>
           </section>

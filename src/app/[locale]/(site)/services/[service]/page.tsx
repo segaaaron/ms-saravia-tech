@@ -113,14 +113,14 @@ export default async function ServicePage({
             </h2>
             <div className="mt-4 flex flex-wrap gap-3">
               {page.relatedDemos.map((slug) => (
-                <a
+                <Link
                   key={slug}
-                  href={`/demos/${slug}?lang=${locale}`}
+                  href={`${locale === 'es' ? '/es' : ''}/demos/${slug}`}
                   className="group inline-flex items-center gap-1.5 rounded-full border border-white/10 px-4 py-2 text-sm text-white/70 transition-colors hover:border-[#2FF5E0]/40 hover:text-[#2FF5E0]"
                 >
                   {slug}
                   <ArrowUpRight size={13} className="transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
-                </a>
+                </Link>
               ))}
             </div>
           </section>

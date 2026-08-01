@@ -34,26 +34,22 @@ const NAV_LINKS = [
   { key: 'contact', href: '#contact' },
   { key: 'blog', href: '/blog' },
   { key: 'estimate', href: '/estimate' },
-  { key: 'demos', href: '/demos', route: true },
+  { key: 'demos', href: '/demos' },
 ] as const
 
 export default function Navbar() {
   const t = useTranslations('nav')
   const locale = useLocale()
   const prefix = locale === 'es' ? '/es' : ''
-  // Demos viven fuera de [locale] → idioma por query (?lang). Rutas in-locale (ej. /blog) →
-  // prefijo de locale. Anclas (#services) → SIEMPRE a la home + hash (`/#services`), para que
-  // funcionen desde cualquier subpágina (/blog, /services…), no solo desde el inicio.
-  const hrefFor = (link: { href: string; route?: boolean }) => {
-    if (link.route) return `${link.href}?lang=${locale}`
+  // Rutas in-locale (ej. /blog, /demos) → prefijo de locale. Anclas (#services) → SIEMPRE a la
+  // home + hash (`/#services`), para que funcionen desde cualquier subpágina (/blog, /services…),
+  // no solo desde el inicio. /demos ya vive en el MISMO root layout que el sitio (grupo (demos)
+  // bajo [locale]), así que es un link in-locale normal con <Link> soft-nav — se acabó el cruce
+  // a otro <html> que antes obligaba a <a> hard-nav.
+  const hrefFor = (link: { href: string }) => {
     if (link.href.startsWith('#')) return `${prefix}/${link.href}`
     return `${prefix}${link.href}`
   }
-  // /demos es OTRO root layout (html/tema/fuentes propios). Cruzarlo requiere navegación de
-  // documento completo: <a>, no <Link> (el soft-nav rompe el DOM entre los dos <html> → CSS
-  // roto / crash). En este nav, route:true marca justamente ese cruce.
-  const crossesRootLayout = (link: { href: string; route?: boolean }) =>
-    Boolean(link.route)
   // CTA "Let's Talk" → sección de contacto de la home, desde cualquier página.
   const ctaHref = `${prefix}/#contact`
   const [scrolled, setScrolled] = useState(false)
@@ -252,15 +248,8 @@ export default function Navbar() {
                   <span className="absolute -bottom-0.5 left-0 w-0 h-px bg-gradient-to-r from-cyan-400 to-violet-500 group-hover:w-full transition-all duration-300" />
                 </>
               )
-              // Anclas y rutas in-locale → <Link> (soft-nav). El cruce a /demos (otro root
-              // layout) → <a> hard-nav, si no el soft-nav rompe el DOM entre los dos <html>.
-              if (crossesRootLayout(link)) {
-                return (
-                  <a key={link.key} href={hrefFor(link)} className={className} {...umamiAttrs('nav-click', { item: link.key, placement: 'header' })}>
-                    {inner}
-                  </a>
-                )
-              }
+              // Todo con <Link> soft-nav: anclas, rutas in-locale y /demos comparten ahora el
+              // mismo root layout, así que no hay cruce de <html> que forzar con <a>.
               return (
                 <Link key={link.key} href={hrefFor(link)} className={className} {...umamiAttrs('nav-click', { item: link.key, placement: 'header' })}>
                   {inner}
@@ -419,17 +408,10 @@ export default function Navbar() {
                 transitionDelay: mobileOpen ? `${i * 15}ms` : '0ms',
               }}
             >
-              {crossesRootLayout(link) ? (
-                <a href={hrefFor(link)} onClick={closeMobile} className="flex items-center flex-1" {...umamiAttrs('nav-click', { item: link.key, placement: 'drawer' })}>
-                  <span className="flex-1">{t(link.key)}</span>
-                  <span className="w-1.5 h-1.5 rounded-full bg-cyan-400/0 group-hover:bg-cyan-400 transition-colors duration-200" />
-                </a>
-              ) : (
-                <Link href={hrefFor(link)} onClick={closeMobile} className="flex items-center flex-1" {...umamiAttrs('nav-click', { item: link.key, placement: 'drawer' })}>
-                  <span className="flex-1">{t(link.key)}</span>
-                  <span className="w-1.5 h-1.5 rounded-full bg-cyan-400/0 group-hover:bg-cyan-400 transition-colors duration-200" />
-                </Link>
-              )}
+              <Link href={hrefFor(link)} onClick={closeMobile} className="flex items-center flex-1" {...umamiAttrs('nav-click', { item: link.key, placement: 'drawer' })}>
+                <span className="flex-1">{t(link.key)}</span>
+                <span className="w-1.5 h-1.5 rounded-full bg-cyan-400/0 group-hover:bg-cyan-400 transition-colors duration-200" />
+              </Link>
             </div>
           ))}
         </div>

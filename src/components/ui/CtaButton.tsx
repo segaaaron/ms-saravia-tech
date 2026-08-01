@@ -10,7 +10,6 @@ export default function CtaButton({
   className = '',
   size = 'md',
   external = false,
-  hardNav = false,
   dataUmami,
 }: {
   href: string
@@ -18,12 +17,8 @@ export default function CtaButton({
   className?: string
   size?: 'md' | 'lg'
   external?: boolean
-  // hardNav: navegación de documento completo en la MISMA pestaña (sin target=_blank).
-  // Necesario al cruzar a otro root layout (p. ej. /demos): un <Link> soft-nav rompería
-  // el DOM entre los dos <html>. external abre en pestaña nueva; hardNav no.
-  hardNav?: boolean
   // Atributos data-umami-event* (usar umamiAttrs()). Umami los envía en su propio listener de
-  // click → fiable incluso cuando el CTA navega (hard-nav a /demos, /estimate, etc).
+  // click → fiable incluso cuando el CTA navega (/estimate, /demos, etc).
   dataUmami?: Record<string, string>
 }) {
   const pad = size === 'lg' ? 'px-8 py-4 text-base' : 'px-7 py-3.5 text-sm'
@@ -45,13 +40,6 @@ export default function CtaButton({
   if (external) {
     return (
       <a href={href} target="_blank" rel="noopener noreferrer" className={cls} style={style} {...dataUmami}>
-        {inner}
-      </a>
-    )
-  }
-  if (hardNav) {
-    return (
-      <a href={href} className={cls} style={style} {...dataUmami}>
         {inner}
       </a>
     )

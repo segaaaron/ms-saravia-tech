@@ -129,14 +129,14 @@ export default async function BlogPostPage({
         {service && service.relatedDemos.length > 0 && (
           <div className="mt-8 flex flex-wrap gap-3">
             {service.relatedDemos.slice(0, 3).map((d) => (
-              <a
+              <Link
                 key={d}
-                href={`/demos/${d}?lang=${locale}`}
+                href={`${locale === 'es' ? '/es' : ''}/demos/${d}`}
                 className="group inline-flex items-center gap-1.5 rounded-full border border-white/10 px-4 py-2 text-xs text-white/60 transition-colors hover:border-[#2FF5E0]/40 hover:text-[#2FF5E0]"
               >
                 {d}
                 <ArrowUpRight size={12} className="transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
-              </a>
+              </Link>
             ))}
           </div>
         )}
