@@ -1,5 +1,7 @@
 import type { Metadata } from 'next'
 import { Space_Grotesk, Inter } from 'next/font/google'
+import { NextIntlClientProvider } from 'next-intl'
+import { getMessages } from 'next-intl/server'
 import './globals.css'
 import Analytics from '@/components/seo/Analytics'
 
@@ -115,6 +117,7 @@ export default async function RootLayout({
   params: Promise<{ locale: string }>
 }) {
   const { locale } = await params
+  const messages = await getMessages()
   return (
     <html lang={locale} className={`${spaceGrotesk.variable} ${inter.variable}`}>
       {/* Umami (+ GA4 opt-in) una sola vez en el root: cubre tanto (site) como (demos). Antes las
@@ -122,7 +125,13 @@ export default async function RootLayout({
           montaje registra los pageviews de todo el árbol. */}
       <body suppressHydrationWarning>
         <Analytics />
-        {children}
+        {/* Provider de next-intl en la RAÍZ compartida: así lo heredan AMBOS grupos, (site) y
+            (demos). Los client components de demos (el Link locale-aware de @/i18n/navigation en
+            _GalleryCard y pulse-login) llaman useLocale() internamente; sin un provider ancestro
+            caían al fallback deprecado (warning de useParams en consola). */}
+        <NextIntlClientProvider locale={locale} messages={messages}>
+          {children}
+        </NextIntlClientProvider>
       </body>
     </html>
   )
