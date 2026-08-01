@@ -25,6 +25,31 @@ const eslintConfig = [
       ...reactHooks.configs.recommended.rules,
       ...next.configs.recommended.rules,
       ...next.configs['core-web-vitals'].rules,
+      // Red de seguridad contra la regresión que costó ~1 día: /demos y el sitio comparten UN
+      // solo root layout, así que navegar entre ellos es soft-nav con <Link>. Un <a href="/demos…">
+      // fuerza full-reload y el viejo parche `hardNav` ya no existe. Ambos quedan prohibidos para
+      // que nadie los reintroduzca por costumbre. Para ir a una demo: <Link href="/demos/…"> (o el
+      // Link locale-aware de @/i18n/navigation).
+      'no-restricted-syntax': [
+        'error',
+        {
+          selector: "JSXAttribute[name.name='hardNav']",
+          message:
+            'La prop `hardNav` se eliminó: /demos comparte root layout con el sitio, usá <Link> soft-nav normal.',
+        },
+        {
+          selector:
+            "JSXOpeningElement[name.name='a'] JSXAttribute[name.name='href'] Literal[value=/^\\/(es\\/)?demos/]",
+          message:
+            'No uses <a href="/demos…"> (fuerza full-reload). Usá <Link href="/demos/…"> — mismo root layout, soft-nav.',
+        },
+        {
+          selector:
+            "JSXOpeningElement[name.name='a'] JSXAttribute[name.name='href'] TemplateElement[value.raw=/^\\/(es\\/)?demos/]",
+          message:
+            'No uses <a href={`/demos/…`}> (fuerza full-reload). Usá <Link href={`/demos/…`}> — mismo root layout, soft-nav.',
+        },
+      ],
     },
   },
 ]
