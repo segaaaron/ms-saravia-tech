@@ -2,8 +2,10 @@
 
 Repo: `/Users/miguelangelsaraviabelmonte/dev-web/ms-tech-stack-llc-web` · branch `master`
 Prod: `https://www.ms-tech-stack.cloud` (www es el canónico)
-Último commit: `d7db724` · **todo pusheado a `origin/master`.** Working tree limpio.
+Último commit: `f3d81bd` · **todo pusheado a `origin/master`.** Working tree limpio.
 ⚠️ Pusheado ≠ desplegado: prod es un VPS con deploy MANUAL. Ver "Deploy" en `CONTEXT.md`.
+🔴 **DEPLOY PENDIENTE**: los 9 commits de la sesión 2026-08-01 están en GitHub pero NO en el VPS.
+   Prod sigue con el build viejo (aún muestra "ReadyCV" y "MS Saravia"). Ver sesión abajo.
 
 ## Fuente de verdad
 - `docs/CONTEXT.md` — stack, límites, convenciones. **LEER PRIMERO.** Sincronizado y sin drift.
@@ -37,7 +39,53 @@ Caveman mode activo (respuestas terse). Copy de demos en **español**.
 
 ---
 
-## Sesión actual (perf móvil + limpieza + skills)
+## Sesión 2026-08-01 (SEO multi-mercado + conversión + CWV + rebrand)
+
+**Contexto:** el dueño pidió al PO auditar SEO + marketing para US/CA/LATAM. Se ejecutó casi todo
+el backlog code-actionable. **9 commits pusheados (`6acfc91`..`f3d81bd`), DEPLOY PENDIENTE.**
+
+### Qué se hizo (todo en `origin/master`, NADA en prod aún)
+1. `6acfc91` **fix SEO técnico**: `sitemap.ts` `lastModified` real (posts=`updated??date`, resto
+   constante `SITE_CONTENT_UPDATED`); `routing.ts` **`localeDetection: false`** — con `true`, `/`
+   con Accept-Language:es daba 307→/es y Google marcaba la home como "Página con redirección".
+   Verificado en vivo: `/` con es ahora 200.
+2. `d0a9f21` **landing `/nearshore`** (+ /es): ruta indexable, tabla comparativa BOFU, FAQ, JSON-LD
+   Service+FAQPage+Breadcrumb, en Navbar + home + sitemap (priority 0.9). + 3 posts de blog.
+3. `6587c31` **2 posts de mercado**: Canadá (PIPEDA/CAD) + guía LATAM.
+4. `3b4bd91` **internal linking**: campo `Post.spotlight` → los 4 posts nearshore enlazan a
+   `/nearshore` desde el CTA. Evento umami `blog-nearshore`.
+5. `6423f7a` **conversión**: form de contacto con `budget` + `projectType` (zod enums cerrados,
+   email actualizado, sin DB) + **sección trust** en Contact (US LLC, NDA, senior-led, timezone).
+6. `98f294e` **`docs/BACKLOG.md`**: pendientes que requieren input del dueño (leer ese archivo).
+7. `83bac86` **CWV**: `LazyMotion features={domAnimation} strict` en el layout + 18 componentes
+   `motion.*`→`m.*` + 9 secciones bajo el pliegue con `next/dynamic` (SIN ssr:false). First Load
+   home **218→199 kB**. QA aprobó (cero regresión visual/SEO). Nota: three.js NO está en el home
+   (solo en /demos/aura); el peso era framer-motion.
+8. `4ffcb90` **marca visible → "MS Tech Stack"** (se quitó "Saravia" de 20 archivos). PERO
+   `legalName` del JSON-LD se preserva `"MS SARAVIA TECH STACK LLC"` (nombre LEGAL de la LLC no
+   cambió) y los emails `techstackmssaravia@gmail.com` quedan intactos (cuentas reales).
+   + case study `readycvv.com`→`valhallaresume.com`, slug `/work/readycv`→`/work/valhalla-resume`
+   con **redirect 301** en `next.config.ts`.
+9. `f3d81bd` **rebrand ReadyCV → Valhalla Resume** (display) + copy inglés "CV"→"resume" (español
+   mantiene "CV"). `id: 'readycv'` interno se queda (no visible).
+
+### GSC (investigado con el dueño, cerrado)
+Las 39 "sin indexar" NO son bug de código — sitio nuevo (~3 semanas) + dominio `.cloud` de baja
+confianza. Verificadas las 5 URLs marcadas: canonical/hreflang/200 correctos. Sitemap ya enviado
+a GSC (estado Correcto). Acción del dueño: solicitar indexación de /nearshore + páginas clave
+post-deploy + construir autoridad (backlinks).
+
+### Pendiente del dueño (ver `docs/BACKLOG.md`)
+- **DEPLOY al VPS** (bloqueante — nada en vivo sin esto).
+- Case studies `results`+`testimonial` (vacíos, solo el dueño los da) — máximo ROI confianza.
+- WhatsApp (número), EEAT author (sí/no+bio), migración `.com` (pospuesta).
+- **Setup GSC nueva propiedad `valhallaresume.com`** (dominio del producto Valhalla, sitio APARTE
+  de este repo) + Change of Address desde readycvv.com — requiere 301 site-wide en ESE hosting.
+- Rotar `RESEND_API_KEY` si apareció en screenshots.
+
+---
+
+## Sesión anterior (perf móvil + limpieza + skills)
 
 ### 1. Latencia del menú móvil
 El usuario reportó delay al abrir/cerrar. Eran **cinco causas apiladas**. La dominante:
