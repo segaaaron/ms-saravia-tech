@@ -255,25 +255,309 @@
       "saas": {
         "metaTitle": "Desarrollo de SaaS — de MVP a Enterprise | MS Saravia Tech Stack",
         "metaDesc": "Desarrollo de SaaS a medida, de MVP a enterprise. Plataformas multi-tenant escalables con Next.js, Node.js y Stripe. Cotización gratis.",
-        "intro": "Diseñamos y construimos plataformas SaaS escalables de punta a punta — desde la validación del MVP hasta sistemas de nivel empresarial. Arquitectura multi-tenant, cobros por suscripción e infraestructura cloud pensada para crecer contigo."
+        "intro": "Diseñamos y construimos plataformas SaaS escalables de punta a punta — desde la validación del MVP hasta sistemas de nivel empresarial. Arquitectura multi-tenant, cobros por suscripción e infraestructura cloud pensada para crecer contigo.",
+        "capabilities": [
+          {
+            "title": "Arquitectura multi-tenant",
+            "desc": "Multi-tenancy de schema compartido con row-level security de Postgres y un tenant_id propagado desde el JWT en cada query. Elegimos schema compartido sobre schema-por-tenant para que las migraciones no se multipliquen por cliente, y ponemos PgBouncer en modo transaction delante del pool para que el número de conexiones sobreviva a la carga real."
+          },
+          {
+            "title": "Cobros por suscripción",
+            "desc": "Stripe Billing cableado de punta a punta — planes, trials, prorrateo, uso medido y dunning — con los webhooks como fuente de verdad, reconciliados de forma idempotente contra tu propia tabla de entitlements. Nunca confiamos en el cliente para el estado del plan; el webhook decide qué puede hacer cada tenant."
+          },
+          {
+            "title": "Paneles de operación",
+            "desc": "Paneles de administración densos en datos como nuestros dashboards VESPER y PULSE: tablas paginadas en el servidor, filtros guardados, acciones en lote y vistas por rol. Las agregaciones pesadas corren como server components contra rutas de lectura, así la UI responde sin mandar todo el dataset al navegador."
+          },
+          {
+            "title": "Auth y RBAC",
+            "desc": "Auth por sesión o JWT con OAuth, magic links y control de acceso por rol por tenant aplicado en el servidor, no solo escondido en la UI. Los permisos viven en una sola capa de políticas, así un rol nuevo es un cambio de config y no una búsqueda por todas las rutas."
+          },
+          {
+            "title": "APIs e integraciones",
+            "desc": "Contratos tipados con tRPC u OpenAPI para que cliente y servidor no puedan desincronizarse, más webhooks firmados y jobs en background para sincronizar con terceros. Claves de idempotencia y reintentos con backoff hacen que las integraciones sobrevivan a la realidad inestable de las APIs ajenas."
+          },
+          {
+            "title": "Analítica y reportes",
+            "desc": "Tracking de eventos en producto, funnels y reportes exportables sobre un esquema de eventos amigable con el warehouse. Instrumentamos los momentos de activación y retención desde el inicio para que las decisiones de producto corran sobre datos, no sobre intuición."
+          }
+        ],
+        "process": [
+          {
+            "title": "Descubrimiento",
+            "desc": "Mapeamos usuarios, jobs-to-be-done y el modelo de cobro, y recortamos el alcance a un MVP que pruebe el loop central. Te llevás una lista de features fija, un boceto del modelo de datos y un cronograma que podés exigirnos."
+          },
+          {
+            "title": "Arquitectura",
+            "desc": "Diseñamos el modelo de tenants, los límites de auth y la infra antes del código de features — migraciones versionadas y reversibles, contratos de API tipados y un ADR por cada decisión cara de revertir. Las decisiones de carga (índices, paginación, caching) se toman ahora, no tras la primera caída."
+          },
+          {
+            "title": "Construcción",
+            "desc": "Sprints iterativos contra una URL de staging viva, con feature flags para que el trabajo a medias salga en oscuro. Cada PR corre typecheck, lint y tests en CI, y hacemos load testing de las rutas calientes con k6 contra objetivos de P95 antes de que lleguen a producción."
+          },
+          {
+            "title": "Lanzamiento y escala",
+            "desc": "Desplegamos con logging estructurado, tracing y alertas, con presupuestos de error que nos avisan cuándo frenar. Tras el lanzamiento miramos el funnel y las gráficas de latencia, y eso se convierte en el próximo roadmap."
+          }
+        ],
+        "deliverables": [
+          "Código Next.js + Node.js en producción, en tu organización de Git — IP completa, sin lock-in",
+          "Esquema Postgres con migraciones reversibles y versionadas, más datos semilla",
+          "Integración de Stripe Billing reconciliada mediante webhooks idempotentes",
+          "CI/CD con preview deploys y typecheck + lint + tests en cada PR",
+          "Dashboards de observabilidad, logs estructurados y alertas, más un load test reproducible con k6",
+          "Documentación de arquitectura (ADRs), un runbook y una entrega guiada en vivo"
+        ],
+        "faq": [
+          {
+            "q": "¿Cuánto tarda un MVP de SaaS?",
+            "a": "La mayoría de los MVP llegan a un producto vivo y facturable en 8 a 12 semanas. Fijamos la lista de features en el descubrimiento para que el cronograma sea un compromiso y no una adivinanza, y entregamos semanalmente a una URL de staging para que no haya sorpresas al final."
+          },
+          {
+            "q": "¿El código y la IP son nuestros?",
+            "a": "Totalmente. Todo vive en tu organización de Git desde el día uno y conservás la IP completa — sin runtime propietario, sin cargo por asiento, nada que retenga tu producto como rehén si lo llevás in-house."
+          },
+          {
+            "q": "¿Cómo se mantiene tras la entrega?",
+            "a": "Entregamos ADRs, un runbook y tests para que el bus factor no sea la memoria de una sola persona. Los contratos tipados y los gates de CI permiten que un ingeniero nuevo cambie el código con seguridad, y podemos quedarnos en un retainer de soporte si querés continuidad."
+          },
+          {
+            "q": "¿Escala de verdad o solo se ve bien en demo?",
+            "a": "El modelo multi-tenant, el pooling de conexiones y las rutas de lectura indexadas se load-testean contra objetivos de P95 antes del lanzamiento, no se agregan después. Cuando superás una sola instancia, la arquitectura ya está lista para réplicas de lectura y escalado horizontal."
+          }
+        ]
       },
       "mobile-apps": {
         "metaTitle": "Desarrollo de Apps Móviles (iOS y Android) | MS Saravia Tech Stack",
         "metaDesc": "Desarrollo de apps nativas y React Native para iOS y Android. Del concepto a la App Store y Google Play. Cotización gratis.",
-        "intro": "Apps móviles nativas y multiplataforma para iOS y Android. Entregamos productos pulidos y veloces con React Native, Swift y Kotlin — del concepto a la publicación en tiendas y las actualizaciones continuas."
+        "intro": "Apps móviles nativas y multiplataforma para iOS y Android. Entregamos productos pulidos y veloces con React Native, Swift y Kotlin — del concepto a la publicación en tiendas y las actualizaciones continuas.",
+        "capabilities": [
+          {
+            "title": "Multiplataforma con React Native",
+            "desc": "Un solo código React Native + TypeScript que sale a iOS y Android, sobre Expo con EAS para builds reproducibles en la nube. Usamos la New Architecture (Fabric/TurboModules) donde vale la pena y mantenemos el bundle JS liviano para que el arranque en frío siga siendo rápido."
+          },
+          {
+            "title": "Módulos nativos",
+            "desc": "Puentes en Swift y Kotlin cuando la plataforma lo exige — cámara, BLE, biometría, secure enclave — detrás de una interfaz JS tipada, así el código de la app no depende del OS. Bajamos a nativo solo donde la abstracción de React Native realmente te cuesta rendimiento."
+          },
+          {
+            "title": "Sincronización offline-first",
+            "desc": "Persistencia local con una cola write-ahead y sync en background que reconcilia al reconectar, con resolución de conflictos que se puede razonar. La app sigue usable bajo tierra; el servidor se pone al día cuando vuelve la señal."
+          },
+          {
+            "title": "Push y deep links",
+            "desc": "Push segmentado vía APNs y FCM, mensajería in-app y deep/universal links que rutean directo a la pantalla correcta. Enganchamos el permiso de notificaciones a un momento de valor real, no al primer arranque en frío, para proteger la tasa de opt-in."
+          },
+          {
+            "title": "Backend y API móvil",
+            "desc": "Backends Node.js + Postgres pensados para móvil: payloads compactos, paginación por cursor y endpoints diseñados según lo que pide la pantalla, no volcados de tablas. La auth usa tokens de vida corta con refresh, así un dispositivo robado no es un pasivo permanente."
+          },
+          {
+            "title": "Publicación y OTA",
+            "desc": "Nos hacemos cargo de la publicación en App Store Connect y Google Play — firma, metadata, respuestas al review — y enviamos arreglos solo-JS por aire con EAS Update sin esperar revisión. Los cambios nativos pasan por las tiendas; el resto puede ser el mismo día."
+          }
+        ],
+        "process": [
+          {
+            "title": "Descubrimiento",
+            "desc": "Definimos los flujos centrales, los dispositivos objetivo y los pisos de OS, más los requisitos de tienda que moldean el alcance en silencio (permisos, etiquetas de privacidad, modos en background). Te llevás un mapa de pantallas y un plan de build antes de que empiece el diseño."
+          },
+          {
+            "title": "Diseño y prototipado",
+            "desc": "Prototipos interactivos validan navegación y sensación en hardware real desde temprano, porque un flujo que se lee bien en Figma puede sentirse mal a 60fps en la mano. Cerramos gestos, transiciones y estados vacíos acá, no en QA."
+          },
+          {
+            "title": "Construcción",
+            "desc": "Builds testeables salen cada sprint por TestFlight y los tracks internos de Play para feedback en mano. Perfilamos el arranque en frío, el tamaño del bundle JS y el rendimiento de listas sobre la marcha, y gateamos los PR con typecheck, lint y tests."
+          },
+          {
+            "title": "Lanzamiento y soporte",
+            "desc": "Enviamos a ambas tiendas, cableamos crash reporting y analítica, y vigilamos la tasa de usuarios sin crashes tras el lanzamiento. El mantenimiento cubre updates de OS, cambios de política de tienda y una cadencia estable de releases — OTA para JS, tiendas para nativo."
+          }
+        ],
+        "deliverables": [
+          "Código React Native + TypeScript (más módulos nativos si los hay) en tu organización de Git",
+          "Builds de iOS y Android firmados y listos para tienda vía EAS",
+          "Fichas de App Store Connect y Google Play configuradas con etiquetas de privacidad",
+          "Backend Node.js + Postgres y una API con forma móvil",
+          "Crash reporting, analítica y líneas base de arranque en frío / tamaño de bundle",
+          "Pipeline de updates OTA (EAS Update) y un runbook de release y mantenimiento"
+        ],
+        "faq": [
+          {
+            "q": "¿React Native o nativo puro?",
+            "a": "React Native para la mayoría de los productos — un solo código, sensación casi nativa y updates OTA que no tenés con nativo puro. Escribimos módulos nativos en Swift/Kotlin exactamente donde el profiling muestra que el puente te cuesta, así tenés rendimiento nativo sin mantener dos apps."
+          },
+          {
+            "q": "¿Publican en las tiendas por nosotros?",
+            "a": "Sí — firma, fichas, etiquetas de privacidad, respuestas al review y release en App Store y Google Play. Ya pasamos por los motivos de rechazo, así que el primer envío se arma para pasar, no para aprender."
+          },
+          {
+            "q": "¿Cómo funcionan los updates tras el lanzamiento?",
+            "a": "Los cambios de JS y assets salen por aire con EAS Update, a menudo el mismo día y sin revisión; los cambios nativos pasan por las tiendas. Un retainer de mantenimiento cubre updates de OS, cambios de política de tienda y features nuevas en una cadencia predecible."
+          },
+          {
+            "q": "¿Cuánto cuesta una app?",
+            "a": "Depende del alcance, las plataformas y la complejidad del backend. Nuestro estimador da un rango real en un par de minutos, y después convertimos tu lista de features en una cotización fija — sin sorpresas por hora abiertas."
+          }
+        ]
       },
       "ai-agents": {
         "metaTitle": "Desarrollo de Agentes de IA y Automatización | MS Saravia Tech Stack",
         "metaDesc": "Construimos agentes de IA y automatización con OpenAI, Claude y LangChain. Asistentes LLM conectados a tus datos reales. Consulta gratis.",
-        "intro": "Construimos agentes de IA y automatización que se integran a tu operación — asistentes con LLM, automatización de flujos y sistemas de recuperación con OpenAI, Claude y LangChain, conectados a tus datos reales."
+        "intro": "Construimos agentes de IA y automatización que se integran a tu operación — asistentes con LLM, automatización de flujos y sistemas de recuperación con OpenAI, Claude y LangChain, conectados a tus datos reales.",
+        "capabilities": [
+          {
+            "title": "Asistentes LLM con contexto",
+            "desc": "Agentes de chat y de tareas sobre OpenAI o Claude, anclados a tu contenido y tono mediante una capa de recuperación en vez de fine-tuning, así una actualización es un re-index y no una factura de reentrenamiento. Mantenemos el modelo detrás de una interfaz para que cambiar de proveedor sea un cambio de config, no una reescritura."
+          },
+          {
+            "title": "Recuperación (RAG)",
+            "desc": "Búsqueda vectorial sobre tus documentos y datos con chunking y filtros de metadata afinados a tu corpus, así las respuestas citan fuentes reales en vez de inventar. Medimos la calidad de recuperación (recall@k) aparte de la generación, porque la mayoría de los bugs de \"la IA se equivoca\" son en realidad bugs de recuperación."
+          },
+          {
+            "title": "Automatización de flujos",
+            "desc": "Agentes que ejecutan acciones — redactar el email, actualizar el CRM, agendar el turno — sobre tus herramientas actuales, con cada paso con efecto secundario idempotente y registrado. El trabajo largo corre como jobs durables para que un timeout no cobre dos veces a un cliente."
+          },
+          {
+            "title": "Tool y API calling",
+            "desc": "Function calling cableado a tus APIs reales con schemas tipados estrictos y validación de los argumentos que produce el modelo, porque un LLM inventa un parámetro sin pestañear. Las tools destructivas quedan detrás de confirmación y chequeos de permisos, no de confianza ciega."
+          },
+          {
+            "title": "Guardrails y evals",
+            "desc": "Moderación de entrada/salida, defensas contra prompt injection y una suite de evals calificada que corre en cada cambio de prompt, así \"mejoramos el prompt\" es un número y no una corazonada. Las regresiones se atrapan en CI contra queries reales antes de que las vea un usuario."
+          },
+          {
+            "title": "Costo y observabilidad",
+            "desc": "Conteo de tokens por request, ruteo de modelos (modelo barato para turnos fáciles, frontier para los difíciles) y caching para mantener el gasto predecible. Trazas completas de prompts, tool calls y latencias para que puedas debuggear una mala respuesta en vez de adivinar."
+          }
+        ],
+        "process": [
+          {
+            "title": "Descubrimiento",
+            "desc": "Elegimos el caso de uso de mayor valor y definimos qué es \"bueno\" con ejemplos reales y casos de falla desde el inicio. Un vago \"agreguemos IA\" se convierte en una tarea medible con un objetivo de eval antes de escribir código."
+          },
+          {
+            "title": "Datos y diseño de prompts",
+            "desc": "Preparamos y chunkeamos tu base de conocimiento, diseñamos la estrategia de recuperación y escribimos prompts con reglas explícitas de rechazo y escalamiento. El manejo de datos sensibles y la redacción de PII se deciden acá, no se parchan después."
+          },
+          {
+            "title": "Construcción y evaluación",
+            "desc": "Construimos el agente y lo calificamos contra un set reservado de queries reales, afinando recuperación y prompts hasta que la precisión y el costo dan en el objetivo. Los tool calls corren contra integraciones en sandbox antes de tocar datos de producción."
+          },
+          {
+            "title": "Despliegue y monitoreo",
+            "desc": "Lanzamos con tracing, alertas de costo y una vía de handoff a humano para los turnos de baja confianza. El tráfico real alimenta nuevos casos de eval, así el agente mejora de forma medible en vez de derivar en silencio."
+          }
+        ],
+        "deliverables": [
+          "Servicio de agente con tus prompts, tools e índice de recuperación en tu organización de Git",
+          "Pipeline de ingesta y re-index de la base de conocimiento",
+          "Suite de evals versionada con un reporte de precisión/costo por cambio de prompt",
+          "Endpoint de API o widget embebible para tu sitio o producto",
+          "Dashboard de costo de tokens y calidad con trazas por request",
+          "Documentación de prompts, tools y configuración que podés mantener in-house"
+        ],
+        "faq": [
+          {
+            "q": "¿Qué modelo usan — y quedamos atados?",
+            "a": "Elegimos según el caso de uso entre OpenAI y Claude, y mantenemos el modelo detrás de una interfaz para que cambiar de proveedor sea un cambio de config, no una reescritura. A medida que cambian precio y capacidad, podés rutear a lo que convenga sin tocar el código de producto."
+          },
+          {
+            "q": "¿Cómo evitan que invente cosas?",
+            "a": "La recuperación ancla las respuestas a tus datos reales con citas, y medimos la calidad de recuperación aparte para distinguir un lookup malo de una respuesta mala. Guardrails, reglas de rechazo y una suite de evals en CI evitan que las alucinaciones y las respuestas fuera de tema lleguen a los usuarios."
+          },
+          {
+            "q": "¿Quién paga el uso del modelo y cómo controlan el costo?",
+            "a": "Los costos de tokens corren en tu propia cuenta de proveedor, totalmente transparentes. Los mantenemos predecibles con ruteo de modelos, caching y conteo por request, y ponemos alertas de costo para atrapar un prompt descontrolado en minutos, no en la factura."
+          },
+          {
+            "q": "¿De verdad hace cosas o solo conversa?",
+            "a": "Actúa. El function calling conecta el agente a tus APIs para mandar emails, actualizar registros o agendar tiempo, con cada llamada con efecto secundario tipada, validada, idempotente y registrada — y las acciones destructivas detrás de confirmación."
+          }
+        ]
       },
       "tech-consulting": {
         "metaTitle": "Consultoría Tecnológica y CTO Fraccional | MS Saravia Tech Stack",
         "metaDesc": "Revisión de arquitectura, modernización de stack y CTO fraccional para startups y equipos. Lanza más rápido, escala seguro.",
-        "intro": "Orientación técnica estratégica para fundadores y equipos: revisión de arquitectura, modernización del stack, auditorías de código y soporte de CTO fraccional para lanzar más rápido y escalar con seguridad."
+        "intro": "Orientación técnica estratégica para fundadores y equipos: revisión de arquitectura, modernización del stack, auditorías de código y soporte de CTO fraccional para lanzar más rápido y escalar con seguridad.",
+        "capabilities": [
+          {
+            "title": "Revisión de arquitectura",
+            "desc": "Una lectura clara de tu sistema actual — modelo de datos, límites, modos de falla — y el puñado de cambios con más apalancamiento. Separamos los incendios que hay que apagar de la deuda con la que se puede convivir, así el esfuerzo va donde mueve la aguja."
+          },
+          {
+            "title": "Modernización del stack",
+            "desc": "Migraciones incrementales a Next.js, React y backends tipados con el patrón strangler, así el sistema viejo sigue produciendo mientras el nuevo crece al lado. Sin big-bang, sin congelar el roadmap — la parte riesgosa sale detrás de flags en pasos chicos y reversibles."
+          },
+          {
+            "title": "Auditorías de performance y CWV",
+            "desc": "Análisis de bundle, Core Web Vitals (LCP/INP/CLS) y trazas de server-timing con una lista de acciones priorizada y cuantificada. Nombramos a los culpables concretos — el costo de hidratación, el tercero que bloquea, la query sin límite — no un genérico \"optimizá las imágenes\"."
+          },
+          {
+            "title": "CTO fraccional",
+            "desc": "Liderazgo técnico embebido y a tiempo parcial: decisiones de arquitectura, hiring, elección de proveedores y tradeoffs de roadmap con alguien que ya lanzó antes. Tenés criterio senior en las decisiones caras de revertir sin el sueldo de un ejecutivo full-time."
+          },
+          {
+            "title": "Habilitación del equipo",
+            "desc": "Estándares de code review, gates de CI/CD, estrategia de testing y las prácticas que suben la velocidad de entrega de un equipo sin heroísmos. Dejamos una forma de trabajar, no una dependencia de nosotros."
+          },
+          {
+            "title": "Due diligence técnica",
+            "desc": "Evaluaciones de grado inversor o comprador en lenguaje claro: arquitectura, seguridad, escalabilidad y riesgo de persona clave, con cada hallazgo marcado por severidad. Tenés una visión defendible de lo que estás comprando o contra lo que levantás capital, no una impresión."
+          }
+        ],
+        "process": [
+          {
+            "title": "Descubrimiento",
+            "desc": "Entrevistamos a tu equipo y leemos el código real, el CI y el historial de incidentes para entender dónde estás — no dónde dice el deck que estás. El acceso al repo y unas pocas conversaciones honestas dicen más que cualquier cuestionario."
+          },
+          {
+            "title": "Evaluación",
+            "desc": "Documentamos hallazgos, riesgos y opciones con costo/beneficio y severidad en cada uno, respaldados por evidencia del código y las métricas. Nada es \"buena práctica porque lo decimos\"; cada recomendación tiene un porqué y un precio."
+          },
+          {
+            "title": "Roadmap",
+            "desc": "Convertimos la evaluación en un plan secuenciado que tu equipo pueda ejecutar de verdad, ordenado por riesgo y retorno. Los quick wins caen primero para dar impulso; el trabajo estructural caro se parte en pasos reversibles."
+          },
+          {
+            "title": "Acompañamiento",
+            "desc": "Nos quedamos embebidos para guiar la ejecución — revisando PRs, destrabando decisiones y ajustando a medida que aparece la realidad. La meta es dejar a tu equipo capaz de sostener el ritmo sin nosotros."
+          }
+        ],
+        "deliverables": [
+          "Reporte escrito de auditoría de arquitectura y código con hallazgos priorizados y etiquetados por severidad",
+          "Análisis de Core Web Vitals y bundle con culpables nombrados y cuantificados",
+          "Roadmap de modernización secuenciado por riesgo y retorno",
+          "Estándares de CI/CD, testing y code review que tu equipo conserva",
+          "Recomendaciones de hiring y estructura de equipo",
+          "Horas opcionales de CTO fraccional embebido y una revisión de seguimiento tras la implementación"
+        ],
+        "faq": [
+          {
+            "q": "¿Es algo puntual o continuo?",
+            "a": "Cualquiera de los dos. Hacemos auditorías y revisiones de alcance fijo con un reporte que es tuyo, o nos embebemos como CTO fraccional por mes. Muchos clientes arrancan con una auditoría y siguen con unos días al mes al ver el roadmap."
+          },
+          {
+            "q": "¿Escriben código o solo asesoran?",
+            "a": "Ambos, y arrancamos con las manos en el código cuando ayuda. Podemos liderar la modernización dentro del repo, parear con tus ingenieros y revisar PRs — el consejo que nunca toca el código vale bastante menos."
+          },
+          {
+            "q": "¿Qué tan rápido vemos valor?",
+            "a": "La primera auditoría entrega una lista de acciones priorizada y cuantificada en unas dos semanas, con quick wins que podés lanzar de inmediato. No esperás un trimestre para saber qué está mal ni qué hacer primero."
+          },
+          {
+            "q": "¿Trabajan con nuestro equipo actual?",
+            "a": "Ese es el punto. Nos embebemos con tus ingenieros, subimos los estándares y mentoreamos sobre la marcha, así la capacidad queda después de que nos vamos. Reducir el riesgo de persona clave suele ser de lo primero que arreglamos."
+          }
+        ]
       }
     },
-    "industriesLabel": "Industrias para las que construimos"
+    "industriesLabel": "Industrias para las que construimos",
+    "capabilitiesLabel": "Qué entregamos",
+    "processLabel": "Cómo trabajamos",
+    "deliverablesLabel": "Qué recibes",
+    "faqLabel": "Preguntas frecuentes"
   },
   "workPage": {
     "metaTitle": "Nuestro Trabajo — Casos de Éxito | MS Saravia Tech Stack",

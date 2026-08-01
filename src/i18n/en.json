@@ -255,25 +255,309 @@
       "saas": {
         "metaTitle": "SaaS Development Company — MVP to Enterprise | MS Saravia Tech Stack",
         "metaDesc": "Custom SaaS development from MVP to enterprise. Scalable multi-tenant platforms with Next.js, Node.js and Stripe. Get a free project estimate.",
-        "intro": "We design and build scalable SaaS platforms end-to-end — from MVP validation to enterprise-grade systems. Multi-tenant architecture, subscription billing and cloud infrastructure engineered to grow with your business."
+        "intro": "We design and build scalable SaaS platforms end-to-end — from MVP validation to enterprise-grade systems. Multi-tenant architecture, subscription billing and cloud infrastructure engineered to grow with your business.",
+        "capabilities": [
+          {
+            "title": "Multi-tenant architecture",
+            "desc": "Shared-schema multi-tenancy with Postgres row-level security and a tenant_id propagated from the JWT on every query. We choose shared-schema over schema-per-tenant so migrations do not multiply per customer, and put PgBouncer in transaction mode in front of the pool so connection count survives real load."
+          },
+          {
+            "title": "Subscription billing",
+            "desc": "Stripe Billing wired end to end — plans, trials, proration, metered usage and dunning — with webhooks as the source of truth reconciled idempotently against your own entitlements table. We never trust the client for plan state; the webhook decides what a tenant can do."
+          },
+          {
+            "title": "Operator dashboards",
+            "desc": "Data-dense admin panels like our VESPER and PULSE dashboards: server-paginated tables, saved filters, bulk actions and role-scoped views. Heavy aggregations run as server components against read paths so the UI stays responsive without shipping the whole dataset to the browser."
+          },
+          {
+            "title": "Auth & RBAC",
+            "desc": "Session or JWT auth with OAuth, magic links and per-tenant role-based access enforced on the server, not just hidden in the UI. Permissions live in one policy layer, so a new role is a config change rather than a scavenger hunt across routes."
+          },
+          {
+            "title": "APIs & integrations",
+            "desc": "Typed contracts with tRPC or OpenAPI so the client and server cannot drift, plus signed webhooks and background jobs for third-party sync. Idempotency keys and retry-with-backoff make integrations survive the flaky reality of other people’s APIs."
+          },
+          {
+            "title": "Analytics & reporting",
+            "desc": "In-product event tracking, funnels and exportable reports on a warehouse-friendly event schema. We instrument the activation and retention moments up front, so product decisions run on data instead of vibes."
+          }
+        ],
+        "process": [
+          {
+            "title": "Discovery",
+            "desc": "We map users, jobs-to-be-done and the billing model, then cut scope to an MVP that proves the core loop. You leave with a fixed feature list, a data-model sketch and a timeline you can hold us to."
+          },
+          {
+            "title": "Architecture",
+            "desc": "We design the tenant model, auth boundaries and infra before feature code — versioned reversible migrations, typed API contracts and an ADR for every decision that is expensive to undo. Load-shaping choices (indexes, pagination, caching) are made now, not after the first outage."
+          },
+          {
+            "title": "Build",
+            "desc": "Iterative sprints against a live staging URL, feature-flagged so half-done work ships dark. Every PR runs typecheck, lint and tests in CI, and we load-test hot paths with k6 against P95 targets before they reach production."
+          },
+          {
+            "title": "Launch & scale",
+            "desc": "We deploy behind structured logging, tracing and alerts, with error budgets that tell us when to slow down. After launch we watch the funnel and the latency graphs and turn that into the next roadmap."
+          }
+        ],
+        "deliverables": [
+          "Production Next.js + Node.js codebase in your Git org — full IP, no lock-in",
+          "Postgres schema with reversible, version-controlled migrations and seed data",
+          "Stripe billing integration reconciled through idempotent webhooks",
+          "CI/CD with preview deploys and typecheck + lint + tests on every PR",
+          "Observability dashboards, structured logs and alerts, plus a reproducible k6 load test",
+          "Architecture docs (ADRs), a runbook and a live handover walkthrough"
+        ],
+        "faq": [
+          {
+            "q": "How long does a SaaS MVP take?",
+            "a": "Most MVPs reach a live, billable product in 8 to 12 weeks. We fix the feature list in discovery so the timeline is a commitment, not a guess, and ship weekly to a staging URL so there are no surprises at the end."
+          },
+          {
+            "q": "Do we own the code and IP?",
+            "a": "Completely. Everything lives in your Git organization from day one and you keep full IP — no proprietary runtime, no per-seat platform fee, nothing that holds your product hostage if you take it in-house."
+          },
+          {
+            "q": "How do you keep it maintainable after handover?",
+            "a": "We ship ADRs, a runbook and tests so the bus factor is not one person’s memory. Typed contracts and CI gates let a new engineer change code safely, and we can stay on a support retainer if you want continuity."
+          },
+          {
+            "q": "Will it actually scale, or just demo well?",
+            "a": "The multi-tenant model, connection pooling and indexed read paths are load-tested against P95 targets before launch, not bolted on after. When you outgrow a single instance the architecture is ready for read replicas and horizontal scaling."
+          }
+        ]
       },
       "mobile-apps": {
         "metaTitle": "Mobile App Development (iOS & Android) | MS Saravia Tech Stack",
         "metaDesc": "Native and React Native app development for iOS and Android. From concept to the App Store & Google Play. Free project estimate.",
-        "intro": "Native and cross-platform mobile apps for iOS and Android. We ship polished, performant products with React Native, Swift and Kotlin — from concept and store submission to ongoing releases."
+        "intro": "Native and cross-platform mobile apps for iOS and Android. We ship polished, performant products with React Native, Swift and Kotlin — from concept and store submission to ongoing releases.",
+        "capabilities": [
+          {
+            "title": "Cross-platform with React Native",
+            "desc": "One React Native + TypeScript codebase shipping to iOS and Android, built on Expo with EAS for reproducible cloud builds. We reach for the New Architecture (Fabric/TurboModules) where it earns its keep and keep the JS bundle lean so cold start stays fast."
+          },
+          {
+            "title": "Native modules",
+            "desc": "Swift and Kotlin bridges when the platform demands it — camera, BLE, biometrics, secure enclave — behind a typed JS interface so the app code does not care which OS it is on. We drop to native only where React Native’s abstraction actually costs you performance."
+          },
+          {
+            "title": "Offline-first sync",
+            "desc": "Local persistence with a write-ahead queue and background sync that reconciles on reconnect, with conflict resolution you can reason about. The app stays usable underground; the server catches up when the signal does."
+          },
+          {
+            "title": "Push & deep links",
+            "desc": "Segmented push via APNs and FCM, in-app messaging and deep/universal links that route straight to the right screen. We wire the notification permission prompt to a real value moment, not the cold first launch, to protect opt-in rates."
+          },
+          {
+            "title": "Mobile backend & API",
+            "desc": "Node.js + Postgres backends shaped for mobile: compact payloads, cursor pagination and endpoints designed around screen needs, not table dumps. Auth uses short-lived tokens with refresh so a stolen device is not a standing liability."
+          },
+          {
+            "title": "Store release & OTA",
+            "desc": "We own the App Store Connect and Google Play submission — signing, metadata, review responses — and ship JS-only fixes over the air with EAS Update without waiting on review. Native changes go through the stores; everything else can be same-day."
+          }
+        ],
+        "process": [
+          {
+            "title": "Discovery",
+            "desc": "We define the core flows, target devices and OS floors, and the store requirements that quietly shape scope (permissions, privacy labels, background modes). You get a screen map and a build plan before design starts."
+          },
+          {
+            "title": "Design & prototyping",
+            "desc": "Interactive prototypes validate navigation and feel on real hardware early, because a flow that reads fine in Figma can feel wrong at 60fps in the hand. We settle gestures, transitions and empty states here, not in QA."
+          },
+          {
+            "title": "Build",
+            "desc": "Testable builds go out every sprint via TestFlight and Play internal tracks for hands-on feedback. We profile cold start, JS bundle size and list performance as we go, and gate PRs on typecheck, lint and tests."
+          },
+          {
+            "title": "Release & support",
+            "desc": "We submit to both stores, wire up crash reporting and analytics, and watch the crash-free-users rate after launch. Maintenance covers OS updates, store policy changes and a steady release cadence — OTA for JS, stores for native."
+          }
+        ],
+        "deliverables": [
+          "React Native + TypeScript codebase (plus any native modules) in your Git org",
+          "Signed, store-ready iOS and Android builds via EAS",
+          "Configured App Store Connect and Google Play listings with privacy labels",
+          "Node.js + Postgres backend and a mobile-shaped API",
+          "Crash reporting, analytics and cold-start / bundle-size baselines",
+          "OTA update pipeline (EAS Update) and a release + maintenance runbook"
+        ],
+        "faq": [
+          {
+            "q": "React Native or fully native?",
+            "a": "React Native for most products — one codebase, near-native feel, and OTA updates you cannot get with fully native. We write native Swift/Kotlin modules exactly where profiling shows the bridge costs you, so you get native performance without maintaining two apps."
+          },
+          {
+            "q": "Do you publish to the stores for us?",
+            "a": "Yes — signing, listings, privacy labels, review responses and release on both the App Store and Google Play. We have been through the rejection reasons before, so the first submission is built to pass, not to learn."
+          },
+          {
+            "q": "How do updates work after launch?",
+            "a": "JS and asset changes ship over the air with EAS Update, often same-day and without review; native changes go through the stores. A maintenance retainer covers OS updates, store policy shifts and new features on a predictable cadence."
+          },
+          {
+            "q": "How much does an app cost?",
+            "a": "It depends on scope, platforms and backend complexity. Our estimator gives a real range in a couple of minutes, then we turn your feature list into a fixed quote — no open-ended hourly surprises."
+          }
+        ]
       },
       "ai-agents": {
         "metaTitle": "AI Agent Development & Automation | MS Saravia Tech Stack",
         "metaDesc": "Build AI agents and automation with OpenAI, Claude and LangChain. Custom LLM assistants wired to your real data. Free consultation.",
-        "intro": "We build AI agents and automation that plug into your operations — LLM-powered assistants, workflow automation and retrieval systems using OpenAI, Claude and LangChain, wired to your real data."
+        "intro": "We build AI agents and automation that plug into your operations — LLM-powered assistants, workflow automation and retrieval systems using OpenAI, Claude and LangChain, wired to your real data.",
+        "capabilities": [
+          {
+            "title": "Grounded LLM assistants",
+            "desc": "Chat and task agents on OpenAI or Claude, grounded in your own content and tone through a retrieval layer rather than fine-tuning, so an update is a re-index, not a retraining bill. We keep the model behind an interface so swapping providers is a config change, not a rewrite."
+          },
+          {
+            "title": "Retrieval (RAG)",
+            "desc": "Vector search over your docs and data with chunking and metadata filters tuned to your corpus, so answers cite real sources instead of confabulating. We measure retrieval quality (recall@k) separately from generation, because most \"the AI is wrong\" bugs are actually retrieval bugs."
+          },
+          {
+            "title": "Workflow automation",
+            "desc": "Agents that take action — draft the email, update the CRM, book the slot — across your existing tools, with every side-effecting step idempotent and logged. Long-running work runs as durable jobs so a timeout does not double-charge a customer."
+          },
+          {
+            "title": "Tool & API calling",
+            "desc": "Function calling wired to your real APIs with strict typed schemas and validation on the arguments the model produces, because an LLM will happily invent a parameter. Destructive tools sit behind confirmation and permission checks, not blind trust."
+          },
+          {
+            "title": "Guardrails & evals",
+            "desc": "Input/output moderation, prompt-injection defenses and a graded eval suite that runs on every prompt change, so \"we improved the prompt\" is a number, not a hunch. Regressions are caught in CI against real queries before users see them."
+          },
+          {
+            "title": "Cost & observability",
+            "desc": "Per-request token accounting, model routing (cheap model for easy turns, frontier for hard ones) and caching to keep spend predictable. Full traces of prompts, tool calls and latencies mean you can debug a bad answer instead of guessing."
+          }
+        ],
+        "process": [
+          {
+            "title": "Discovery",
+            "desc": "We pick the highest-value use case and define what \"good\" looks like with real examples and failure cases up front. A vague \"add AI\" turns into a measurable task with an eval target before any code."
+          },
+          {
+            "title": "Data & prompt design",
+            "desc": "We prepare and chunk your knowledge base, design the retrieval strategy and write prompts with explicit refusal and escalation rules. Sensitive-data handling and PII redaction are decided here, not patched later."
+          },
+          {
+            "title": "Build & evaluate",
+            "desc": "We build the agent and grade it against a held-out set of real queries, tuning retrieval and prompts until accuracy and cost hit target. Tool calls run against sandboxed integrations before they touch production data."
+          },
+          {
+            "title": "Deploy & monitor",
+            "desc": "We ship behind tracing, cost alerts and a human-handoff path for low-confidence turns. Live traffic feeds new eval cases, so the agent gets measurably better instead of silently drifting."
+          }
+        ],
+        "deliverables": [
+          "Agent service with your prompts, tools and retrieval index in your Git org",
+          "Knowledge-base ingestion and re-index pipeline",
+          "Versioned eval suite with an accuracy/cost report per prompt change",
+          "API endpoint or embeddable widget for your site or product",
+          "Token-cost and quality dashboard with per-request traces",
+          "Prompt, tool and configuration docs you can maintain in-house"
+        ],
+        "faq": [
+          {
+            "q": "Which model do you use — and are we locked in?",
+            "a": "We pick per use case across OpenAI and Claude, and keep the model behind an interface so switching providers is a config change, not a rewrite. As pricing and capability shift, you can route to whatever wins without touching product code."
+          },
+          {
+            "q": "How do you stop it from making things up?",
+            "a": "Retrieval grounds answers in your real data with citations, and we measure retrieval quality separately so we can tell a wrong lookup from a wrong answer. Guardrails, refusal rules and an eval suite in CI keep hallucinations and off-topic replies from reaching users."
+          },
+          {
+            "q": "Who pays for model usage, and how do you control cost?",
+            "a": "Token costs run on your own provider account, fully transparent. We keep them predictable with model routing, caching and per-request accounting, and set cost alerts so a runaway prompt is caught in minutes, not on the invoice."
+          },
+          {
+            "q": "Can it actually do things, or just chat?",
+            "a": "It acts. Function calling wires the agent to your APIs to send email, update records or book time, with every side-effecting call typed, validated, idempotent and logged — and destructive actions gated behind confirmation."
+          }
+        ]
       },
       "tech-consulting": {
         "metaTitle": "Tech Consulting & Fractional CTO | MS Saravia Tech Stack",
         "metaDesc": "Architecture reviews, stack modernization and fractional CTO services for startups and teams. Ship faster, scale safely.",
-        "intro": "Strategic technical guidance for founders and teams: architecture reviews, stack modernization, code audits and fractional CTO support to help you ship faster and scale safely."
+        "intro": "Strategic technical guidance for founders and teams: architecture reviews, stack modernization, code audits and fractional CTO support to help you ship faster and scale safely.",
+        "capabilities": [
+          {
+            "title": "Architecture reviews",
+            "desc": "A clear read on your current system — data model, boundaries, failure modes — and the handful of changes with the most leverage. We separate the fires you must fix from the debt you can safely live with, so effort goes where it moves the needle."
+          },
+          {
+            "title": "Stack modernization",
+            "desc": "Incremental migrations to Next.js, React and typed backends via the strangler pattern, so the old system keeps earning while the new one grows beside it. No big-bang rewrite, no roadmap freeze — the risky part ships behind flags in small, reversible steps."
+          },
+          {
+            "title": "Performance & CWV audits",
+            "desc": "Bundle analysis, Core Web Vitals (LCP/INP/CLS) and server-timing traces with a prioritized, quantified action list. We name the specific offenders — the hydration cost, the blocking third-party, the unbounded query — not a generic \"optimize images\"."
+          },
+          {
+            "title": "Fractional CTO",
+            "desc": "Embedded, part-time technical leadership: architecture calls, hiring, vendor decisions and roadmap tradeoffs with someone who has shipped before. You get senior judgment on the expensive-to-undo decisions without a full-time exec salary."
+          },
+          {
+            "title": "Team enablement",
+            "desc": "Code-review standards, CI/CD gates, testing strategy and the practices that raise a team’s shipping speed without heroics. We leave behind a way of working, not a dependency on us."
+          },
+          {
+            "title": "Technical due diligence",
+            "desc": "Investor- or acquirer-grade assessments in plain language: architecture, security, scalability and key-person risk, with each finding flagged by severity. You get a defensible view of what you are buying or raising against, not a vibe check."
+          }
+        ],
+        "process": [
+          {
+            "title": "Discovery",
+            "desc": "We interview your team and read the actual codebase, CI and incident history to understand where you are — not where the deck says you are. Access to the repo and a few honest conversations tell us more than any questionnaire."
+          },
+          {
+            "title": "Assessment",
+            "desc": "We document findings, risks and options with a cost/benefit and severity on each, backed by evidence from the code and the metrics. Nothing is \"best practice because we said so\"; every recommendation has a why and a price."
+          },
+          {
+            "title": "Roadmap",
+            "desc": "We turn the assessment into a sequenced plan your team can actually execute, ordered by risk and payoff. Quick wins land first to build momentum; the expensive structural work is broken into reversible steps."
+          },
+          {
+            "title": "Support",
+            "desc": "We stay embedded to guide execution — reviewing PRs, unblocking decisions and adjusting as reality lands. The goal is to leave your team able to keep the pace without us."
+          }
+        ],
+        "deliverables": [
+          "Written architecture and code audit report with prioritized, severity-tagged findings",
+          "Core Web Vitals and bundle analysis with named, quantified offenders",
+          "Sequenced modernization roadmap ordered by risk and payoff",
+          "CI/CD, testing and code-review standards your team keeps",
+          "Hiring and team-structure recommendations",
+          "Optional embedded fractional-CTO hours and a follow-up review after implementation"
+        ],
+        "faq": [
+          {
+            "q": "Is this a one-off or ongoing?",
+            "a": "Either. We run fixed-scope audits and reviews with a report you own, or embed as a fractional CTO on a monthly basis. Many clients start with an audit and continue with a few days a month once they see the roadmap."
+          },
+          {
+            "q": "Do you write code, or just advise?",
+            "a": "Both, and we lead with hands-on when it helps. We can drive the modernization in the codebase, pair with your engineers and review PRs — advice that never touches the repo is worth a lot less."
+          },
+          {
+            "q": "How fast do we see value?",
+            "a": "The first audit delivers a prioritized, quantified action list within about two weeks, with quick wins you can ship immediately. You do not wait a quarter to learn what is wrong or what to do first."
+          },
+          {
+            "q": "Will you work with our existing team?",
+            "a": "That is the point. We embed with your engineers, raise the standards and mentor as we go, so the capability stays after we leave. Reducing key-person risk is usually one of the first things we fix."
+          }
+        ]
       }
     },
-    "industriesLabel": "Industries we build for"
+    "industriesLabel": "Industries we build for",
+    "capabilitiesLabel": "What we deliver",
+    "processLabel": "How we work",
+    "deliverablesLabel": "What you get",
+    "faqLabel": "Frequently asked"
   },
   "workPage": {
     "metaTitle": "Our Work — Case Studies | MS Saravia Tech Stack",

@@ -5,6 +5,10 @@ import { projects } from './projects'
 
 // --- Service pillar pages -------------------------------------------------
 // `itemIndex` mapea al array `services.items` de i18n (mismo orden en en/es).
+// Stack técnico agrupado por capa. Los nombres de tecnología son neutros (no se traducen);
+// solo la etiqueta de grupo es bilingüe. Vive aquí (no en i18n) para no duplicar nombres.
+export type TechGroup = { en: string; es: string; items: string[] }
+
 export type ServicePage = {
   slug: string
   itemIndex: number
@@ -12,6 +16,8 @@ export type ServicePage = {
   relatedDemos: string[]
   /** slugs de case studies de /work relacionados. */
   relatedCaseStudies: string[]
+  /** stack técnico agrupado por capa (amplio, nivel senior). */
+  techStack: TechGroup[]
 }
 
 const servicePages: ServicePage[] = [
@@ -20,24 +26,65 @@ const servicePages: ServicePage[] = [
     itemIndex: 0,
     relatedDemos: ['pulse-landing', 'pulse-dashboard', 'vesper-store', 'vesper-dashboard'],
     relatedCaseStudies: ['readycv'],
+    techStack: [
+      { en: 'Frontend', es: 'Frontend', items: ['Next.js', 'React', 'TypeScript', 'Tailwind CSS', 'React Query', 'Zustand', 'Server Components', 'Radix UI', 'Framer Motion'] },
+      { en: 'Backend & API', es: 'Backend y API', items: ['Node.js', 'tRPC', 'GraphQL', 'REST / OpenAPI', 'Prisma', 'Drizzle', 'Zod', 'BullMQ'] },
+      { en: 'Architecture & patterns', es: 'Arquitectura y patrones', items: ['Multi-tenant', 'DDD', 'Hexagonal', 'Clean Architecture', 'CQRS', 'Event-driven', 'Modular monolith', 'Repository', 'Dependency Injection'] },
+      { en: 'Data', es: 'Datos', items: ['PostgreSQL', 'Redis', 'PgBouncer', 'Row-Level Security', 'Elasticsearch', 'ClickHouse', 'Kafka', 'S3'] },
+      { en: 'Auth & security', es: 'Auth y seguridad', items: ['OAuth 2.0 / OIDC', 'JWT', 'RBAC / ABAC', 'SSO / SAML', 'Rate limiting', 'OWASP'] },
+      { en: 'Payments & billing', es: 'Pagos y facturación', items: ['Stripe Billing', 'Usage-based billing', 'Webhooks idempotentes', 'Tax / invoicing', 'Dunning'] },
+      { en: 'Infra & DevOps', es: 'Infra y DevOps', items: ['Docker', 'Kubernetes', 'Terraform', 'GitHub Actions', 'Nginx', 'Cloudflare', 'Blue-green deploys'] },
+      { en: 'Observability & quality', es: 'Observabilidad y calidad', items: ['OpenTelemetry', 'Sentry', 'Grafana', 'Prometheus', 'Structured logging', 'k6', 'Playwright', 'Vitest'] },
+    ],
   },
   {
     slug: 'mobile-apps',
     itemIndex: 1,
     relatedDemos: [],
     relatedCaseStudies: ['nova-nutrition'],
+    techStack: [
+      { en: 'iOS · languages & UI', es: 'iOS · lenguajes y UI', items: ['Swift', 'Objective-C', 'SwiftUI', 'UIKit', 'Swift Concurrency', 'async/await', 'GCD', 'Combine', 'RxSwift'] },
+      { en: 'Apple frameworks', es: 'Frameworks de Apple', items: ['Core Data', 'SwiftData', 'Core ML', 'ARKit', 'MapKit', 'AVFoundation', 'StoreKit', 'Keychain', 'Core Animation'] },
+      { en: 'Android · native', es: 'Android · nativo', items: ['Kotlin', 'Java', 'Jetpack Compose', 'Coroutines', 'Flow', 'Room', 'Hilt / Dagger', 'Retrofit', 'WorkManager', 'KMP'] },
+      { en: 'Cross-platform', es: 'Multiplataforma', items: ['React Native', 'Expo', 'EAS', 'TypeScript', 'Reanimated', 'Flutter', 'Dart', 'Capacitor'] },
+      { en: 'Architecture & patterns', es: 'Arquitectura y patrones', items: ['MVVM', 'MVI', 'VIPER', 'Clean Architecture', 'TCA', 'Coordinator', 'Repository', 'Dependency Injection', 'Modularization'] },
+      { en: 'Data & state', es: 'Datos y estado', items: ['Core Data', 'SQLite', 'Realm', 'GRDB', 'Redux Toolkit', 'Zustand', 'Offline-first sync'] },
+      { en: 'Dependencies & tooling', es: 'Dependencias y tooling', items: ['Swift Package Manager', 'CocoaPods', 'Carthage', 'Gradle', 'Xcode', 'Instruments', 'SwiftLint'] },
+      { en: 'Networking & realtime', es: 'Networking y realtime', items: ['REST', 'GraphQL', 'gRPC', 'WebSockets', 'URLSession', 'Alamofire', 'Ktor'] },
+      { en: 'Quality & delivery', es: 'Calidad y entrega', items: ['XCTest', 'JUnit', 'Detox', 'Maestro', 'Fastlane', 'TestFlight', 'Play Console', 'Sentry', 'Firebase'] },
+    ],
   },
   {
     slug: 'ai-agents',
     itemIndex: 2,
     relatedDemos: [],
     relatedCaseStudies: ['readycv', 'nova-nutrition'],
+    techStack: [
+      { en: 'Models', es: 'Modelos', items: ['OpenAI', 'Claude', 'Gemini', 'Llama', 'Mistral', 'DeepSeek'] },
+      { en: 'Orchestration', es: 'Orquestación', items: ['LangChain', 'LangGraph', 'LlamaIndex', 'MCP', 'Function calling', 'Multi-agent'] },
+      { en: 'Retrieval (RAG)', es: 'Recuperación (RAG)', items: ['pgvector', 'Pinecone', 'Weaviate', 'Qdrant', 'Embeddings', 'Rerankers', 'Hybrid search', 'Chunking'] },
+      { en: 'Patterns & prompting', es: 'Patrones y prompting', items: ['ReAct', 'Tool-use', 'Structured output', 'Few-shot', 'Chain-of-thought', 'Human-in-the-loop'] },
+      { en: 'Runtime & serving', es: 'Runtime y serving', items: ['Python', 'FastAPI', 'Node.js', 'vLLM', 'Durable jobs', 'Queues', 'Streaming (SSE)'] },
+      { en: 'Data & tuning', es: 'Datos y tuning', items: ['Fine-tuning', 'LoRA', 'Distillation', 'Synthetic data', 'Vector ETL'] },
+      { en: 'Evals & safety', es: 'Evals y seguridad', items: ['Evals en CI', 'LLM-as-judge', 'Red-teaming', 'Guardrails', 'PII redaction', 'Prompt-injection defense'] },
+      { en: 'Ops & cost', es: 'Ops y costo', items: ['LangSmith', 'Tracing', 'Token accounting', 'Model routing', 'Semantic caching', 'Rate limiting'] },
+    ],
   },
   {
     slug: 'tech-consulting',
     itemIndex: 3,
     relatedDemos: [],
     relatedCaseStudies: [],
+    techStack: [
+      { en: 'Architecture', es: 'Arquitectura', items: ['System design', 'DDD', 'Hexagonal', 'Event-driven', 'Microservices', 'C4 model', 'ADRs', 'API design'] },
+      { en: 'Performance', es: 'Rendimiento', items: ['Core Web Vitals', 'Profiling', 'Flamegraphs', 'k6', 'Lighthouse CI', 'Bundle analysis', 'DB query tuning'] },
+      { en: 'Cloud & infra', es: 'Cloud e infra', items: ['AWS', 'GCP', 'Docker', 'Kubernetes', 'Terraform', 'Serverless', 'CDN'] },
+      { en: 'DevOps & CI/CD', es: 'DevOps y CI/CD', items: ['GitHub Actions', 'Pipelines', 'Blue-green / canary', 'Feature flags', 'IaC', 'Secrets management'] },
+      { en: 'Quality & testing', es: 'Calidad y testing', items: ['Testing strategy', 'TDD', 'Unit / integration / e2e', 'Code review', 'Static analysis', 'SLOs / SLIs'] },
+      { en: 'Security', es: 'Seguridad', items: ['Threat modeling', 'OWASP', 'Dependency audits', 'Secrets management', 'SOC 2 readiness'] },
+      { en: 'Data & scale', es: 'Datos y escala', items: ['PostgreSQL tuning', 'Caching strategy', 'Sharding', 'Connection pooling', 'Queue design'] },
+      { en: 'Leadership', es: 'Liderazgo', items: ['Fractional CTO', 'Technical due diligence', 'Team enablement', 'Hiring / interviews', 'Roadmapping', 'Mentoring'] },
+    ],
   },
 ]
 
