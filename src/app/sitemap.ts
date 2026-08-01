@@ -25,6 +25,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     lastModified: Date
   }[] = [
     { path: '', priority: 1, changeFrequency: 'monthly', lastModified: SITE_CONTENT_UPDATED },
+    // Landing de posicionamiento nearshore: pillar de alta prioridad (mismo 0.9 que los servicios).
+    { path: '/nearshore', priority: 0.9, changeFrequency: 'monthly', lastModified: SITE_CONTENT_UPDATED },
     { path: '/estimate', priority: 0.85, changeFrequency: 'monthly', lastModified: SITE_CONTENT_UPDATED },
     { path: '/work', priority: 0.8, changeFrequency: 'monthly', lastModified: SITE_CONTENT_UPDATED },
     { path: '/blog', priority: 0.8, changeFrequency: 'weekly', lastModified: blogHubModified },

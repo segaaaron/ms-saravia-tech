@@ -2,6 +2,7 @@
   "nav": {
     "services": "Services",
     "work": "Work",
+    "nearshore": "Nearshore",
     "blog": "Blog",
     "estimate": "Estimate",
     "demos": "Explore the Product",
@@ -242,6 +243,7 @@
     "home": "Home",
     "services": "Services",
     "work": "Work",
+    "nearshore": "Nearshore",
     "aria": "Breadcrumb"
   },
   "servicePages": {
@@ -904,5 +906,158 @@
   },
   "stackMarquee": {
     "label": "// BUILT WITH FRONTIER TECHNOLOGY"
+  },
+  "nearshore": {
+    "metaTitle": "Nearshore Software Development for US & Canada | MS Saravia Tech Stack",
+    "metaDesc": "Senior nearshore software teams in your timezone. A US-registered LLC staffed by senior LATAM engineers — 40-60% less than a US agency, without the offshore quality gap.",
+    "jsonLdName": "Nearshore Software Development",
+    "hero": {
+      "eyebrow": "Nearshore development",
+      "h1": "Senior software teams in your timezone — at nearshore cost",
+      "sub": "We're a US-registered LLC delivering senior Latin American engineering to companies across the United States and Canada. Real timezone overlap, US contracts, and 40-60% less than a comparable US agency — without the offshore quality gap.",
+      "ctaPrimary": "Get a free estimate",
+      "ctaSecondary": "Talk to us"
+    },
+    "whatLabel": "What is nearshore",
+    "whatTitle": "Nearshore, defined",
+    "whatBody": [
+      "Nearshore software development means outsourcing engineering to a country in a similar or overlapping timezone. For a US or Canadian company, that's Latin America — you get the cost advantage of outsourcing without the friction of a 10-12 hour offset.",
+      "The difference is practical, not academic. With nearshore, standups happen live, code review is same-day, and a production incident at 2pm your time is a 2pm problem for the engineer who wrote the code — not something that waits until tomorrow.",
+      "MS Saravia Tech Stack is structured for exactly this: a US-registered LLC for contracting and billing, staffed by senior Latin American engineers who work your business hours."
+    ],
+    "compareLabel": "Nearshore vs offshore vs in-house",
+    "compareTitle": "How the three models actually compare",
+    "compareIntro": "The right model depends on budget, how much timezone offset you can tolerate, and how senior the work is. Here's the honest trade-off.",
+    "compare": {
+      "columns": {
+        "model": "",
+        "nearshore": "Nearshore (us)",
+        "offshore": "Offshore",
+        "inhouse": "In-house (US)"
+      },
+      "rows": [
+        {
+          "label": "Timezone overlap",
+          "nearshore": "Full business-day overlap (CST/EST)",
+          "offshore": "2-4 hours, often none",
+          "inhouse": "Full"
+        },
+        {
+          "label": "Cost vs US agency",
+          "nearshore": "40-60% less",
+          "offshore": "60-75% less",
+          "inhouse": "Baseline (highest)"
+        },
+        {
+          "label": "Seniority",
+          "nearshore": "Senior by default",
+          "offshore": "Mixed, often junior-heavy",
+          "inhouse": "Whatever you hire"
+        },
+        {
+          "label": "Communication",
+          "nearshore": "Fluent English, live",
+          "offshore": "Async, language gaps common",
+          "inhouse": "Native, in-room"
+        },
+        {
+          "label": "Contracts & billing",
+          "nearshore": "US LLC, standard US contracts",
+          "offshore": "Foreign entity, varies",
+          "inhouse": "Employment / payroll"
+        },
+        {
+          "label": "Ramp-up time",
+          "nearshore": "Days",
+          "offshore": "Weeks",
+          "inhouse": "Months (hiring)"
+        },
+        {
+          "label": "Hiring risk",
+          "nearshore": "Low — scale up or down",
+          "offshore": "Medium",
+          "inhouse": "High — fixed headcount"
+        }
+      ]
+    },
+    "whyLabel": "Why US & Canada buyers choose it",
+    "whyTitle": "Built for how you already work",
+    "why": [
+      {
+        "title": "A US-registered LLC",
+        "desc": "You contract with and pay a US entity — no foreign wire transfers, no unfamiliar jurisdiction. Invoicing, MSAs, and payments work the way your finance team expects."
+      },
+      {
+        "title": "Real timezone overlap",
+        "desc": "Our engineers work US business hours (Central/Eastern). Live standups, same-day reviews, and no 'I'll see it tomorrow' handoffs."
+      },
+      {
+        "title": "Senior LATAM talent",
+        "desc": "Latin America has a deep bench of senior engineers who've shipped for US companies. You get people who own problems, not order-takers waiting for a spec."
+      },
+      {
+        "title": "Standard contracts & NDA",
+        "desc": "Standard US-style MSA and SOW, with an NDA on request before we see anything sensitive. IP assigns to you in writing."
+      },
+      {
+        "title": "40-60% lower cost",
+        "desc": "Senior work at a fraction of US agency rates — because our cost base is LATAM, not a US downtown office. See it for yourself in the estimator."
+      },
+      {
+        "title": "Fluent English",
+        "desc": "Every engineer who touches your project speaks fluent, professional English. No translation layer, no meaning lost in async threads."
+      }
+    ],
+    "trustLabel": "The details that matter",
+    "trustTitle": "How it works in practice",
+    "trust": [
+      {
+        "title": "Who you contract with",
+        "desc": "MS Saravia Tech Stack LLC — a United States limited liability company. Contracts, invoices, and payments are all US-side. The engineering happens in Latin America."
+      },
+      {
+        "title": "How we coordinate",
+        "desc": "We work inside your tools — Slack, Jira/Linear, GitHub, your CI. Daily async updates, live standups when you want them, and a single point of contact who's accountable for delivery."
+      },
+      {
+        "title": "Security & IP",
+        "desc": "NDA before kickoff on request. Least-privilege access, no shared credentials, and IP assigned to you in writing. We work against your VPN and your review gates."
+      },
+      {
+        "title": "How you scale",
+        "desc": "Start with one engineer or a pod. Scale up for a push, down when you don't need it — without the severance and hiring overhead of full-time headcount."
+      }
+    ],
+    "faqLabel": "Frequently asked",
+    "faq": [
+      {
+        "q": "What's the difference between nearshore and offshore?",
+        "a": "Offshore means outsourcing to a distant timezone — typically Asia or Eastern Europe for a US company — where the workday barely overlaps. Nearshore means a nearby, overlapping timezone: for the US and Canada, that's Latin America. Nearshore costs a little more than offshore but removes the 10-12 hour delay that makes offshore projects slow and hard to manage."
+      },
+      {
+        "q": "What timezone do your engineers work in?",
+        "a": "Our engineers work Latin American timezones that overlap almost entirely with US Central and Eastern time. In practice that means a full shared business day: live standups, same-day code review, and real-time response to production issues."
+      },
+      {
+        "q": "How do contracts work with a US LLC?",
+        "a": "You contract directly with MS Saravia Tech Stack LLC, a US-registered limited liability company. That means standard US-style MSAs and SOWs, US invoicing, and payment to a US entity — no foreign wire transfers or unfamiliar legal jurisdiction. An NDA is available on request before any sensitive discussion."
+      },
+      {
+        "q": "How senior is your team?",
+        "a": "Senior by default. Our engineers have shipped production software for US and international companies and are trusted to own architecture and delivery, not just execute tickets. We staff for the seniority the work actually needs."
+      },
+      {
+        "q": "How much do I save versus a US agency?",
+        "a": "Typically 40-60% for comparable senior work. The saving comes from a Latin American cost base, not from cutting corners on quality. You can model your own project in our cost estimator to see a concrete range."
+      },
+      {
+        "q": "Can you work within our existing team and tools?",
+        "a": "Yes. We embed in your Slack, issue tracker, repositories, and CI/CD, follow your review and security gates, and assign a single accountable point of contact. Nearshore is designed to feel like an extension of your team, not a black box."
+      }
+    ],
+    "ctaTitle": "See what senior nearshore costs for your project",
+    "ctaSubtitle": "Model your build in the estimator, or tell us what you need and we'll reply within 24 hours.",
+    "ctaButton": "Get a free estimate",
+    "ctaSecondary": "Talk to us"
   }
 }

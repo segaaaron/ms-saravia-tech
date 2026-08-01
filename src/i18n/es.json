@@ -2,6 +2,7 @@
   "nav": {
     "services": "Servicios",
     "work": "Trabajos",
+    "nearshore": "Nearshore",
     "blog": "Blog",
     "estimate": "Cotizar",
     "demos": "Explora el Producto",
@@ -242,6 +243,7 @@
     "home": "Inicio",
     "services": "Servicios",
     "work": "Proyectos",
+    "nearshore": "Nearshore",
     "aria": "Ruta de navegación"
   },
   "servicePages": {
@@ -904,5 +906,158 @@
   },
   "stackMarquee": {
     "label": "// CONSTRUIDO CON TECNOLOGÍA DE FRONTERA"
+  },
+  "nearshore": {
+    "metaTitle": "Desarrollo de software nearshore para EE. UU. y Canadá | MS Saravia Tech Stack",
+    "metaDesc": "Equipos senior de desarrollo nearshore en tu mismo horario. Una LLC registrada en EE. UU. con ingenieros senior de LATAM — 40-60% menos que una agencia estadounidense, sin la brecha de calidad del offshore.",
+    "jsonLdName": "Desarrollo de software nearshore",
+    "hero": {
+      "eyebrow": "Desarrollo nearshore",
+      "h1": "Equipos senior de software en tu mismo horario — a costo nearshore",
+      "sub": "Somos una LLC registrada en EE. UU. que lleva ingeniería senior de Latinoamérica a empresas de Estados Unidos y Canadá. Solapamiento real de horario, contratos estadounidenses y 40-60% menos que una agencia local — sin la brecha de calidad del offshore.",
+      "ctaPrimary": "Calcular presupuesto",
+      "ctaSecondary": "Hablemos"
+    },
+    "whatLabel": "Qué es nearshore",
+    "whatTitle": "Nearshore, en concreto",
+    "whatBody": [
+      "El desarrollo de software nearshore consiste en delegar la ingeniería a un país con un horario similar o solapado. Para una empresa de EE. UU. o Canadá, eso es Latinoamérica: obtenés la ventaja de costo de tercerizar sin la fricción de un desfase de 10 a 12 horas.",
+      "La diferencia es práctica, no teórica. Con nearshore, las reuniones diarias son en vivo, la revisión de código es el mismo día y un incidente en producción a las 2 de la tarde es un problema de las 2 de la tarde para quien escribió ese código — no algo que espera hasta mañana.",
+      "MS Saravia Tech Stack está armado exactamente para esto: una LLC registrada en EE. UU. para contratar y facturar, con ingenieros senior latinoamericanos que trabajan en tu horario comercial."
+    ],
+    "compareLabel": "Nearshore vs offshore vs equipo propio",
+    "compareTitle": "Cómo se comparan los tres modelos, de verdad",
+    "compareIntro": "El modelo correcto depende del presupuesto, de cuánto desfase de horario tolerás y de qué tan senior es el trabajo. Este es el trade-off honesto.",
+    "compare": {
+      "columns": {
+        "model": "",
+        "nearshore": "Nearshore (nosotros)",
+        "offshore": "Offshore",
+        "inhouse": "Equipo propio (EE. UU.)"
+      },
+      "rows": [
+        {
+          "label": "Solapamiento de horario",
+          "nearshore": "Día laboral completo (CST/EST)",
+          "offshore": "2-4 horas, a veces ninguna",
+          "inhouse": "Total"
+        },
+        {
+          "label": "Costo vs agencia de EE. UU.",
+          "nearshore": "40-60% menos",
+          "offshore": "60-75% menos",
+          "inhouse": "Referencia (el más alto)"
+        },
+        {
+          "label": "Nivel de seniority",
+          "nearshore": "Senior por defecto",
+          "offshore": "Mixto, mayoría junior",
+          "inhouse": "El que contrates"
+        },
+        {
+          "label": "Comunicación",
+          "nearshore": "Inglés fluido, en vivo",
+          "offshore": "Asíncrona, con barreras de idioma",
+          "inhouse": "Nativa, en la oficina"
+        },
+        {
+          "label": "Contratos y facturación",
+          "nearshore": "LLC de EE. UU., contratos estándar",
+          "offshore": "Entidad extranjera, variable",
+          "inhouse": "Empleo / nómina"
+        },
+        {
+          "label": "Tiempo de arranque",
+          "nearshore": "Días",
+          "offshore": "Semanas",
+          "inhouse": "Meses (contratación)"
+        },
+        {
+          "label": "Riesgo de contratación",
+          "nearshore": "Bajo — escalás hacia arriba o abajo",
+          "offshore": "Medio",
+          "inhouse": "Alto — plantilla fija"
+        }
+      ]
+    },
+    "whyLabel": "Por qué lo eligen las empresas de EE. UU. y Canadá",
+    "whyTitle": "Pensado para cómo ya trabajás",
+    "why": [
+      {
+        "title": "Una LLC registrada en EE. UU.",
+        "desc": "Contratás y pagás a una entidad estadounidense — sin transferencias internacionales ni jurisdicciones desconocidas. La facturación, los MSA y los pagos funcionan como tu equipo de finanzas espera."
+      },
+      {
+        "title": "Solapamiento de horario real",
+        "desc": "Nuestros ingenieros trabajan en horario comercial de EE. UU. (Central/Este). Reuniones diarias en vivo, revisiones el mismo día y nada de 'lo veo mañana'."
+      },
+      {
+        "title": "Talento senior de LATAM",
+        "desc": "Latinoamérica tiene una base profunda de ingenieros senior que ya entregaron para empresas estadounidenses. Gente que se hace dueña de los problemas, no que espera una especificación."
+      },
+      {
+        "title": "Contratos estándar y NDA",
+        "desc": "MSA y SOW al estilo estadounidense, con NDA a pedido antes de ver algo sensible. La propiedad intelectual queda a tu nombre, por escrito."
+      },
+      {
+        "title": "40-60% menos de costo",
+        "desc": "Trabajo senior por una fracción de las tarifas de una agencia de EE. UU. — porque nuestra base de costos es LATAM, no una oficina en el centro. Comprobalo en el estimador."
+      },
+      {
+        "title": "Inglés fluido",
+        "desc": "Todos los ingenieros que tocan tu proyecto hablan inglés profesional y fluido. Sin capa de traducción ni malentendidos en los hilos asíncronos."
+      }
+    ],
+    "trustLabel": "Los detalles que importan",
+    "trustTitle": "Cómo funciona en la práctica",
+    "trust": [
+      {
+        "title": "Con quién contratás",
+        "desc": "Con MS Saravia Tech Stack LLC — una sociedad de responsabilidad limitada de Estados Unidos. Contratos, facturas y pagos son todos del lado de EE. UU. La ingeniería ocurre en Latinoamérica."
+      },
+      {
+        "title": "Cómo coordinamos",
+        "desc": "Trabajamos dentro de tus herramientas — Slack, Jira/Linear, GitHub, tu CI. Actualizaciones diarias asíncronas, reuniones en vivo cuando las quieras y un único punto de contacto responsable de la entrega."
+      },
+      {
+        "title": "Seguridad y propiedad intelectual",
+        "desc": "NDA antes de arrancar, a pedido. Accesos con privilegio mínimo, sin credenciales compartidas y la propiedad intelectual asignada a tu nombre por escrito. Trabajamos contra tu VPN y tus controles de revisión."
+      },
+      {
+        "title": "Cómo escalás",
+        "desc": "Empezás con un ingeniero o un equipo pequeño. Escalás hacia arriba para un empujón y hacia abajo cuando no lo necesitás — sin las indemnizaciones ni el costo de contratar plantilla fija."
+      }
+    ],
+    "faqLabel": "Preguntas frecuentes",
+    "faq": [
+      {
+        "q": "¿Cuál es la diferencia entre nearshore y offshore?",
+        "a": "Offshore es tercerizar a un horario lejano — normalmente Asia o Europa del Este para una empresa de EE. UU. — donde la jornada casi no se solapa. Nearshore es un horario cercano y solapado: para EE. UU. y Canadá, eso es Latinoamérica. El nearshore cuesta un poco más que el offshore, pero elimina el desfase de 10 a 12 horas que vuelve lentos y difíciles de gestionar a los proyectos offshore."
+      },
+      {
+        "q": "¿En qué horario trabajan sus ingenieros?",
+        "a": "Nuestros ingenieros trabajan en horarios latinoamericanos que se solapan casi por completo con el horario Central y del Este de EE. UU. En la práctica eso significa una jornada laboral compartida: reuniones diarias en vivo, revisión de código el mismo día y respuesta en tiempo real a los problemas de producción."
+      },
+      {
+        "q": "¿Cómo funcionan los contratos con una LLC de EE. UU.?",
+        "a": "Contratás directamente con MS Saravia Tech Stack LLC, una sociedad de responsabilidad limitada registrada en Estados Unidos. Eso significa MSA y SOW al estilo estadounidense, facturación de EE. UU. y pago a una entidad estadounidense — sin transferencias internacionales ni jurisdicciones legales desconocidas. Hay un NDA disponible a pedido antes de cualquier conversación sensible."
+      },
+      {
+        "q": "¿Qué tan senior es el equipo?",
+        "a": "Senior por defecto. Nuestros ingenieros entregaron software en producción para empresas de EE. UU. e internacionales y son de confianza para hacerse cargo de la arquitectura y la entrega, no solo para ejecutar tickets. Asignamos el nivel de seniority que el trabajo realmente necesita."
+      },
+      {
+        "q": "¿Cuánto ahorro frente a una agencia de EE. UU.?",
+        "a": "Normalmente entre un 40% y un 60% en trabajo senior comparable. El ahorro viene de una base de costos latinoamericana, no de recortar en calidad. Podés modelar tu propio proyecto en nuestro estimador para ver un rango concreto."
+      },
+      {
+        "q": "¿Pueden trabajar dentro de nuestro equipo y herramientas actuales?",
+        "a": "Sí. Nos integramos en tu Slack, tu gestor de tareas, tus repositorios y tu CI/CD, seguimos tus controles de revisión y seguridad y asignamos un único punto de contacto responsable. El nearshore está pensado para sentirse como una extensión de tu equipo, no como una caja negra."
+      }
+    ],
+    "ctaTitle": "Descubrí cuánto cuesta el nearshore senior para tu proyecto",
+    "ctaSubtitle": "Modelá tu desarrollo en el estimador o contanos qué necesitás y te respondemos en 24 horas.",
+    "ctaButton": "Calcular presupuesto",
+    "ctaSecondary": "Hablemos"
   }
 }

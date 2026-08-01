@@ -30,6 +30,7 @@ const isVisible = (el: HTMLElement) => el.getClientRects().length > 0
 const NAV_LINKS = [
   { key: 'services', href: '#services' },
   { key: 'work', href: '#work' },
+  { key: 'nearshore', href: '/nearshore' },
   { key: 'about', href: '#about' },
   { key: 'contact', href: '#contact' },
   { key: 'blog', href: '/blog' },
