@@ -117,6 +117,18 @@ export default async function BlogPostPage({
               </Link>
             </p>
           )}
+          {post.spotlight === 'nearshore' && (
+            <p className="mt-2 text-sm text-white/50">
+              <Link
+                href={locale === 'es' ? '/es/nearshore' : '/nearshore'}
+                className="inline-flex items-center gap-1 font-semibold text-white/75 underline decoration-white/20 underline-offset-4 transition-colors hover:text-[#2FF5E0]"
+                {...umamiAttrs('blog-nearshore', { slug })}
+              >
+                {t('spotlightNearshore')}
+                <ArrowUpRight size={13} />
+              </Link>
+            </p>
+          )}
           <CtaButton href={locale === 'es' ? '/es#contact' : '/#contact'} size="lg" className="mt-6" dataUmami={umamiAttrs('blog-cta', { slug, target: 'contact' })}>
             {t('ctaButton')}
           </CtaButton>

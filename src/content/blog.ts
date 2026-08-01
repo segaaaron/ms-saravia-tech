@@ -24,6 +24,9 @@ export type Post = {
   updated?: string
   /** slug del service pillar relacionado (para CTA + internal link). */
   cluster: string
+  /** Link contextual extra en el CTA hacia una landing (hoy solo /nearshore). Internal linking
+   *  topical: los posts que hablan de nearshore/costo/mercado enlazan a la landing nearshore. */
+  spotlight?: 'nearshore'
   en: PostContent
   es: PostContent
 }
@@ -33,6 +36,7 @@ const posts: Post[] = [
     slug: 'hiring-dev-team-canada',
     date: '2026-07-25',
     cluster: 'tech-consulting',
+    spotlight: 'nearshore',
     en: {
       title: 'Hiring a Software Team in Canada: Local, Nearshore or Offshore?',
       excerpt: 'Canadian tech salaries, PIPEDA and a tight talent market shape the build-or-outsource decision. How the options actually compare in CAD.',
@@ -78,6 +82,7 @@ const posts: Post[] = [
     slug: 'software-agency-latam-buyer-guide',
     date: '2026-07-23',
     cluster: 'saas',
+    spotlight: 'nearshore',
     en: {
       title: 'Software Development Agencies in Latin America: A Buyer’s Guide',
       excerpt: 'Latin America has become a serious hub for senior software talent. What to look for, what to pay, and how to hire a LATAM agency that ships.',
@@ -125,6 +130,7 @@ const posts: Post[] = [
     slug: 'nearshore-vs-offshore-vs-inhouse',
     date: '2026-08-01',
     cluster: 'tech-consulting',
+    spotlight: 'nearshore',
     en: {
       title: 'Nearshore vs Offshore vs In-house: Which Dev Team Model Wins?',
       excerpt: 'Timezone, cost, quality and control pull in different directions. A clear-eyed comparison of the three ways to build software — and when each actually makes sense.',
@@ -217,6 +223,7 @@ const posts: Post[] = [
     slug: 'what-is-a-software-factory',
     date: '2026-07-28',
     cluster: 'saas',
+    spotlight: 'nearshore',
     en: {
       title: 'What Is a Software Factory — and When Should You Hire One?',
       excerpt: 'The "software factory" model promises teams on demand. What it really means, where it delivers, and how it differs from an agency or a freelancer.',

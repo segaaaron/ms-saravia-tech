@@ -641,7 +641,8 @@
     "backToBlog": "All articles",
     "ctaTitle": "Building something like this?",
     "ctaButton": "Get a free estimate",
-    "relatedServiceLabel": "Related service"
+    "relatedServiceLabel": "Related service",
+    "spotlightNearshore": "See our nearshore model"
   },
   "solutionPages": {
     "featuresLabel": "What's included",
