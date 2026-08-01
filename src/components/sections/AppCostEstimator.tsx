@@ -1,6 +1,6 @@
 'use client'
 import { useEffect, useMemo, useRef, useState } from 'react'
-import { motion, AnimatePresence } from 'framer-motion'
+import { m, AnimatePresence } from 'framer-motion'
 import { useTranslations, useLocale } from 'next-intl'
 import {
   Check, MapPin, Smartphone, Gauge, Palette, Puzzle, ShieldCheck, LayoutGrid,
@@ -143,7 +143,7 @@ export default function AppCostEstimator({
           </p>
         </div>
 
-        <motion.div
+        <m.div
           variants={fadeInUp}
           initial="hidden"
           whileInView="visible"
@@ -287,7 +287,7 @@ export default function AppCostEstimator({
                       tardaba 0.4s en aparecer y en el medio no había número. popLayout saca el
                       viejo del flujo y superpone ambos, sin salto de layout ni espera. */}
                   <AnimatePresence mode="popLayout" initial={false}>
-                    <motion.span
+                    <m.span
                       key={range}
                       initial={{ opacity: 0, y: 6 }}
                       animate={{ opacity: 1, y: 0 }}
@@ -296,7 +296,7 @@ export default function AppCostEstimator({
                       className="inline-block"
                     >
                       <GradientText gradient="primary">{range}</GradientText>
-                    </motion.span>
+                    </m.span>
                   </AnimatePresence>
                 </div>
                 <p className="mt-1 text-xs text-white/40">{t('resultRange')}</p>
@@ -338,7 +338,7 @@ export default function AppCostEstimator({
               </div>
             </div>
           </div>
-        </motion.div>
+        </m.div>
       </div>
     </section>
   )

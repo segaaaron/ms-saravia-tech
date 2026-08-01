@@ -1,16 +1,22 @@
+import dynamic from 'next/dynamic'
 import Hero from '@/components/hero/Hero'
 import Services from '@/components/sections/Services'
 import StackMarquee from '@/components/sections/StackMarquee'
-import AIShowcase from '@/components/sections/AIShowcase'
-import HoloDashboard from '@/components/sections/HoloDashboard'
-import Work from '@/components/sections/Work'
-import DemosShowcase from '@/components/sections/DemosShowcase'
-import EstimateCta from '@/components/sections/EstimateCta'
-import Process from '@/components/sections/Process'
-import About from '@/components/sections/About'
-import Faq from '@/components/sections/Faq'
-import Contact from '@/components/sections/Contact'
 import FaqJsonLd from '@/components/seo/FaqJsonLd'
+
+// Secciones bajo el pliegue: code-split con next/dynamic SIN ssr:false. El HTML se sigue
+// renderizando en el servidor (indexable, SEO intacto) — solo se separa su chunk JS del
+// bundle inicial de la ruta, que baja el First Load. Hero/Services/StackMarquee quedan en
+// carga normal (above-the-fold; no diferir el LCP). No hay cambio visual: mismo SSR.
+const AIShowcase = dynamic(() => import('@/components/sections/AIShowcase'))
+const HoloDashboard = dynamic(() => import('@/components/sections/HoloDashboard'))
+const Work = dynamic(() => import('@/components/sections/Work'))
+const DemosShowcase = dynamic(() => import('@/components/sections/DemosShowcase'))
+const EstimateCta = dynamic(() => import('@/components/sections/EstimateCta'))
+const Process = dynamic(() => import('@/components/sections/Process'))
+const About = dynamic(() => import('@/components/sections/About'))
+const Faq = dynamic(() => import('@/components/sections/Faq'))
+const Contact = dynamic(() => import('@/components/sections/Contact'))
 
 export default async function HomePage({
   params,

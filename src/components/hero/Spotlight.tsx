@@ -1,6 +1,6 @@
 'use client'
 import { useEffect, useRef } from 'react'
-import { motion, useMotionValue, useSpring, useMotionTemplate } from 'framer-motion'
+import { m, useMotionValue, useSpring, useMotionTemplate } from 'framer-motion'
 
 export default function Spotlight() {
   const containerRef = useRef<HTMLDivElement>(null)
@@ -32,7 +32,7 @@ export default function Spotlight() {
   }, [mouseX, mouseY])
 
   return (
-    <motion.div
+    <m.div
       ref={containerRef}
       aria-hidden
       className="absolute inset-0 pointer-events-none"

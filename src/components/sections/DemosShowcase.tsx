@@ -1,5 +1,5 @@
 'use client'
-import { motion } from 'framer-motion'
+import { m } from 'framer-motion'
 import { useTranslations, useLocale } from 'next-intl'
 // Link locale-aware: href sin prefijo, añade /es solo. Las demos comparten root layout con el
 // sitio (grupo (demos) bajo [locale]) → soft-nav normal, sin el <a> hard-nav que había antes.
@@ -36,26 +36,26 @@ export default function DemosShowcase() {
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
-        <motion.div
+        <m.div
           variants={staggerContainer}
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: '-100px' }}
           className="text-center mb-16 space-y-4"
         >
-          <motion.div variants={floatUp3D}>
+          <m.div variants={floatUp3D}>
             <SectionLabel color="violet">{t('label')}</SectionLabel>
-          </motion.div>
-          <motion.h2 variants={floatUp3D} className="text-4xl sm:text-5xl font-display font-bold tracking-tight">
+          </m.div>
+          <m.h2 variants={floatUp3D} className="text-4xl sm:text-5xl font-display font-bold tracking-tight">
             <GradientText gradient="violet">{t('title')}</GradientText>
-          </motion.h2>
-          <motion.p variants={floatUp3D} className="text-white/50 text-lg max-w-xl mx-auto">
+          </m.h2>
+          <m.p variants={floatUp3D} className="text-white/50 text-lg max-w-xl mx-auto">
             {t('subtitle')}
-          </motion.p>
-        </motion.div>
+          </m.p>
+        </m.div>
 
         {/* Demo cards */}
-        <motion.div
+        <m.div
           variants={staggerContainer}
           initial="hidden"
           whileInView="visible"
@@ -134,10 +134,10 @@ export default function DemosShowcase() {
               </TiltCard>
             )
           })}
-        </motion.div>
+        </m.div>
 
         {/* Marketing pitch + CTA */}
-        <motion.div
+        <m.div
           variants={staggerContainer}
           initial="hidden"
           whileInView="visible"
@@ -150,7 +150,7 @@ export default function DemosShowcase() {
           }}
         >
           <div className="grid gap-8 p-8 sm:p-10 lg:grid-cols-[1.4fr_1fr] lg:items-center">
-            <motion.div variants={floatUp3D} className="space-y-5">
+            <m.div variants={floatUp3D} className="space-y-5">
               <h3 className="text-2xl sm:text-[28px] font-display font-bold tracking-tight text-white">
                 {t('pitchTitle')}
               </h3>
@@ -164,13 +164,13 @@ export default function DemosShowcase() {
                   {t('appsPitch')}
                 </p>
               </div>
-            </motion.div>
+            </m.div>
 
-            <motion.div variants={floatUp3D} className="flex lg:justify-end">
+            <m.div variants={floatUp3D} className="flex lg:justify-end">
               <CtaButton href={locale === 'es' ? '/es/demos' : '/demos'} dataUmami={umamiAttrs('demos-all')}>{t('cta')}</CtaButton>
-            </motion.div>
+            </m.div>
           </div>
-        </motion.div>
+        </m.div>
       </div>
     </section>
   )

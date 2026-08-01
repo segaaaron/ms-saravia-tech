@@ -1,6 +1,6 @@
 'use client'
 import { useState } from 'react'
-import { motion } from 'framer-motion'
+import { m } from 'framer-motion'
 import { useTranslations, useLocale } from 'next-intl'
 import { toast } from 'sonner'
 import {
@@ -259,30 +259,30 @@ export default function Contact() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-start">
 
           {/* LEFT: Info */}
-          <motion.div
+          <m.div
             variants={staggerContainer}
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true, margin: '-100px' }}
             className="space-y-8 lg:sticky lg:top-24"
           >
-            <motion.div variants={slideInLeft}>
+            <m.div variants={slideInLeft}>
               <SectionLabel color="cyan">{t('label')}</SectionLabel>
-            </motion.div>
+            </m.div>
 
-            <motion.h2
+            <m.h2
               variants={slideInLeft}
               className="text-4xl sm:text-5xl font-display font-bold tracking-tight leading-tight"
             >
               <GradientText gradient="primary">{t('title')}</GradientText>
-            </motion.h2>
+            </m.h2>
 
-            <motion.p variants={slideInLeft} className="text-white/50 text-lg leading-relaxed">
+            <m.p variants={slideInLeft} className="text-white/50 text-lg leading-relaxed">
               {t('subtitle')}
-            </motion.p>
+            </m.p>
 
             {/* Direct contact info */}
-            <motion.div variants={fadeInUp} className="space-y-4">
+            <m.div variants={fadeInUp} className="space-y-4">
               <a
                 href="mailto:techstackmssaravia@gmail.com"
                 className="flex items-center gap-3 text-white/60 hover:text-cyan-400 transition-colors duration-200 group"
@@ -300,12 +300,12 @@ export default function Contact() {
                 </div>
                 <span className="text-sm">{t('location')}</span>
               </div>
-            </motion.div>
+            </m.div>
 
             {/* Value props */}
-            <motion.div variants={staggerContainer} className="space-y-3 pt-2">
+            <m.div variants={staggerContainer} className="space-y-3 pt-2">
               {VALUE_PROPS.map(({ icon: Icon, key }) => (
-                <motion.div
+                <m.div
                   key={key}
                   variants={fadeInUp}
                   className="flex items-center gap-3"
@@ -314,13 +314,13 @@ export default function Contact() {
                     <Icon size={14} className="text-cyan-400" />
                   </div>
                   <span className="text-white/60 text-sm">{t(key)}</span>
-                </motion.div>
+                </m.div>
               ))}
-            </motion.div>
+            </m.div>
 
             {/* Trust signals — credibilidad para clientes US/CA (LLC, NDA, senior-led, timezone).
                 Glass card al estilo de la founder card de About; el ítem de timezone enlaza a /nearshore. */}
-            <motion.div
+            <m.div
               variants={fadeInUp}
               className="rounded-2xl p-6 space-y-4"
               style={{
@@ -362,11 +362,11 @@ export default function Contact() {
                   </li>
                 ))}
               </ul>
-            </motion.div>
-          </motion.div>
+            </m.div>
+          </m.div>
 
           {/* RIGHT: Form */}
-          <motion.div
+          <m.div
             variants={slideInRight}
             initial="hidden"
             whileInView="visible"
@@ -519,7 +519,7 @@ export default function Contact() {
                 </p>
               </form>
             </div>
-          </motion.div>
+          </m.div>
 
         </div>
       </div>

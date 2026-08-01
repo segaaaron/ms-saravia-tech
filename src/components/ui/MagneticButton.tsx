@@ -1,6 +1,6 @@
 'use client'
 import { useRef } from 'react'
-import { motion, useMotionValue, useSpring } from 'framer-motion'
+import { m, useMotionValue, useSpring } from 'framer-motion'
 import { cn } from '@/lib/utils'
 
 type Props = {
@@ -82,15 +82,15 @@ export default function MagneticButton({ children, href, onClick, variant = 'pri
 
   if (href) {
     return (
-      <motion.a ref={ref as React.Ref<HTMLAnchorElement>} href={href} {...motionProps}>
+      <m.a ref={ref as React.Ref<HTMLAnchorElement>} href={href} {...motionProps}>
         {inner}
-      </motion.a>
+      </m.a>
     )
   }
 
   return (
-    <motion.button ref={ref as React.Ref<HTMLButtonElement>} type={type} disabled={disabled} {...motionProps}>
+    <m.button ref={ref as React.Ref<HTMLButtonElement>} type={type} disabled={disabled} {...motionProps}>
       {inner}
-    </motion.button>
+    </m.button>
   )
 }

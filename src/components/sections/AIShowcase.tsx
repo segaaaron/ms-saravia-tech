@@ -1,5 +1,5 @@
 'use client'
-import { motion } from 'framer-motion'
+import { m } from 'framer-motion'
 import { useTranslations } from 'next-intl'
 import { Brain, Zap, Network, Sparkles } from 'lucide-react'
 import GradientText from '@/components/ui/GradientText'
@@ -41,7 +41,7 @@ export default function AIShowcase() {
   const features = t.raw('features') as string[]
 
   return (
-    <motion.section
+    <m.section
       className="relative w-full py-24 overflow-hidden"
       style={{
         borderTop: '1px solid rgba(255,255,255,0.08)',
@@ -58,33 +58,33 @@ export default function AIShowcase() {
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
           {/* LEFT: copy */}
-          <motion.div
+          <m.div
             variants={staggerContainer}
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true, margin: '-100px' }}
             className="space-y-8"
           >
-            <motion.div variants={fadeInUp}>
+            <m.div variants={fadeInUp}>
               <SectionLabel color="violet">{t('badge')}</SectionLabel>
-            </motion.div>
+            </m.div>
 
-            <motion.h2
+            <m.h2
               variants={fadeInUp}
               className="text-4xl sm:text-5xl font-display font-bold tracking-tight text-white leading-tight"
             >
               <GradientText gradient="violet">{t('title')}</GradientText>
-            </motion.h2>
+            </m.h2>
 
-            <motion.p
+            <m.p
               variants={fadeInUp}
               className="text-white/50 text-lg leading-relaxed max-w-lg"
             >
               {t('subtitle')}
-            </motion.p>
+            </m.p>
 
             {/* Feature pills */}
-            <motion.div
+            <m.div
               variants={staggerContainer}
               className="grid grid-cols-1 sm:grid-cols-2 gap-3"
             >
@@ -92,7 +92,7 @@ export default function AIShowcase() {
                 const Icon = FEATURE_ICONS[i]
                 const c = FEATURE_COLORS[i]
                 return (
-                  <motion.div
+                  <m.div
                     key={feat}
                     variants={fadeInUp}
                     whileHover={{ scale: 1.05, rotateX: -5 }}
@@ -101,14 +101,14 @@ export default function AIShowcase() {
                   >
                     <Icon size={18} className={c.icon} strokeWidth={1.5} />
                     <span className="text-white/80 text-sm font-medium">{feat}</span>
-                  </motion.div>
+                  </m.div>
                 )
               })}
-            </motion.div>
-          </motion.div>
+            </m.div>
+          </m.div>
 
           {/* RIGHT: Animated SVG node graph */}
-          <motion.div
+          <m.div
             variants={slideInRight}
             initial="hidden"
             whileInView="visible"
@@ -289,9 +289,9 @@ export default function AIShowcase() {
                 })()}
               </svg>
             </div>
-          </motion.div>
+          </m.div>
         </div>
       </div>
-    </motion.section>
+    </m.section>
   )
 }

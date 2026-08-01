@@ -1,5 +1,5 @@
 'use client'
-import { motion } from 'framer-motion'
+import { m } from 'framer-motion'
 import { useTranslations, useLocale } from 'next-intl'
 import Link from 'next/link'
 import { Github, Linkedin, Mail, MapPin } from 'lucide-react'
@@ -59,14 +59,14 @@ export default function Footer() {
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
         {/* Large wordmark row */}
-        <motion.div
+        <m.div
           variants={staggerContainer}
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: '-50px' }}
           className="pt-16 pb-12 border-b border-white/[0.06]"
         >
-          <motion.div variants={fadeInUp} className="flex flex-col sm:flex-row sm:items-end justify-between gap-6">
+          <m.div variants={fadeInUp} className="flex flex-col sm:flex-row sm:items-end justify-between gap-6">
             <div className="flex items-center gap-3">
               <NavCircuit size={56} />
               <p className="font-display font-semibold text-xl tracking-tight text-[#EEF3F8]">
@@ -77,11 +77,11 @@ export default function Footer() {
             <p className="text-white/35 text-base max-w-xs leading-relaxed">
               {t('tagline')}
             </p>
-          </motion.div>
-        </motion.div>
+          </m.div>
+        </m.div>
 
         {/* 3-column grid */}
-        <motion.div
+        <m.div
           variants={staggerContainer}
           initial="hidden"
           whileInView="visible"
@@ -89,7 +89,7 @@ export default function Footer() {
           className="py-12 grid grid-cols-1 sm:grid-cols-3 gap-10 border-b border-white/[0.06]"
         >
           {/* Col 1: Company */}
-          <motion.div variants={fadeInUp} className="space-y-4">
+          <m.div variants={fadeInUp} className="space-y-4">
             <h3 className="text-white/70 text-xs font-semibold tracking-widest uppercase">
               {t('company')}
             </h3>
@@ -100,10 +100,10 @@ export default function Footer() {
               <MapPin size={12} />
               <span>{t('location')}</span>
             </div>
-          </motion.div>
+          </m.div>
 
           {/* Col 2: Quick links */}
-          <motion.div variants={fadeInUp} className="space-y-4">
+          <m.div variants={fadeInUp} className="space-y-4">
             <h3 className="text-white/70 text-xs font-semibold tracking-widest uppercase">
               {t('quick_links')}
             </h3>
@@ -120,10 +120,10 @@ export default function Footer() {
                 </li>
               ))}
             </ul>
-          </motion.div>
+          </m.div>
 
           {/* Col 3: Contact + socials */}
-          <motion.div variants={fadeInUp} className="space-y-4">
+          <m.div variants={fadeInUp} className="space-y-4">
             <h3 className="text-white/70 text-xs font-semibold tracking-widest uppercase">
               Get in Touch
             </h3>
@@ -177,11 +177,11 @@ export default function Footer() {
                 </div>
               )
             })()}
-          </motion.div>
-        </motion.div>
+          </m.div>
+        </m.div>
 
         {/* Bottom copyright row */}
-        <motion.div
+        <m.div
           variants={fadeInUp}
           initial="hidden"
           whileInView="visible"
@@ -194,7 +194,7 @@ export default function Footer() {
           <p className="text-white/15 text-xs">
             Built with Next.js 15 · TypeScript · Tailwind CSS
           </p>
-        </motion.div>
+        </m.div>
 
       </div>
     </footer>

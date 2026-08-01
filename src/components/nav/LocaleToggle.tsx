@@ -1,7 +1,7 @@
 'use client'
 import { useLocale } from 'next-intl'
 import { usePathname, getPathname } from '@/i18n/navigation'
-import { motion } from 'framer-motion'
+import { m } from 'framer-motion'
 import { Globe } from 'lucide-react'
 import { track } from '@/lib/analytics'
 
@@ -32,7 +32,7 @@ export default function LocaleToggle({ onSwitch }: { onSwitch?: () => void } = {
   }
 
   return (
-    <motion.button
+    <m.button
       onClick={switchLocale}
       aria-label={other === 'es' ? 'Cambiar a español' : 'Switch to English'}
       whileTap={{ scale: 0.93 }}
@@ -40,6 +40,6 @@ export default function LocaleToggle({ onSwitch }: { onSwitch?: () => void } = {
     >
       <Globe size={13} className="opacity-70" />
       {other.toUpperCase()}
-    </motion.button>
+    </m.button>
   )
 }

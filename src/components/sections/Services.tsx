@@ -1,5 +1,5 @@
 'use client'
-import { motion } from 'framer-motion'
+import { m } from 'framer-motion'
 import { useTranslations, useLocale } from 'next-intl'
 import Link from 'next/link'
 import { Cloud, Smartphone, Bot, Lightbulb, ArrowUpRight } from 'lucide-react'
@@ -27,34 +27,34 @@ export default function Services() {
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
-        <motion.div
+        <m.div
           variants={staggerContainer}
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: '-100px' }}
           className="text-center mb-16 space-y-4"
         >
-          <motion.div variants={fadeInUp}>
+          <m.div variants={fadeInUp}>
             <SectionLabel color="cyan">{t('label')}</SectionLabel>
-          </motion.div>
+          </m.div>
 
-          <motion.h2
+          <m.h2
             variants={fadeInUp}
             className="text-4xl sm:text-5xl font-display font-bold tracking-tight text-white"
           >
             <GradientText gradient="primary">{t('title')}</GradientText>
-          </motion.h2>
+          </m.h2>
 
-          <motion.p
+          <m.p
             variants={fadeInUp}
             className="text-white/50 text-lg max-w-xl mx-auto"
           >
             {t('subtitle')}
-          </motion.p>
-        </motion.div>
+          </m.p>
+        </m.div>
 
         {/* Cards grid */}
-        <motion.div
+        <m.div
           variants={staggerContainer}
           initial="hidden"
           whileInView="visible"
@@ -139,7 +139,7 @@ export default function Services() {
               </TiltCard>
             )
           })}
-        </motion.div>
+        </m.div>
       </div>
     </section>
   )

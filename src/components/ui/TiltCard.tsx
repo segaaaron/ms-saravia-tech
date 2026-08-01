@@ -1,6 +1,6 @@
 'use client'
 import { useState, type CSSProperties, type ReactNode } from 'react'
-import { motion, type Variants } from 'framer-motion'
+import { m, type Variants } from 'framer-motion'
 
 type Props = {
   children: ReactNode
@@ -40,7 +40,7 @@ export default function TiltCard({
   const onLeave = () => setT({ rx: 0, ry: 0, hover: false })
 
   return (
-    <motion.div variants={variants} style={{ display: 'grid' }}>
+    <m.div variants={variants} style={{ display: 'grid' }}>
       <div
         onPointerMove={onMove}
         onPointerLeave={onLeave}
@@ -67,6 +67,6 @@ export default function TiltCard({
         />
         {children}
       </div>
-    </motion.div>
+    </m.div>
   )
 }

@@ -4,6 +4,7 @@ import { NextIntlClientProvider } from 'next-intl'
 import { getMessages } from 'next-intl/server'
 import './globals.css'
 import Analytics from '@/components/seo/Analytics'
+import LazyMotionProvider from '@/components/fx/LazyMotionProvider'
 
 // ÚNICO root layout con <html>/<body> de toda la app navegable. El site vive en el grupo
 // (site) y las demos en (demos): dos grupos de chrome bajo ESTE mismo <html>/<body>, así que
@@ -130,7 +131,9 @@ export default async function RootLayout({
             _GalleryCard y pulse-login) llaman useLocale() internamente; sin un provider ancestro
             caían al fallback deprecado (warning de useParams en consola). */}
         <NextIntlClientProvider locale={locale} messages={messages}>
-          {children}
+          {/* LazyMotion aquí (raíz client compartida) cubre (site) y (demos): todo `m.*`
+              del árbol tiene ancestro con features. Migración: motion.* → m.* + strict. */}
+          <LazyMotionProvider>{children}</LazyMotionProvider>
         </NextIntlClientProvider>
       </body>
     </html>

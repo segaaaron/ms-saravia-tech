@@ -1,5 +1,5 @@
 'use client'
-import { motion } from 'framer-motion'
+import { m } from 'framer-motion'
 import { useTranslations } from 'next-intl'
 import { MapPin, Shield, Zap, Globe, UserRoundCheck } from 'lucide-react'
 import AnimatedCounter from '@/components/ui/AnimatedCounter'
@@ -48,34 +48,34 @@ export default function About() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 lg:gap-24 items-center">
 
           {/* LEFT: Copy */}
-          <motion.div
+          <m.div
             variants={staggerContainer}
             initial="hidden"
             whileInView="visible"
             viewport={{ once: true, margin: '-100px' }}
             className="space-y-8"
           >
-            <motion.div variants={slideInLeft}>
+            <m.div variants={slideInLeft}>
               <SectionLabel color="cyan">{t('label')}</SectionLabel>
-            </motion.div>
+            </m.div>
 
-            <motion.h2
+            <m.h2
               variants={slideInLeft}
               className="text-4xl sm:text-5xl font-display font-bold tracking-tight leading-tight"
             >
               <GradientText gradient="primary">{t('title')}</GradientText>
-            </motion.h2>
+            </m.h2>
 
-            <motion.p variants={slideInLeft} className="text-white/65 text-lg leading-relaxed">
+            <m.p variants={slideInLeft} className="text-white/65 text-lg leading-relaxed">
               {t('subtitle')}
-            </motion.p>
+            </m.p>
 
-            <motion.p variants={slideInLeft} className="text-white/55 text-base leading-relaxed">
+            <m.p variants={slideInLeft} className="text-white/55 text-base leading-relaxed">
               {t('body')}
-            </motion.p>
+            </m.p>
 
             {/* Founder-led trust card — el mensaje de confianza más fuerte, elevado a glass card */}
-            <motion.div
+            <m.div
               variants={slideInLeft}
               className="group relative overflow-hidden rounded-2xl p-6"
               style={{
@@ -109,10 +109,10 @@ export default function About() {
                   <p className="text-[15px] leading-[1.65] text-white/75">{t('highlight')}</p>
                 </div>
               </div>
-            </motion.div>
+            </m.div>
 
             {/* Tech stack pills — más aire respecto a la card superior */}
-            <motion.div variants={fadeInUp} className="space-y-3 pt-6">
+            <m.div variants={fadeInUp} className="space-y-3 pt-6">
               <p className="text-white/30 text-xs font-semibold tracking-widest uppercase">
                 Tech Stack
               </p>
@@ -126,11 +126,11 @@ export default function About() {
                   </span>
                 ))}
               </div>
-            </motion.div>
-          </motion.div>
+            </m.div>
+          </m.div>
 
           {/* RIGHT: Stat cards 2×2 */}
-          <motion.div
+          <m.div
             variants={staggerContainer}
             initial="hidden"
             whileInView="visible"
@@ -185,7 +185,7 @@ export default function About() {
                 </TiltCard>
               )
             })}
-          </motion.div>
+          </m.div>
 
         </div>
       </div>

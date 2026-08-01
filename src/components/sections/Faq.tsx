@@ -1,5 +1,5 @@
 'use client'
-import { motion } from 'framer-motion'
+import { m } from 'framer-motion'
 import { useLocale } from 'next-intl'
 import { Plus } from 'lucide-react'
 import GradientText from '@/components/ui/GradientText'
@@ -24,28 +24,28 @@ export default function Faq() {
       <div className="absolute inset-0 grid-bg opacity-40 pointer-events-none" />
 
       <div className="relative z-10 max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-        <motion.div
+        <m.div
           variants={staggerContainer}
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: '-100px' }}
           className="text-center mb-14 space-y-4"
         >
-          <motion.div variants={fadeInUp}>
+          <m.div variants={fadeInUp}>
             <SectionLabel color="violet">{label}</SectionLabel>
-          </motion.div>
-          <motion.h2
+          </m.div>
+          <m.h2
             variants={fadeInUp}
             className="text-4xl sm:text-5xl font-display font-bold tracking-tight text-white"
           >
             <GradientText gradient="primary">{heading}</GradientText>
-          </motion.h2>
-          <motion.p variants={fadeInUp} className="text-white/50 text-lg max-w-xl mx-auto">
+          </m.h2>
+          <m.p variants={fadeInUp} className="text-white/50 text-lg max-w-xl mx-auto">
             {sub}
-          </motion.p>
-        </motion.div>
+          </m.p>
+        </m.div>
 
-        <motion.div
+        <m.div
           variants={staggerContainer}
           initial="hidden"
           whileInView="visible"
@@ -53,7 +53,7 @@ export default function Faq() {
           className="space-y-3"
         >
           {items.map((item, i) => (
-            <motion.details
+            <m.details
               key={item.q}
               variants={fadeInUp}
               onToggle={(e) => {
@@ -83,9 +83,9 @@ export default function Faq() {
               >
                 {item.a}
               </div>
-            </motion.details>
+            </m.details>
           ))}
-        </motion.div>
+        </m.div>
       </div>
     </section>
   )

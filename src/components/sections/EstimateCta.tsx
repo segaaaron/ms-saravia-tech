@@ -1,5 +1,5 @@
 'use client'
-import { motion } from 'framer-motion'
+import { m } from 'framer-motion'
 import { useTranslations, useLocale } from 'next-intl'
 import { Calculator } from 'lucide-react'
 import CtaButton from '@/components/ui/CtaButton'
@@ -16,7 +16,7 @@ export default function EstimateCta() {
     <section className="relative py-20 overflow-hidden">
       <div className="absolute inset-0 grid-bg opacity-30 pointer-events-none" />
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <motion.div
+        <m.div
           variants={fadeInUp}
           initial="hidden"
           whileInView="visible"
@@ -52,7 +52,7 @@ export default function EstimateCta() {
               {t('button')}
             </CtaButton>
           </div>
-        </motion.div>
+        </m.div>
       </div>
     </section>
   )

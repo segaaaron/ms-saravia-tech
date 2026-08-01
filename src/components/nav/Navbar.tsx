@@ -1,6 +1,6 @@
 'use client'
 import { useState, useEffect, useRef } from 'react'
-import { motion, useScroll, useTransform } from 'framer-motion'
+import { m, useScroll, useTransform } from 'framer-motion'
 import { useTranslations, useLocale } from 'next-intl'
 import Link from 'next/link'
 import MagneticButton from '@/components/ui/MagneticButton'
@@ -206,7 +206,7 @@ export default function Navbar() {
 
   return (
     <>
-      <motion.header
+      <m.header
         className={cn(
           // transition-colors, no transition-all: con `all` el navegador interpolaba también el
           // backdrop-filter, o sea medio segundo de blur a pantalla completa recalculado por
@@ -224,7 +224,7 @@ export default function Navbar() {
         }}
       >
         {/* Border bottom that appears on scroll */}
-        <motion.div
+        <m.div
           className="absolute bottom-0 left-0 right-0 h-px bg-white/[0.06]"
           style={{ opacity: borderOpacity }}
         />
@@ -276,7 +276,7 @@ export default function Navbar() {
               (ver abajo) para poder pintarse encima del drawer. */}
           <div className="lg:hidden w-11 h-11" aria-hidden />
         </div>
-      </motion.header>
+      </m.header>
 
       {/* Botón hamburguesa/X. FUERA del <header> a propósito: el header es `fixed z-50`, o sea
           un stacking context, y cualquier z-index de sus hijos queda encapsulado dentro. El

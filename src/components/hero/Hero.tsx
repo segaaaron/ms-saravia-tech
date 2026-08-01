@@ -1,5 +1,5 @@
 'use client'
-import { motion } from 'framer-motion'
+import { m } from 'framer-motion'
 import { useTranslations } from 'next-intl'
 import MagneticButton from '@/components/ui/MagneticButton'
 import { umamiAttrs } from '@/lib/analytics'
@@ -90,33 +90,33 @@ export default function Hero() {
           </div>
 
           {/* RIGHT: Reactor visual */}
-          <motion.div
+          <m.div
             initial={{ opacity: 0, scale: 0.8 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ duration: 1.4, ease: [0.16, 1, 0.3, 1], delay: 0.4 }}
             className="relative flex items-center justify-center h-[360px] sm:h-[480px] scale-[0.8] sm:scale-100"
           >
             <ReactorVisual />
-          </motion.div>
+          </m.div>
 
         </div>
       </div>
 
       {/* Scroll indicator */}
-      <motion.div
+      <m.div
         className="hidden sm:flex absolute bottom-8 left-8 flex-col items-center gap-2"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 2, duration: 0.8 }}
       >
-        <motion.div
+        <m.div
           className="w-px h-12 origin-top"
           style={{ background: 'linear-gradient(to bottom, rgba(0,229,255,0.5), transparent)' }}
           animate={{ scaleY: [0, 1, 0] }}
           transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
         />
         <span className="text-white/20 text-xs font-mono tracking-widest uppercase" style={{ writingMode: 'vertical-rl' }}>{t('scroll')}</span>
-      </motion.div>
+      </m.div>
     </section>
   )
 }

@@ -1,6 +1,6 @@
 'use client'
 import { useRef, useState } from 'react'
-import { motion, useInView } from 'framer-motion'
+import { m, useInView } from 'framer-motion'
 import { useTranslations } from 'next-intl'
 import { slideInLeft, slideInRight, staggerContainer } from '@/lib/motion'
 
@@ -41,7 +41,7 @@ function MetricRow({ label, value, pct, index }: {
           background: 'rgba(120,200,255,0.12)',
         }}
       >
-        <motion.span
+        <m.span
           className="block h-full"
           initial={{ width: 0 }}
           animate={inView ? { width: `${pct}%` } : { width: 0 }}
@@ -141,7 +141,7 @@ export default function HoloDashboard() {
       <div className="absolute inset-0 grid-bg opacity-20 pointer-events-none" />
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <motion.div
+        <m.div
           variants={staggerContainer}
           initial="hidden"
           whileInView="visible"
@@ -150,7 +150,7 @@ export default function HoloDashboard() {
           style={{ perspective: 1400 }}
         >
           {/* LEFT: Holo panel */}
-          <motion.div
+          <m.div
             variants={slideInLeft}
             onPointerMove={handlePointerMove}
             onPointerLeave={handlePointerLeave}
@@ -258,15 +258,15 @@ export default function HoloDashboard() {
                 ))}
               </div>
             </div>
-          </motion.div>
+          </m.div>
 
           {/* RIGHT: cube */}
-          <motion.div variants={slideInRight} className="flex items-center justify-center">
+          <m.div variants={slideInRight} className="flex items-center justify-center">
             <div style={{ perspective: 1400 }}>
               <HoloCube />
             </div>
-          </motion.div>
-        </motion.div>
+          </m.div>
+        </m.div>
       </div>
 
       <style jsx>{`

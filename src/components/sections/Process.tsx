@@ -1,6 +1,6 @@
 'use client'
 import { useEffect, useRef } from 'react'
-import { motion, useReducedMotion } from 'framer-motion'
+import { m, useReducedMotion } from 'framer-motion'
 import { useTranslations } from 'next-intl'
 import GradientText from '@/components/ui/GradientText'
 import SectionLabel from '@/components/ui/SectionLabel'
@@ -127,38 +127,38 @@ export default function Process() {
 
       <div className={`relative z-10 flex flex-col py-12 ${reduce ? '' : 'md:h-[100dvh] md:py-16'}`}>
         {/* Header — static */}
-        <motion.div
+        <m.div
           variants={staggerContainer}
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: '-100px' }}
           className="flex w-full flex-col items-center text-center mb-12 px-4 space-y-4 shrink-0"
         >
-          <motion.div variants={fadeInUp}>
+          <m.div variants={fadeInUp}>
             <SectionLabel color="violet">{t('label')}</SectionLabel>
-          </motion.div>
+          </m.div>
 
-          <motion.h2
+          <m.h2
             variants={fadeInUp}
             className="text-4xl sm:text-5xl font-display font-bold tracking-tight"
           >
             <GradientText gradient="violet">{t('title')}</GradientText>
-          </motion.h2>
+          </m.h2>
 
-          <motion.p variants={fadeInUp} className="text-white/50 text-lg max-w-xl mx-auto">
+          <m.p variants={fadeInUp} className="text-white/50 text-lg max-w-xl mx-auto">
             {t('subtitle')}
-          </motion.p>
-        </motion.div>
+          </m.p>
+        </m.div>
 
         {/* Scroll hint */}
-        <motion.p
+        <m.p
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.8 }}
           className={`${reduce ? 'hidden' : 'hidden md:block'} text-center text-white/25 text-xs tracking-widest uppercase mb-8 shrink-0`}
         >
           Scroll to explore →
-        </motion.p>
+        </m.p>
 
         {/* Horizontal scroll container */}
         <div ref={containerRef} className={`flex-1 flex items-center ${reduce ? '' : 'md:overflow-hidden'}`}>

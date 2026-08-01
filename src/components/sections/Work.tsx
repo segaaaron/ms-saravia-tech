@@ -1,5 +1,5 @@
 'use client'
-import { motion } from 'framer-motion'
+import { m } from 'framer-motion'
 import { useTranslations, useLocale } from 'next-intl'
 import Link from 'next/link'
 import { ExternalLink, Clock, ArrowRight } from 'lucide-react'
@@ -28,31 +28,31 @@ export default function Work() {
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
-        <motion.div
+        <m.div
           variants={staggerContainer}
           initial="hidden"
           whileInView="visible"
           viewport={{ once: true, margin: '-100px' }}
           className="text-center mb-16 space-y-4"
         >
-          <motion.div variants={floatUp3D}>
+          <m.div variants={floatUp3D}>
             <SectionLabel color="magenta">{t('label')}</SectionLabel>
-          </motion.div>
+          </m.div>
 
-          <motion.h2
+          <m.h2
             variants={floatUp3D}
             className="text-4xl sm:text-5xl font-display font-bold tracking-tight"
           >
             <GradientText gradient="magenta">{t('title')}</GradientText>
-          </motion.h2>
+          </m.h2>
 
-          <motion.p variants={floatUp3D} className="text-white/50 text-lg max-w-md mx-auto">
+          <m.p variants={floatUp3D} className="text-white/50 text-lg max-w-md mx-auto">
             {t('subtitle')}
-          </motion.p>
-        </motion.div>
+          </m.p>
+        </m.div>
 
         {/* Project cards */}
-        <motion.div
+        <m.div
           variants={staggerContainer}
           initial="hidden"
           whileInView="visible"
@@ -147,9 +147,9 @@ export default function Work() {
               </TiltCard>
             )
           })}
-        </motion.div>
+        </m.div>
 
-        <motion.div
+        <m.div
           variants={floatUp3D}
           initial="hidden"
           whileInView="visible"
@@ -164,7 +164,7 @@ export default function Work() {
             {t('seeAll')}
             <ArrowRight size={15} className="transition-transform duration-200 group-hover:translate-x-1" />
           </Link>
-        </motion.div>
+        </m.div>
       </div>
     </section>
   )
