@@ -8,7 +8,7 @@ export type FaqItem = { q: string; a: string }
 export const FAQ: Record<Locale, FaqItem[]> = {
   en: [
     {
-      q: 'What does MS Saravia Tech Stack build?',
+      q: 'What does MS Tech Stack build?',
       a: 'We build SaaS platforms, mobile apps (iOS & Android), and AI agents, plus offer technical consulting. We take products from idea to production with a modern stack.',
     },
     {
@@ -29,12 +29,12 @@ export const FAQ: Record<Locale, FaqItem[]> = {
     },
     {
       q: 'Where are you based?',
-      a: 'MS Saravia Tech Stack LLC is a US-based software agency serving clients across the USA and Latin America, working remotely worldwide.',
+      a: 'MS Tech Stack LLC is a US-based software agency serving clients across the USA and Latin America, working remotely worldwide.',
     },
   ],
   es: [
     {
-      q: '¿Qué construye MS Saravia Tech Stack?',
+      q: '¿Qué construye MS Tech Stack?',
       a: 'Construimos plataformas SaaS, apps móviles (iOS y Android) y agentes de IA, además de consultoría técnica. Llevamos productos de la idea a producción con un stack moderno.',
     },
     {
@@ -55,7 +55,7 @@ export const FAQ: Record<Locale, FaqItem[]> = {
     },
     {
       q: '¿Dónde están ubicados?',
-      a: 'MS Saravia Tech Stack LLC es una agencia de software con base en USA que atiende clientes en Estados Unidos y Latinoamérica, trabajando en remoto a nivel global.',
+      a: 'MS Tech Stack LLC es una agencia de software con base en USA que atiende clientes en Estados Unidos y Latinoamérica, trabajando en remoto a nivel global.',
     },
   ],
 }

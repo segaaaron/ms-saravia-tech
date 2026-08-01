@@ -37,8 +37,8 @@ export async function generateMetadata({
   const isEs = locale === 'es'
   const canonical = isEs ? `${siteUrl}/es` : siteUrl
   const title = isEs
-    ? 'Desarrollo de SaaS, Apps Móviles y Agentes IA | MS Saravia Tech Stack'
-    : 'SaaS, Mobile App & AI Agent Development Agency | MS Saravia Tech Stack'
+    ? 'Desarrollo de SaaS, Apps Móviles y Agentes IA | MS Tech Stack'
+    : 'SaaS, Mobile App & AI Agent Development Agency | MS Tech Stack'
   const description = isEs
     ? 'Agencia de software en USA. Construimos tu SaaS, app móvil (iOS/Android) y agentes de IA — de la idea a producción. Cotización gratis.'
     : 'US-based software agency. We build your SaaS, mobile app (iOS/Android) and AI agents — from idea to production. Free project estimate.'
@@ -90,7 +90,7 @@ export async function generateMetadata({
       title,
       description,
       url: canonical,
-      siteName: 'MS SARAVIA TECH STACK LLC',
+      siteName: 'MS TECH STACK LLC',
       locale: isEs ? 'es_ES' : 'en_US',
       alternateLocale: isEs ? ['en_US', 'en_GB', 'en_CA'] : ['es_ES', 'en_GB', 'en_CA'],
       type: 'website',

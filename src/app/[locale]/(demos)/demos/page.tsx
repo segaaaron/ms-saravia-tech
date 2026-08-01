@@ -158,13 +158,13 @@ const COPY = {
   es: {
     back: 'Volver al sitio',
     title: 'Demos en vivo.',
-    intro: 'Piezas de portafolio con datos ficticios — animación, objetos 3D y flujos reales. Cada demo termina en un CTA que registra un lead. Construidas por MS Saravia Tech Stack.',
+    intro: 'Piezas de portafolio con datos ficticios — animación, objetos 3D y flujos reales. Cada demo termina en un CTA que registra un lead. Construidas por MS Tech Stack.',
     view: 'Ver demo',
   },
   en: {
     back: 'Back to site',
     title: 'Live product demos.',
-    intro: 'Portfolio pieces with fictional data — animation, 3D objects and real flows. Each demo ends in a CTA that captures a lead. Built by MS Saravia Tech Stack.',
+    intro: 'Portfolio pieces with fictional data — animation, 3D objects and real flows. Each demo ends in a CTA that captures a lead. Built by MS Tech Stack.',
     view: 'View demo',
   },
 } satisfies Record<DemoLang, { back: string; title: string; intro: string; view: string }>

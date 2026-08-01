@@ -43,7 +43,7 @@ export function buildOpenGraph(
     title,
     description,
     url: localizedUrl(locale, path),
-    siteName: 'MS SARAVIA TECH STACK LLC',
+    siteName: 'MS TECH STACK LLC',
     locale: locale === 'es' ? 'es_ES' : 'en_US',
     alternateLocale: locale === 'es' ? ['en_US', 'en_GB', 'en_CA'] : ['es_ES', 'en_GB', 'en_CA'],
     type: 'website',

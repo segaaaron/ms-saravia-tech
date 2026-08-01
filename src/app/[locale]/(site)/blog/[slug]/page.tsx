@@ -25,7 +25,7 @@ export async function generateMetadata({
   const { title, excerpt } = post[loc]
   const path = `/blog/${slug}`
   return {
-    title: `${title} | MS Saravia Tech Stack`,
+    title: `${title} | MS Tech Stack`,
     description: excerpt,
     alternates: buildAlternates(locale, path),
     openGraph: { ...buildOpenGraph(locale, path, title, excerpt), type: 'article' },
@@ -61,10 +61,10 @@ export default async function BlogPostPage({
     inLanguage: loc,
     url: localizedUrl(locale, `/blog/${slug}`),
     mainEntityOfPage: localizedUrl(locale, `/blog/${slug}`),
-    author: { '@type': 'Organization', name: 'MS SARAVIA TECH STACK LLC', url: localizedUrl('en') },
+    author: { '@type': 'Organization', name: 'MS TECH STACK LLC', url: localizedUrl('en') },
     publisher: {
       '@type': 'Organization',
-      name: 'MS SARAVIA TECH STACK LLC',
+      name: 'MS TECH STACK LLC',
       logo: { '@type': 'ImageObject', url: `${localizedUrl('en')}/icon.png` },
     },
   }

@@ -129,7 +129,7 @@
         "title": "ReadyCV",
         "category": "AI Resume Builder",
         "desc": "AI-powered resume builder helping professionals craft compelling CVs and land their dream jobs.",
-        "url": "https://www.readycvv.com",
+        "url": "https://www.valhallaresume.com",
         "status": "live"
       },
       {
@@ -203,7 +203,7 @@
         "suffix": "h"
       }
     ],
-    "body": "MS SARAVIA TECH STACK LLC is a technology company based in the United States, specializing in SaaS development, mobile applications, AI-powered agents, and strategic tech consulting. We bring Silicon Valley-level engineering to every project — from early-stage startups to established enterprises.",
+    "body": "MS TECH STACK LLC is a technology company based in the United States, specializing in SaaS development, mobile applications, AI-powered agents, and strategic tech consulting. We bring Silicon Valley-level engineering to every project — from early-stage startups to established enterprises.",
     "highlight": "A founder-led studio — you work directly with a senior engineer, not a sales team. Every line of code is written by someone who's shipped products used by millions.",
     "highlightLabel": "Founder-led"
   },
@@ -252,7 +252,7 @@
   "footer": {
     "tagline": "Building the future, one product at a time.",
     "rights": "All rights reserved.",
-    "company": "MS SARAVIA TECH STACK LLC",
+    "company": "MS TECH STACK LLC",
     "description": "Elite software engineering for ambitious companies. SaaS, mobile, AI — all in one studio.",
     "location": "United States",
     "quick_links": "Quick Links",
@@ -279,7 +279,7 @@
     "ctaButton": "Get a free estimate",
     "items": {
       "saas": {
-        "metaTitle": "SaaS Development Company — MVP to Enterprise | MS Saravia Tech Stack",
+        "metaTitle": "SaaS Development Company — MVP to Enterprise | MS Tech Stack",
         "metaDesc": "Custom SaaS development from MVP to enterprise. Scalable multi-tenant platforms with Next.js, Node.js and Stripe. Get a free project estimate.",
         "intro": "We design and build scalable SaaS platforms end-to-end — from MVP validation to enterprise-grade systems. Multi-tenant architecture, subscription billing and cloud infrastructure engineered to grow with your business.",
         "capabilities": [
@@ -354,7 +354,7 @@
         ]
       },
       "mobile-apps": {
-        "metaTitle": "Mobile App Development (iOS & Android) | MS Saravia Tech Stack",
+        "metaTitle": "Mobile App Development (iOS & Android) | MS Tech Stack",
         "metaDesc": "Native and React Native app development for iOS and Android. From concept to the App Store & Google Play. Free project estimate.",
         "intro": "Native and cross-platform mobile apps for iOS and Android. We ship polished, performant products with React Native, Swift and Kotlin — from concept and store submission to ongoing releases.",
         "capabilities": [
@@ -429,7 +429,7 @@
         ]
       },
       "ai-agents": {
-        "metaTitle": "AI Agent Development & Automation | MS Saravia Tech Stack",
+        "metaTitle": "AI Agent Development & Automation | MS Tech Stack",
         "metaDesc": "Build AI agents and automation with OpenAI, Claude and LangChain. Custom LLM assistants wired to your real data. Free consultation.",
         "intro": "We build AI agents and automation that plug into your operations — LLM-powered assistants, workflow automation and retrieval systems using OpenAI, Claude and LangChain, wired to your real data.",
         "capabilities": [
@@ -504,7 +504,7 @@
         ]
       },
       "tech-consulting": {
-        "metaTitle": "Tech Consulting & Fractional CTO | MS Saravia Tech Stack",
+        "metaTitle": "Tech Consulting & Fractional CTO | MS Tech Stack",
         "metaDesc": "Architecture reviews, stack modernization and fractional CTO services for startups and teams. Ship faster, scale safely.",
         "intro": "Strategic technical guidance for founders and teams: architecture reviews, stack modernization, code audits and fractional CTO support to help you ship faster and scale safely.",
         "capabilities": [
@@ -586,7 +586,7 @@
     "faqLabel": "Frequently asked"
   },
   "workPage": {
-    "metaTitle": "Our Work — Case Studies | MS Saravia Tech Stack",
+    "metaTitle": "Our Work — Case Studies | MS Tech Stack",
     "metaDesc": "Real products we've designed and shipped: SaaS platforms, AI tools and mobile apps. Explore our case studies.",
     "intro": "Real products, live in production. A closer look at what we've built and how."
   },
@@ -604,7 +604,7 @@
     "items": {
       "yasmin-medrano": {
         "metaTitle": "Yasmin Medrano — Aesthetic Clinic Website | Case Study",
-        "metaDesc": "How we built the complete digital presence for a premium aesthetic medicine practice. Case study by MS Saravia Tech Stack.",
+        "metaDesc": "How we built the complete digital presence for a premium aesthetic medicine practice. Case study by MS Tech Stack.",
         "challenge": "Premium aesthetic clinics live and die on trust and first impressions, yet many rely on generic templates or social media alone. Prospective patients struggled to discover treatments, gauge credibility, and book a consultation without friction.",
         "solution": "We built a complete digital presence — a polished treatments and services showcase, a modern booking flow, and a cohesive brand identity — designed to turn first-time visitors into booked consultations and reflect the quality of the practice.",
         "results": "The clinic now has an online presence that feels as premium as the practice itself — intuitive, elegant, and quick to explore. Patients can discover treatments, get a real sense of the clinic, and request a consultation without friction, and it looks polished on any device.",
@@ -618,9 +618,9 @@
           "Fast and smooth on any phone"
         ]
       },
-      "readycv": {
+      "valhalla-resume": {
         "metaTitle": "ReadyCV — AI Resume Builder | Case Study",
-        "metaDesc": "How we built ReadyCV, an AI-powered resume builder helping professionals land their dream jobs. Case study by MS Saravia Tech Stack.",
+        "metaDesc": "How we built ReadyCV, an AI-powered resume builder helping professionals land their dream jobs. Case study by MS Tech Stack.",
         "challenge": "Job seekers know a strong, tailored CV is decisive, but writing one that reads well and passes automated screening is slow and intimidating. Most resume tools stop at rigid templates and leave the hardest part — the words — to the user.",
         "solution": "We built ReadyCV, an AI-powered resume builder that helps professionals craft compelling, role-tailored CVs in minutes. It guides users through structured input and generates polished, ATS-friendly content, turning a blank page into an interview-ready resume.",
         "results": "The experience is guided from start to finish: what used to be an intimidating blank page becomes a smooth, confidence-building flow, and the result looks polished and professional. It is fast, clean, and simple enough that anyone can produce a CV they are proud to send.",
@@ -636,7 +636,7 @@
       },
       "nova-nutrition": {
         "metaTitle": "NOVA Nutrition — AI Nutrition App | Case Study",
-        "metaDesc": "NOVA Nutrition: smart, AI-powered nutrition tracking for iOS and Android. Case study by MS Saravia Tech Stack.",
+        "metaDesc": "NOVA Nutrition: smart, AI-powered nutrition tracking for iOS and Android. Case study by MS Tech Stack.",
         "challenge": "Consistent nutrition tracking is where most health goals fall apart — manual logging is tedious, generic meal plans ignore individual context, and feedback arrives too late to change behavior. People need guidance that adapts to them in the moment.",
         "solution": "We are building NOVA, an iOS and Android app that uses AI for smart nutrition tracking, personalized meal plans, and real-time insights. It reduces logging friction and turns everyday food choices into actionable, individualized guidance.",
         "results": "NOVA makes tracking feel effortless instead of tedious — a clean, elegant app that turns the daily habit into something that takes seconds and keeps people motivated with clear, personalized insights. Designed to feel native and premium on both iOS and Android.",
@@ -656,7 +656,7 @@
     "yearLabel": "Year"
   },
   "blogPage": {
-    "metaTitle": "Blog — SaaS, AI & Mobile Engineering | MS Saravia Tech Stack",
+    "metaTitle": "Blog — SaaS, AI & Mobile Engineering | MS Tech Stack",
     "metaDesc": "Practical engineering notes on building SaaS, AI agents and mobile apps — from the team that ships them.",
     "title": "Blog",
     "intro": "Practical notes on building SaaS, AI agents and mobile products — written by the engineers who ship them.",
@@ -677,7 +677,7 @@
     "ctaButton": "Get a free estimate",
     "items": {
       "gym-software": {
-        "metaTitle": "Gym Management Software Development | MS Saravia Tech Stack",
+        "metaTitle": "Gym Management Software Development | MS Tech Stack",
         "metaDesc": "Custom gym & fitness management software — memberships, bookings, member portal and admin dashboard. Built for your brand.",
         "h1": "Gym Management Software, Built for Your Brand",
         "intro": "We build custom software for gyms and fitness studios — member management, class bookings, payments and a real-time admin dashboard, all under your own brand instead of a rigid off-the-shelf tool.",
@@ -708,7 +708,7 @@
         ]
       },
       "clinic-website": {
-        "metaTitle": "Aesthetic Clinic Website Design & Development | MS Saravia Tech Stack",
+        "metaTitle": "Aesthetic Clinic Website Design & Development | MS Tech Stack",
         "metaDesc": "Premium websites for aesthetic and medical clinics — services showcase, online booking and a brand that builds trust.",
         "h1": "Websites for Aesthetic & Medical Clinics",
         "intro": "We design and build premium websites for aesthetic and medical clinics — a polished services showcase, online booking, and a brand identity that earns patient trust from the first visit.",
@@ -739,7 +739,7 @@
         ]
       },
       "restaurant-website": {
-        "metaTitle": "Restaurant Website with Online Menu | MS Saravia Tech Stack",
+        "metaTitle": "Restaurant Website with Online Menu | MS Tech Stack",
         "metaDesc": "Restaurant websites with a live online menu, reservations and an admin panel — designed to fill more tables.",
         "h1": "Restaurant Websites That Fill Tables",
         "intro": "We build restaurant websites with a beautiful, always-up-to-date online menu, reservations, and an admin panel to manage it all — designed to turn visitors into diners.",
@@ -770,7 +770,7 @@
         ]
       },
       "ecommerce-store": {
-        "metaTitle": "Custom Ecommerce Development — Online Store | MS Saravia Tech Stack",
+        "metaTitle": "Custom Ecommerce Development — Online Store | MS Tech Stack",
         "metaDesc": "Custom ecommerce stores — catalog, cart, checkout and an admin dashboard. Built to convert, not a template.",
         "h1": "Custom Ecommerce Stores That Convert",
         "intro": "We build custom online stores — product catalog, cart, secure checkout and an admin dashboard — engineered for conversion and speed instead of a one-size-fits-all template.",
@@ -910,7 +910,7 @@
     }
   },
   "estimatePage": {
-    "metaTitle": "App Cost Estimator — Get a Ballpark in USD | MS Saravia Tech Stack",
+    "metaTitle": "App Cost Estimator — Get a Ballpark in USD | MS Tech Stack",
     "metaDesc": "Estimate what your mobile or web app would cost in USD — adjusted to your region. Platform, scope, design, compliance and features. Free, instant, no signup."
   },
   "estimateCta": {
@@ -933,7 +933,7 @@
     "label": "// BUILT WITH FRONTIER TECHNOLOGY"
   },
   "nearshore": {
-    "metaTitle": "Nearshore Software Development for US & Canada | MS Saravia Tech Stack",
+    "metaTitle": "Nearshore Software Development for US & Canada | MS Tech Stack",
     "metaDesc": "Senior nearshore software teams in your timezone. A US-registered LLC staffed by senior LATAM engineers — 40-60% less than a US agency, without the offshore quality gap.",
     "jsonLdName": "Nearshore Software Development",
     "hero": {
@@ -948,7 +948,7 @@
     "whatBody": [
       "Nearshore software development means outsourcing engineering to a country in a similar or overlapping timezone. For a US or Canadian company, that's Latin America — you get the cost advantage of outsourcing without the friction of a 10-12 hour offset.",
       "The difference is practical, not academic. With nearshore, standups happen live, code review is same-day, and a production incident at 2pm your time is a 2pm problem for the engineer who wrote the code — not something that waits until tomorrow.",
-      "MS Saravia Tech Stack is structured for exactly this: a US-registered LLC for contracting and billing, staffed by senior Latin American engineers who work your business hours."
+      "MS Tech Stack is structured for exactly this: a US-registered LLC for contracting and billing, staffed by senior Latin American engineers who work your business hours."
     ],
     "compareLabel": "Nearshore vs offshore vs in-house",
     "compareTitle": "How the three models actually compare",
@@ -1038,7 +1038,7 @@
     "trust": [
       {
         "title": "Who you contract with",
-        "desc": "MS Saravia Tech Stack LLC — a United States limited liability company. Contracts, invoices, and payments are all US-side. The engineering happens in Latin America."
+        "desc": "MS Tech Stack LLC — a United States limited liability company. Contracts, invoices, and payments are all US-side. The engineering happens in Latin America."
       },
       {
         "title": "How we coordinate",
@@ -1065,7 +1065,7 @@
       },
       {
         "q": "How do contracts work with a US LLC?",
-        "a": "You contract directly with MS Saravia Tech Stack LLC, a US-registered limited liability company. That means standard US-style MSAs and SOWs, US invoicing, and payment to a US entity — no foreign wire transfers or unfamiliar legal jurisdiction. An NDA is available on request before any sensitive discussion."
+        "a": "You contract directly with MS Tech Stack LLC, a US-registered limited liability company. That means standard US-style MSAs and SOWs, US invoicing, and payment to a US entity — no foreign wire transfers or unfamiliar legal jurisdiction. An NDA is available on request before any sensitive discussion."
       },
       {
         "q": "How senior is your team?",

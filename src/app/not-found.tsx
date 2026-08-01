@@ -5,7 +5,7 @@ export const metadata: Metadata = {
   metadataBase: new URL(
     process.env.NEXT_PUBLIC_SITE_URL || 'https://www.ms-tech-stack.cloud',
   ),
-  title: 'Page not found — MS Saravia Tech Stack',
+  title: 'Page not found — MS Tech Stack',
   robots: { index: false, follow: false },
 }
 

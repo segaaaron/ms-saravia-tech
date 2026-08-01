@@ -32,7 +32,7 @@ export function GET(): Response {
   const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0">
   <channel>
-    <title>MS Saravia Tech Stack — Blog</title>
+    <title>MS Tech Stack — Blog</title>
     <link>${localizedUrl('en', '/blog')}</link>
     <description>Practical engineering notes on building SaaS, AI agents and mobile apps.</description>
     <language>en</language>

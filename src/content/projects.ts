@@ -13,7 +13,7 @@ export const projects = [
     title: 'ReadyCV',
     category: 'AI Resume Builder',
     desc: 'AI-powered resume builder helping professionals land their dream jobs.',
-    url: 'https://www.readycvv.com',
+    url: 'https://www.valhallaresume.com',
     status: 'live' as const,
     color: '#00E5FF',
   },

@@ -1,7 +1,7 @@
 import { ImageResponse } from 'next/og'
 
 export const runtime = 'nodejs'
-export const alt = 'MS SARAVIA TECH STACK LLC — Premium Software Agency'
+export const alt = 'MS TECH STACK LLC — Premium Software Agency'
 export const size = { width: 1200, height: 630 }
 export const contentType = 'image/png'
 
@@ -44,7 +44,7 @@ export default async function OpengraphImage() {
             display: 'flex',
           }}
         >
-          MS SARAVIA TECH STACK LLC
+          MS TECH STACK LLC
         </div>
         <div
           style={{

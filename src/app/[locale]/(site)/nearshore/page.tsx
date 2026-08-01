@@ -69,7 +69,7 @@ export default async function NearshorePage({
     name: t('jsonLdName'),
     description: t('metaDesc'),
     serviceType: t('jsonLdName'),
-    provider: { '@type': 'Organization', name: 'MS SARAVIA TECH STACK LLC', url: localizedUrl('en') },
+    provider: { '@type': 'Organization', name: 'MS TECH STACK LLC', url: localizedUrl('en') },
     areaServed: AREA_SERVED,
     url: localizedUrl(locale, '/nearshore'),
   }

@@ -74,7 +74,7 @@ export default async function ServicePage({
     name: item.title,
     description: tPage(`items.${service}.metaDesc`),
     serviceType: item.title,
-    provider: { '@type': 'Organization', name: 'MS SARAVIA TECH STACK LLC', url: localizedUrl('en') },
+    provider: { '@type': 'Organization', name: 'MS TECH STACK LLC', url: localizedUrl('en') },
     areaServed: AREA_SERVED,
     url: localizedUrl(locale, `/services/${service}`),
   }

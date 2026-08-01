@@ -25,7 +25,7 @@ const servicePages: ServicePage[] = [
     slug: 'saas',
     itemIndex: 0,
     relatedDemos: ['pulse-landing', 'pulse-dashboard', 'vesper-store', 'vesper-dashboard'],
-    relatedCaseStudies: ['readycv'],
+    relatedCaseStudies: ['valhalla-resume'],
     techStack: [
       { en: 'Frontend', es: 'Frontend', items: ['Next.js', 'React', 'TypeScript', 'Tailwind CSS', 'React Query', 'Zustand', 'Server Components', 'Radix UI', 'Framer Motion'] },
       { en: 'Backend & API', es: 'Backend y API', items: ['Node.js', 'tRPC', 'GraphQL', 'REST / OpenAPI', 'Prisma', 'Drizzle', 'Zod', 'BullMQ'] },
@@ -58,7 +58,7 @@ const servicePages: ServicePage[] = [
     slug: 'ai-agents',
     itemIndex: 2,
     relatedDemos: [],
-    relatedCaseStudies: ['readycv', 'nova-nutrition'],
+    relatedCaseStudies: ['valhalla-resume', 'nova-nutrition'],
     techStack: [
       { en: 'Models', es: 'Modelos', items: ['OpenAI', 'Claude', 'Gemini', 'Llama', 'Mistral', 'DeepSeek'] },
       { en: 'Orchestration', es: 'Orquestación', items: ['LangChain', 'LangGraph', 'LlamaIndex', 'MCP', 'Function calling', 'Multi-agent'] },
@@ -136,7 +136,7 @@ export const caseStudyPages: CaseStudyPage[] = [
     year: '2025',
   },
   {
-    slug: 'readycv',
+    slug: 'valhalla-resume',
     projectId: 'readycv',
     projectIndex: 1,
     scope: { en: 'Product · Web + AI', es: 'Producto · Web + IA' },

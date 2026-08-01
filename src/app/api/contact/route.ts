@@ -92,7 +92,7 @@ export async function POST(req: NextRequest) {
 
     const to = process.env.CONTACT_TO_EMAIL || 'techstackmssaravia@gmail.com'
     const from =
-      process.env.CONTACT_FROM_EMAIL || 'MS SARAVIA TECH STACK <onboarding@resend.dev>'
+      process.env.CONTACT_FROM_EMAIL || 'MS TECH STACK <onboarding@resend.dev>'
 
     const name = escapeHtml(data.name)
     const email = escapeHtml(data.email)
@@ -120,7 +120,7 @@ export async function POST(req: NextRequest) {
             <strong style="color:#00E5FF">Message:</strong>
             <p style="margin-top:8px;white-space:pre-wrap">${message}</p>
           </div>
-          <p style="margin-top:24px;color:rgba(255,255,255,0.5);font-size:12px">MS Saravia Tech Stack contact form${source ? ` · source: ${source}` : ''}</p>
+          <p style="margin-top:24px;color:rgba(255,255,255,0.5);font-size:12px">MS Tech Stack contact form${source ? ` · source: ${source}` : ''}</p>
         </div>
       `,
     })

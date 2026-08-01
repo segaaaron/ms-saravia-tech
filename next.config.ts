@@ -13,6 +13,14 @@ const nextConfig: NextConfig = {
     // vector de abuso de ancho de banda / SSRF). Único host remoto real: unsplash (demos).
     remotePatterns: [{ protocol: 'https', hostname: 'images.unsplash.com' }],
   },
+  async redirects() {
+    // Case study renombrado: /work/readycv -> /work/valhalla-resume (301 permanente,
+    // preserva link equity de la URL vieja). Ambos locales (as-needed: en sin prefijo, es con /es).
+    return [
+      { source: '/work/readycv', destination: '/work/valhalla-resume', permanent: true },
+      { source: '/es/work/readycv', destination: '/es/work/valhalla-resume', permanent: true },
+    ]
+  },
   async headers() {
     return [
       {

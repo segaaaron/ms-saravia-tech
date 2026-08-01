@@ -2,7 +2,7 @@ import type { MetadataRoute } from 'next'
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: 'MS Saravia Tech Stack LLC',
+    name: 'MS Tech Stack LLC',
     short_name: 'MS Tech Stack',
     description:
       'US-based software agency: SaaS, mobile apps and AI agents — idea to production.',

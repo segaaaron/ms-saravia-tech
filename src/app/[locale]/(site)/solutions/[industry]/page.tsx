@@ -57,7 +57,7 @@ export default async function SolutionPage({
     name: h1,
     serviceType: t(`items.${industry}.metaTitle`),
     description: t(`items.${industry}.metaDesc`),
-    provider: { '@type': 'Organization', name: 'MS SARAVIA TECH STACK LLC', url: localizedUrl('en') },
+    provider: { '@type': 'Organization', name: 'MS TECH STACK LLC', url: localizedUrl('en') },
     areaServed: AREA_SERVED,
     url: localizedUrl(locale, `/solutions/${industry}`),
   }

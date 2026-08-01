@@ -346,7 +346,7 @@ const CONTENT: Record<DemoLang, Content> = {
     sentNote: 'Gracias. Nuestro concierge le contactará en menos de 24 horas. (Demo — no se envía nada real.)',
     legal: ['Aviso legal', 'Privacidad', 'Cookies'],
     rights: '© 2026 SAVERA GT. Marca ficticia. Todos los derechos reservados.',
-    builtBy: 'Demo construida por MS Saravia Tech Stack',
+    builtBy: 'Demo construida por MS Tech Stack',
   },
   en: {
     nav: { models: 'Models', engineering: 'Engineering', experience: 'Experience', contact: 'Contact' },
@@ -602,7 +602,7 @@ const CONTENT: Record<DemoLang, Content> = {
     sentNote: 'Thank you. Our concierge will contact you within 24 hours. (Demo — nothing is actually sent.)',
     legal: ['Legal notice', 'Privacy', 'Cookies'],
     rights: '© 2026 SAVERA GT. Fictional brand. All rights reserved.',
-    builtBy: 'Demo built by MS Saravia Tech Stack',
+    builtBy: 'Demo built by MS Tech Stack',
   },
 }
 

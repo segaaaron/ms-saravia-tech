@@ -78,7 +78,7 @@ export default async function CaseStudyPage({
     about: project.category,
     description: project.desc,
     url: localizedUrl(locale, `/work/${slug}`),
-    creator: { '@type': 'Organization', name: 'MS SARAVIA TECH STACK LLC', url: localizedUrl('en') },
+    creator: { '@type': 'Organization', name: 'MS TECH STACK LLC', url: localizedUrl('en') },
     ...(meta.url ? { sameAs: meta.url } : {}),
   }
   if (testimonial) {

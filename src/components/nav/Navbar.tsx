@@ -231,10 +231,10 @@ export default function Navbar() {
 
         <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
           {/* Logo */}
-          <Link href="/" className="flex items-center gap-3" aria-label="MS Saravia Tech Stack">
+          <Link href="/" className="flex items-center gap-3" aria-label="MS Tech Stack">
             <NavCircuit size={38} />
             <span className="font-display font-semibold text-[15px] sm:text-[17px] tracking-tight text-[#EEF3F8]">
-              MS Saravia<span className="hidden sm:inline font-normal text-[#8896A6]"> Tech Stack</span>
+              MS<span className="hidden sm:inline font-normal text-[#8896A6]"> Tech Stack</span>
             </span>
           </Link>
 

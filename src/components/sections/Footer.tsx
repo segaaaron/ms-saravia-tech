@@ -70,7 +70,7 @@ export default function Footer() {
             <div className="flex items-center gap-3">
               <NavCircuit size={56} />
               <p className="font-display font-semibold text-xl tracking-tight text-[#EEF3F8]">
-                MS Saravia<span className="font-normal text-[#8896A6]"> Tech Stack LLC</span>
+                MS<span className="font-normal text-[#8896A6]"> Tech Stack LLC</span>
               </p>
             </div>
 
