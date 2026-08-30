@@ -2,8 +2,7 @@ import type { Metadata } from 'next'
 import { Space_Grotesk, Inter } from 'next/font/google'
 import { NextIntlClientProvider } from 'next-intl'
 import { getMessages } from 'next-intl/server'
-// @ts-expect-error - Next.js provides CSS module typings at runtime/build time.
-import '../globals.css'
+import './globals.css'
 import Analytics from '@/components/seo/Analytics'
 import LazyMotionProvider from '@/components/fx/LazyMotionProvider'
 
